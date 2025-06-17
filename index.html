@@ -30,7 +30,6 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -45,7 +44,6 @@
             position: relative;
         }
 
-        /* Fundo de grade animado */
         body::before {
             content: '';
             position: absolute;
@@ -53,14 +51,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(0, 255, 255, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 255, 0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
             animation: moveGrid 20s linear infinite;
-            transform: perspective(400px) rotateX(60deg);
+            transform: perspective(300px) rotateX(60deg);
             z-index: -1;
         }
+
 
         .hidden {
             display: none !important;
@@ -77,6 +76,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes popIn {
+             from { opacity: 0; transform: scale(0.8); }
+             to { opacity: 1; transform: scale(1); }
+        }
+
         /* Container principal do jogo (Efeito Glassmorphism) */
         .game-container {
             width: 95vw;
@@ -86,9 +90,9 @@
             background-color: rgba(42, 26, 74, 0.5);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 0, 255, 0.25);
+            border: 1px solid rgba(255, 0, 255, 0.2);
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -96,7 +100,7 @@
             position: relative;
             padding: 20px;
         }
-
+        
         /* Telas */
         .screen {
             width: 100%;
@@ -107,7 +111,7 @@
             align-items: center;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
-            position: relative;
+            position: relative; 
         }
 
         h1, h2 {
@@ -115,6 +119,7 @@
             text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
         }
 
+        /* Estilos da tela inicial e outras telas com menus */
         #start-screen h1 {
             font-size: 3.5rem;
             color: var(--accent-color);
@@ -126,10 +131,6 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 20px;
-            background: rgba(0,0,0,0.2);
-            padding: 8px 12px;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 0, 255, 0.2);
         }
         .user-profile img {
             width: 40px;
@@ -156,17 +157,12 @@
             box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), inset 0 0 5px rgba(255,255,255,0.3);
             text-transform: uppercase;
         }
-
+        
         .menu-button:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 0 25px var(--glow-color), inset 0 0 8px rgba(255,255,255,0.4);
         }
         
-        .menu-button:active {
-            transform: translateY(0px) scale(0.98);
-            box-shadow: 0 0 10px var(--glow-color);
-        }
-
         .menu-button.active {
             background: var(--food-color);
             color: var(--primary-color);
@@ -186,6 +182,7 @@
         }
         #login-button svg { width: 24px; height: 24px; }
 
+
         #options-screen, #leaderboard-screen { justify-content: space-between; }
         #options-screen h2, #leaderboard-screen h2 {
             font-size: 2.5rem;
@@ -194,7 +191,7 @@
         }
         .option-group { margin-bottom: 15px; }
         .option-group h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400; }
-
+        
         .credits-text { font-size: 1rem; color: var(--text-color); margin-bottom: 10px; }
         .credits-link {
             font-family: var(--font-family); display: inline-block; color: var(--apple-color-light); text-decoration: none;
@@ -202,43 +199,44 @@
             text-transform: uppercase; font-size: 0.9rem;
         }
         .credits-link:hover { background-color: var(--apple-color-light); color: var(--primary-color); box-shadow: 0 0 20px var(--food-glow); }
-
+        
         #score-list {
             list-style: none;
             width: 100%;
             max-height: 60vh;
             overflow-y: auto;
             text-align: left;
-            padding-right: 10px; /* For scrollbar */
         }
         #score-list li {
             display: flex;
             align-items: center;
-            padding: 12px;
+            padding: 10px;
             background-color: rgba(0,0,0,0.2);
             border-bottom: 1px solid rgba(255,0,255,0.2);
-            font-size: 1.1rem;
         }
         #score-list li:nth-child(odd) { background-color: rgba(0,0,0,0.3); }
-        #score-list li:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
-        #score-list li:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-
-        #score-list .rank { font-weight: 900; width: 40px; color: var(--accent-color); text-shadow: 0 0 5px var(--glow-color); }
+        #score-list .rank { font-weight: 900; width: 40px; }
         #score-list .name { flex-grow: 1; }
-        #score-list .score { font-weight: 900; color: var(--food-color); text-shadow: 0 0 5px var(--cyan-glow); }
-
+        #score-list .score { font-weight: 900; color: var(--food-color); }
+        
         #game-screen { justify-content: flex-start; }
         #top-bar {
             width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
             padding: 10px 0; margin-bottom: 10px;
         }
         #stats-container {
-            display: flex; flex-direction: column; align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
         #score-display { font-size: 1.5rem; font-weight: 700; color: var(--text-color); text-shadow: 0 0 5px var(--cyan-glow); margin-bottom: 5px; }
         #coin-display {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 1.1rem; font-weight: 700; color: var(--food-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--food-color);
             text-shadow: 0 0 8px var(--cyan-glow);
         }
 
@@ -249,14 +247,14 @@
         }
         #pause-button:hover { background: var(--text-color); color: var(--primary-color); border-color: var(--primary-color); }
         #pause-button svg { width: 50%; height: 50%; fill: currentColor; }
-
+        
         #pause-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(13, 2, 28, 0.7);
             color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 20px; z-index: 20;
         }
         #pause-overlay h2 { font-size: 2.5rem; color: var(--text-color); margin-bottom: 20px; }
-
+        
         canvas {
             background-color: rgba(13, 2, 28, 0.8); border-radius: 12px;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
@@ -282,7 +280,7 @@
             <button id="leaderboard-button" class="menu-button">Placar</button>
             <button id="options-button" class="menu-button">Opções</button>
             <button id="login-button" class="menu-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
                 <span>Login com Google</span>
             </button>
             <button id="logout-button" class="menu-button hidden">Sair</button>
@@ -319,7 +317,7 @@
              </div>
              <button id="leaderboard-back-button" class="menu-button">Voltar</button>
         </div>
-
+        
         <!-- Tela de Jogo -->
         <div id="game-screen" class="screen hidden">
             <div id="top-bar" class="hidden">
@@ -340,7 +338,7 @@
                 <button id="pause-home-button" class="menu-button">Tela Inicial</button>
             </div>
         </div>
-
+        
         <!-- Tela de Game Over -->
         <div id="game-over-screen" class="screen hidden">
              <h2>Game Over</h2>
@@ -352,10 +350,26 @@
 
     <!-- SDKs do Firebase -->
     <script type="module">
-        // ATUALIZAÇÃO: Importando as versões mais recentes do SDK do Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, getDocs, serverTimestamp, doc, updateDoc, setDoc, getDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+        // --- Configuração do Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhcu3_fdWIJbPAiVqUpe_AwJgZiC-XoB8",
+            authDomain: "sssnake-e464c.firebaseapp.com",
+            projectId: "sssnake-e464c",
+            storageBucket: "sssnake-e464c.appspot.com",
+            messagingSenderId: "838444316745",
+            appId: "1:838444316745:web:eeb1d3d1b94373a5952798",
+            measurementId: "G-1WBVCSF0FX"
+        };
+        
+        // --- Inicialização do Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
         // --- Elementos do DOM ---
         const startScreen = document.getElementById('start-screen');
@@ -363,6 +377,7 @@
         const gameScreen = document.getElementById('game-screen');
         const gameOverScreen = document.getElementById('game-over-screen');
         const leaderboardScreen = document.getElementById('leaderboard-screen');
+        
         const startButton = document.getElementById('start-button');
         const optionsButton = document.getElementById('options-button');
         const backButton = document.getElementById('back-button');
@@ -372,9 +387,11 @@
         const logoutButton = document.getElementById('logout-button');
         const leaderboardButton = document.getElementById('leaderboard-button');
         const leaderboardBackButton = document.getElementById('leaderboard-back-button');
+        
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
         const userName = document.getElementById('user-name');
+        
         const topBar = document.getElementById('top-bar');
         const pauseButton = document.getElementById('pause-button');
         const pauseIcon = document.getElementById('pause-icon');
@@ -383,6 +400,7 @@
         const resumeButton = document.getElementById('resume-button');
         const pauseOptionsButton = document.getElementById('pause-options-button');
         const pauseHomeButton = document.getElementById('pause-home-button');
+        
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisplay = document.getElementById('score-display');
@@ -390,9 +408,7 @@
         const scoreList = document.getElementById('score-list');
         const coinCountSpan = document.getElementById('coin-count');
 
-        // --- Variáveis Globais ---
-        let db, auth;
-        let userId;
+        // --- Configurações do Jogo ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
         let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'mobile' : 'notebook' };
         let gridSize = 15;
@@ -403,91 +419,41 @@
         const preventDefaultHandler = (e) => e.preventDefault();
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
 
-        // --- MELHORIA: Configuração Segura do Firebase ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ssnake-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-
-        async function initializeFirebase() {
-            if (!firebaseConfig) {
-                console.error("Configuração do Firebase não encontrada. O placar e salvamento online não funcionarão.");
-                coins = parseInt(localStorage.getItem('ssnake_coins_local')) || 0;
-                coinCountSpan.textContent = coins;
-                return;
-            }
-
-            try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                setLogLevel('Debug');
-
-                setupAuthListeners();
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                    console.log("Usuário conectado anonimamente.");
-                }
-            } catch (error) {
-                console.error("Erro na inicialização do Firebase:", error);
-            }
-        }
-
         // --- Autenticação e Sincronização de Dados ---
-        function setupAuthListeners() {
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid;
-                    console.log("Usuário autenticado, UID:", userId);
-                    const isAnonymous = user.isAnonymous;
+        loginButton.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
+        });
 
-                    if (isAnonymous) {
-                        userProfile.classList.add('hidden');
-                        loginButton.classList.remove('hidden');
-                        logoutButton.classList.add('hidden');
-                    } else {
-                        userProfile.classList.remove('hidden');
-                        userName.textContent = user.displayName;
-                        userPhoto.src = user.photoURL;
-                        loginButton.classList.add('hidden');
-                        logoutButton.classList.remove('hidden');
-                    }
-                    await syncUserData(user);
-                } else {
-                    userId = null;
-                    userProfile.classList.add('hidden');
-                    loginButton.classList.remove('hidden');
-                    logoutButton.classList.add('hidden');
-                    console.log("Nenhum usuário autenticado.");
-                }
-            });
-
-            loginButton.addEventListener('click', () => {
-                if (!auth) return;
-                const provider = new GoogleAuthProvider();
-                signInWithPopup(auth, provider).catch(error => console.error("Erro no login com Google:", error));
-            });
-
-            logoutButton.addEventListener('click', () => {
-                if (!auth) return;
-                signOut(auth).catch(error => console.error("Erro no logout:", error));
-            });
-        }
-
-
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).catch(error => console.error("Erro no logout:", error));
+        });
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userProfile.classList.remove('hidden');
+                userName.textContent = user.displayName;
+                userPhoto.src = user.photoURL;
+                loginButton.classList.add('hidden');
+                logoutButton.classList.remove('hidden');
+                await syncUserData(user);
+            } else {
+                userProfile.classList.add('hidden');
+                loginButton.classList.remove('hidden');
+                logoutButton.classList.add('hidden');
+            }
+        });
+        
         async function syncUserData(user) {
-            // Caminho para dados PRIVADOS do usuário
-            const userRef = doc(db, "artifacts", appId, "users", user.uid);
+            const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
-            let localCoins = parseInt(localStorage.getItem('ssnake_coins_local')) || 0;
+            let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
 
             if (userDoc.exists()) {
                 const cloudData = userDoc.data();
                 const cloudCoins = cloudData.totalCoins || 0;
                 coins = cloudCoins + localCoins;
                 await updateDoc(userRef, { totalCoins: coins });
-            } else if (!user.isAnonymous) {
+            } else {
                 coins = localCoins;
                 await setDoc(userRef, {
                     name: user.displayName,
@@ -496,89 +462,68 @@
                     totalCoins: coins,
                     createdAt: serverTimestamp()
                 });
-            } else {
-                coins = localCoins;
             }
-            localStorage.setItem('ssnake_coins_local', "0");
+            localStorage.setItem('ssnake_coins', coins);
             coinCountSpan.textContent = coins;
         }
 
         // --- Placar (Leaderboard) ---
         async function getLeaderboard() {
-            if (!db) {
-                scoreList.innerHTML = '<li>Placar online indisponível.</li>';
-                return;
-            }
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
-                // CORREÇÃO: Busca na coleção PÚBLICA de scores para evitar erro de permissão.
-                const scoresCollectionRef = collection(db, "artifacts", appId, "public", "data", "scores");
-                const querySnapshot = await getDocs(scoresCollectionRef);
-
-                if (querySnapshot.empty) {
-                    scoreList.innerHTML = '<li>Nenhuma pontuação registrada.</li>';
-                    return;
-                }
-
-                let scoresData = [];
-                querySnapshot.forEach(doc => {
-                    scoresData.push(doc.data());
-                });
-
-                scoresData.sort((a, b) => (b.highScore || 0) - (a.highScore || 0));
-                
-                const top10 = scoresData.slice(0, 10);
-
+                const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
+                const querySnapshot = await getDocs(q);
                 scoreList.innerHTML = '';
-                if(top10.length === 0) {
+                if(querySnapshot.empty) {
                      scoreList.innerHTML = '<li>Nenhuma pontuação registrada.</li>';
                      return;
                 }
-
-                top10.forEach((data, index) => {
+                let rank = 1;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
                     const li = document.createElement('li');
-                    li.innerHTML = `<span class="rank">${index + 1}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore}</span>`;
+                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore}</span>`;
                     scoreList.appendChild(li);
                 });
-
             } catch (error) {
                 console.error("Erro ao buscar placar:", error);
                 scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>';
             }
         }
-
+        
         leaderboardButton.addEventListener('click', () => {
             previousScreen = startScreen;
             getLeaderboard();
             showScreen(leaderboardScreen);
         });
         leaderboardBackButton.addEventListener('click', () => showScreen(startScreen));
-
+        
         // --- Lógica de Navegação ---
         function showScreen(screen) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
             screen.classList.remove('hidden');
         }
-
+        
         function updateOptionButtons() {
             document.querySelectorAll('[data-control]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-control="${gameSettings.controlMode}"]`).classList.add('active');
             document.querySelectorAll('[data-ratio]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
         }
-
+        
         optionsButton.addEventListener('click', () => {
             previousScreen = startScreen;
             updateOptionButtons();
             showScreen(optionsScreen);
         });
-        
+
         const handlePauseOptions = () => {
             previousScreen = gameScreen;
             updateOptionButtons();
             showScreen(optionsScreen);
-        };
+        }
         pauseOptionsButton.addEventListener('click', handlePauseOptions);
+        pauseOptionsButton.addEventListener('touchstart', (e) => { e.preventDefault(); handlePauseOptions(); });
 
         backButton.addEventListener('click', () => {
             showScreen(previousScreen);
@@ -586,51 +531,52 @@
                 pauseOverlay.classList.remove('hidden');
             }
         });
-
+        
         // --- Lógica do Jogo ---
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', startGame);
         homeButton.addEventListener('click', () => showScreen(startScreen));
-
+        
         const pauseHomeHandler = () => {
             endGame(false);
             showScreen(startScreen);
         };
         pauseHomeButton.addEventListener('click', pauseHomeHandler);
+        pauseHomeButton.addEventListener('touchstart', (e) => { e.preventDefault(); pauseHomeHandler(); });
         
         pauseButton.addEventListener('click', togglePause);
+        pauseButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
+        
         resumeButton.addEventListener('click', togglePause);
+        resumeButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
 
         optionsScreen.addEventListener('click', (e) => {
             const controlButton = e.target.closest('[data-control]');
-            if (controlButton) {
+            if(controlButton) {
                 gameSettings.controlMode = controlButton.dataset.control;
                 updateOptionButtons();
             }
             const ratioButton = e.target.closest('[data-ratio]');
-            if (ratioButton) {
+            if(ratioButton) {
                 gameSettings.aspectRatio = ratioButton.dataset.ratio;
                 updateOptionButtons();
             }
         });
-        
+
         function setupCanvas() {
             const topBarHeight = topBar.offsetHeight || 60;
             const containerWidth = gameScreen.clientWidth;
             const containerHeight = gameScreen.clientHeight - topBarHeight;
             let canvasWidth, canvasHeight;
-
             if (gameSettings.aspectRatio === 'notebook') {
                 const canvasSize = Math.min(containerWidth, containerHeight);
                 canvasWidth = Math.floor(canvasSize / gridSize) * gridSize;
                 canvasHeight = canvasWidth;
-            } else { 
-                const baseWidth = Math.min(containerWidth, 500);
-                canvasWidth = Math.floor(baseWidth / gridSize) * gridSize;
-                const targetHeight = Math.floor((canvasWidth * 16 / 9) / gridSize) * gridSize;
-                canvasHeight = Math.min(targetHeight, Math.floor(containerHeight / gridSize) * gridSize);
+            } else {
+                const baseSize = Math.min(containerWidth, containerHeight);
+                canvasWidth = Math.floor(baseSize / gridSize) * gridSize;
+                canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize;
             }
-            
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
             topBar.style.width = `${canvasWidth}px`;
@@ -643,58 +589,39 @@
             pauseOverlay.classList.add('hidden');
             pauseIcon.classList.remove('hidden');
             playIcon.classList.add('hidden');
-
             setupCanvas();
-            
-            const centerX = Math.floor((canvas.width / gridSize) / 2);
-            const centerY = Math.floor((canvas.height / gridSize) / 2);
-            snake = [{ x: centerX, y: centerY }];
-
+            snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
             score = 0;
-            if (auth && auth.currentUser) {
-                // Moedas já sincronizadas
-            } else {
-                coins = parseInt(localStorage.getItem('ssnake_coins_local')) || 0;
-            }
-
+            coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
             coinCountSpan.textContent = coins;
             placeFood();
-
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
-
             document.addEventListener('keydown', handleKeyInput);
             canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
             canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
             canvas.addEventListener('touchend', handleTouchEnd);
         }
-
+        
         function togglePause() {
-            if (!gameInterval && !isPaused) return;
+            if (!gameInterval && !isPaused) return; 
             isPaused = !isPaused;
             pauseOverlay.classList.toggle('hidden');
             pauseIcon.classList.toggle('hidden');
             playIcon.classList.toggle('hidden');
-            if (isPaused) {
-                clearInterval(gameInterval);
-            } else {
-                gameInterval = setInterval(gameLoop, 140);
-            }
+            if (isPaused) clearInterval(gameInterval);
+            else gameInterval = setInterval(gameLoop, 140);
         }
 
-        function gameLoop() {
-            update();
-            draw();
-        }
-
+        function gameLoop() { update(); draw(); }
+        
         function update() {
             if (direction.x === 0 && direction.y === 0) return;
             const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
             snake.unshift(head);
             tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
-
             if (head.x === food.x && head.y === food.y) {
                 score++;
                 coins++;
@@ -704,19 +631,16 @@
             } else {
                 snake.pop();
             }
-            if (checkCollision()) {
-                endGame();
-            }
+            if (checkCollision()) endGame();
         }
-
+        
         function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(13, 2, 28, 0.8)';
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             drawApple();
             drawSnake();
         }
-        
+
         function drawSnake() {
             const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
             ctx.save();
@@ -724,22 +648,22 @@
             ctx.shadowBlur = 10;
             
             if (snake.length > 1) {
-                ctx.strokeStyle = accentColor;
-                ctx.lineWidth = gridSize * 0.9;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.beginPath();
-                ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
-                for (let i = 1; i < snake.length; i++) {
-                    ctx.lineTo(snake[i].x * gridSize + gridSize / 2, snake[i].y * gridSize + gridSize / 2);
-                }
-                ctx.stroke();
+                 ctx.strokeStyle = accentColor;
+                 ctx.lineWidth = gridSize * 0.9;
+                 ctx.lineCap = 'round';
+                 ctx.lineJoin = 'round';
+                 ctx.beginPath();
+                 ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
+                 for (let i = 1; i < snake.length; i++) {
+                     ctx.lineTo(snake[i].x * gridSize + gridSize / 2, snake[i].y * gridSize + gridSize / 2);
+                 }
+                 ctx.stroke();
             }
 
             const head = snake[0];
             const headX = head.x * gridSize + gridSize / 2;
             const headY = head.y * gridSize + gridSize / 2;
-
+            
             ctx.beginPath();
             ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2);
             ctx.fillStyle = accentColor;
@@ -750,17 +674,21 @@
             const eyeRadius = gridSize * 0.15;
             const pupilRadius = gridSize * 0.08;
             let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
-            const eyeDist = gridSize * 0.25;
 
-            const currentDir = direction.x !== 0 ? 'h' : (direction.y !== 0 ? 'v' : 'h');
-            if (currentDir === 'v') {
-                eye1X = headX - eyeDist; eye1Y = headY;
-                eye2X = headX + eyeDist; eye2Y = headY;
-                pupilOffsetY = direction.y * gridSize * 0.04;
-            } else { 
-                eye1X = headX; eye1Y = headY - eyeDist;
-                eye2X = headX; eye2Y = headY + eyeDist;
-                pupilOffsetX = direction.x * gridSize * 0.04;
+            const eyeDist = gridSize * 0.25;
+            
+            if (direction.y === -1) { 
+                eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5;
+                pupilOffsetY = -gridSize * 0.04;
+            } else if (direction.y === 1) {
+                eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5;
+                pupilOffsetY = gridSize * 0.04;
+            } else if (direction.x === -1) {
+                eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist;
+                pupilOffsetX = -gridSize * 0.04;
+            } else {
+                eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist;
+                pupilOffsetX = gridSize * 0.04;
             }
             
             ctx.fillStyle = '#fff';
@@ -777,12 +705,11 @@
                 const tongueEndX = headX + direction.x * tongueLength;
                 const tongueEndY = headY + direction.y * tongueLength;
                 ctx.beginPath(); ctx.moveTo(headX, headY); ctx.lineTo(tongueEndX, tongueEndY);
-                
                 const forkLength = gridSize * 0.3;
-                if (direction.x !== 0) { 
+                if (direction.x !== 0) {
                     ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY - forkLength);
                     ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY + forkLength);
-                } else { 
+                } else {
                     ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - forkLength, tongueEndY - direction.y * forkLength * 0.5);
                     ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX + forkLength, tongueEndY - direction.y * forkLength * 0.5);
                 }
@@ -798,56 +725,33 @@
             const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
             const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
             const foodGlow = getComputedStyle(document.documentElement).getPropertyValue('--food-glow').trim();
-            
             const appleX = food.x * gridSize + gridSize / 2;
             const appleY = food.y * gridSize + gridSize / 2;
-            const appleRadius = (gridSize / 2) * 0.95;
-            
+            const appleRadius = (gridSize / 2) * 0.95; 
             ctx.save();
             ctx.shadowColor = foodGlow; ctx.shadowBlur = 15;
-            
-            ctx.beginPath();
-            ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
+            ctx.beginPath(); ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
             const gradient = ctx.createRadialGradient(appleX - appleRadius * 0.2, appleY - appleRadius * 0.2, 0, appleX, appleY, appleRadius * 1.2);
-            gradient.addColorStop(0, appleColorLight);
-            gradient.addColorStop(1, appleColorDark);
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
-            ctx.beginPath();
-            ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(appleX, appleY - appleRadius * 0.7);
-            ctx.strokeStyle = appleStemColor;
-            ctx.lineWidth = 2;
+            gradient.addColorStop(0, appleColorLight); gradient.addColorStop(1, appleColorDark);
+            ctx.fillStyle = gradient; ctx.fill();
+            ctx.beginPath(); ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.fill();
+            ctx.beginPath(); ctx.moveTo(appleX, appleY - appleRadius * 0.7);
+            ctx.strokeStyle = appleStemColor; ctx.lineWidth = 2;
             ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4);
             ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
+            ctx.beginPath(); ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
             ctx.fillStyle = appleLeafColor;
             ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8);
             ctx.fill();
-            
             ctx.restore();
         }
 
         function placeFood() {
-            let validPosition = false;
-            while (!validPosition) {
-                food = {
-                    x: Math.floor(Math.random() * (canvas.width / gridSize)),
-                    y: Math.floor(Math.random() * (canvas.height / gridSize))
-                };
-                if (!snake.some(segment => segment.x === food.x && segment.y === food.y)) {
-                    validPosition = true;
-                }
-            }
+            food = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
+            if (snake.some(segment => segment.x === food.x && segment.y === food.y)) placeFood();
         }
-
+        
         function setDirection(newDirection) {
             if (isPaused) return;
             const goingUp = direction.y === -1, goingDown = direction.y === 1, goingRight = direction.x === 1, goingLeft = direction.x === -1;
@@ -866,20 +770,17 @@
             if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
             if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
         }
-
+        
         function handleTouchStart(event) {
             if (gameSettings.controlMode !== 'touch') return;
             event.preventDefault();
-            touchStartX = event.touches[0].clientX;
-            touchStartY = event.touches[0].clientY;
+            touchStartX = event.touches[0].clientX; touchStartY = event.touches[0].clientY;
         }
 
         function handleTouchEnd(event) {
             if (gameSettings.controlMode !== 'touch' || touchStartX === 0) return;
-            const touchEndX = event.changedTouches[0].clientX;
-            const touchEndY = event.changedTouches[0].clientY;
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
+            const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
             if (Math.abs(diffX) > Math.abs(diffY)) {
                 if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
             } else {
@@ -887,12 +788,10 @@
             }
             touchStartX = 0; touchStartY = 0;
         }
-
+        
         function checkCollision() {
             const head = snake[0];
-            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) {
-                return true;
-            }
+            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) return true;
             for (let i = 1; i < snake.length; i++) {
                 if (head.x === snake[i].x && head.y === snake[i].y) return true;
             }
@@ -908,31 +807,33 @@
             canvas.removeEventListener('touchmove', preventDefaultHandler);
             canvas.removeEventListener('touchend', handleTouchEnd);
             
+            localStorage.setItem('ssnake_coins', coins);
+
             const user = auth.currentUser;
-            if (user && userId && !user.isAnonymous) {
-                 try {
-                    // Primeiro, atualiza os dados privados do usuário (moedas)
-                    const userPrivateRef = doc(db, "artifacts", appId, "users", userId);
-                    await updateDoc(userPrivateRef, { totalCoins: coins });
+            if (user) {
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userRef);
 
-                    // CORREÇÃO: Salva ou atualiza a pontuação na coleção PÚBLICA
-                    const publicScoreRef = doc(db, "artifacts", appId, "public", "data", "scores", userId);
-                    const publicScoreDoc = await getDoc(publicScoreRef);
-                    const currentHighScore = publicScoreDoc.exists() ? publicScoreDoc.data().highScore : 0;
-
-                    if (score > currentHighScore) {
-                        await setDoc(publicScoreRef, {
+                    if (userDoc.exists()) {
+                        const existingData = userDoc.data();
+                        const updateData = { totalCoins: coins };
+                        if (score > (existingData.highScore || 0)) {
+                            updateData.highScore = score;
+                        }
+                        await updateDoc(userRef, updateData);
+                    } else {
+                         await setDoc(userRef, {
                             name: user.displayName,
                             photoURL: user.photoURL,
                             highScore: score,
-                            userId: userId
+                            totalCoins: coins,
+                            createdAt: serverTimestamp()
                         });
                     }
                 } catch (error) {
                     console.error("Erro ao salvar dados do usuário: ", error);
                 }
-            } else {
-                localStorage.setItem('ssnake_coins_local', coins);
             }
 
             if (showGameOverScreen) {
@@ -941,13 +842,8 @@
             }
         }
         
-        // --- Inicialização ---
-        (async () => {
-            await initializeFirebase();
-            updateOptionButtons();
-            showScreen(startScreen);
-        })();
-
+        updateOptionButtons();
     </script>
 </body>
 </html>
+
