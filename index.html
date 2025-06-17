@@ -150,21 +150,50 @@
         }
 
         /* Estilos da tela de opções */
+        #options-screen {
+            justify-content: space-around;
+        }
+
         #options-screen h2 {
             font-size: 2.5rem;
             color: var(--accent-color);
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .option-group {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
         
         .option-group h3 {
             font-size: 1rem;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: var(--text-color);
             font-weight: 400;
+        }
+        
+        .credits-text {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .credits-link {
+            font-family: var(--font-family);
+            display: inline-block;
+            color: var(--food-color);
+            text-decoration: none;
+            border: 1px solid var(--food-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease-out;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .credits-link:hover {
+            background-color: var(--food-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 20px var(--food-glow);
         }
         
         /* --- Estilos da Tela de Jogo --- */
@@ -281,6 +310,11 @@
                 <h3>Proporção da Tela</h3>
                 <button data-ratio="notebook" class="menu-button">Notebook</button>
                 <button data-ratio="mobile" class="menu-button">Celular</button>
+            </div>
+            <div class="option-group">
+                <h3>Créditos</h3>
+                <p class="credits-text">Criado por: Jeovane Souza</p>
+                <a href="https://www.instagram.com/jeo_souzx_?igsh=cWJpanpvams5YWlk" target="_blank" rel="noopener noreferrer" class="credits-link">Instagram</a>
             </div>
             <button id="back-button" class="menu-button">Voltar</button>
         </div>
@@ -462,9 +496,9 @@
             gameInterval = setInterval(gameLoop, 110);
             
             document.addEventListener('keydown', handleKeyInput);
-            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-            canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
-            canvas.addEventListener('touchend', handleTouchEnd);
+            gameScreen.addEventListener('touchstart', handleTouchStart, { passive: false });
+            gameScreen.addEventListener('touchmove', preventDefaultHandler, { passive: false });
+            gameScreen.addEventListener('touchend', handleTouchEnd);
         }
         
         function togglePause() {
@@ -617,9 +651,9 @@
             gameInterval = null;
             topBar.classList.add('hidden');
             document.removeEventListener('keydown', handleKeyInput);
-            canvas.removeEventListener('touchstart', handleTouchStart);
-            canvas.removeEventListener('touchmove', preventDefaultHandler);
-            canvas.removeEventListener('touchend', handleTouchEnd);
+            gameScreen.removeEventListener('touchstart', handleTouchStart);
+            gameScreen.removeEventListener('touchmove', preventDefaultHandler);
+            gameScreen.removeEventListener('touchend', handleTouchEnd);
             if (showGameOverScreen) {
                 finalScoreDisplay.textContent = `Seu Score: ${score}`;
                 showScreen(gameOverScreen);
