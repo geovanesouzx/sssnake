@@ -13,6 +13,7 @@
             --primary-color: #1a0c2e;
             --secondary-color: #2a1a4a;
             --accent-color: #ff00ff; /* Magenta */
+            --food-color: #00ffff;   /* Ciano */
             --apple-color-dark: #c0392b;
             --apple-color-light: #e74c3c;
             --apple-stem-color: #6D4C41;
@@ -20,7 +21,8 @@
             --text-color: #f0e6ff;
             --font-family: 'Orbitron', sans-serif;
             --glow-color: rgba(255, 0, 255, 0.7);
-            --food-glow: rgba(231, 76, 60, 0.7); /* Brilho avermelhado */
+            --food-glow: rgba(231, 76, 60, 0.7); /* Brilho avermelhado para a maçã */
+            --cyan-glow: rgba(0, 255, 255, 0.7);  /* Brilho ciano para UI */
         }
 
         * {
@@ -149,7 +151,7 @@
         .menu-button.active {
             background: var(--food-color);
             color: var(--primary-color);
-            box-shadow: 0 0 20px var(--food-glow);
+            box-shadow: 0 0 20px var(--cyan-glow);
         }
 
         /* Estilos da tela de opções */
@@ -183,9 +185,9 @@
         .credits-link {
             font-family: var(--font-family);
             display: inline-block;
-            color: var(--apple-color-light);
+            color: var(--food-color);
             text-decoration: none;
-            border: 1px solid var(--apple-color-light);
+            border: 1px solid var(--food-color);
             padding: 8px 16px;
             border-radius: 8px;
             transition: all 0.2s ease-out;
@@ -194,9 +196,9 @@
         }
 
         .credits-link:hover {
-            background-color: var(--apple-color-light);
+            background-color: var(--food-color);
             color: var(--primary-color);
-            box-shadow: 0 0 20px var(--food-glow);
+            box-shadow: 0 0 20px var(--cyan-glow);
         }
         
         /* --- Estilos da Tela de Jogo --- */
@@ -217,7 +219,7 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-color);
-            text-shadow: 0 0 5px var(--food-glow);
+            text-shadow: 0 0 5px var(--cyan-glow);
         }
         
         #pause-button {
@@ -566,8 +568,7 @@
             ctx.shadowColor = accentColor;
             ctx.shadowBlur = 10;
             
-            // Desenha o corpo conectado
-            if (snake.length > 0) {
+            if (snake.length > 1) {
                  ctx.strokeStyle = accentColor;
                  ctx.lineWidth = gridSize * 0.9;
                  ctx.lineCap = 'round';
@@ -587,12 +588,10 @@
                  ctx.stroke();
             }
 
-            // Desenha a cabeça e o rosto
             const head = snake[0];
             const headX = head.x * gridSize + gridSize / 2;
             const headY = head.y * gridSize + gridSize / 2;
             
-            // Cabeça
             ctx.beginPath();
             ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2);
             ctx.fillStyle = accentColor;
@@ -600,41 +599,39 @@
 
             ctx.shadowBlur = 0;
             
-            // Olhos
             const eyeRadius = gridSize * 0.15;
             const pupilRadius = gridSize * 0.08;
             let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
 
+            const eyeDist = gridSize * 0.25;
+            
             if (direction.y === -1) { // Cima
-                eye1X = headX - gridSize * 0.25; eye1Y = headY;
-                eye2X = headX + gridSize * 0.25; eye2Y = headY;
-                pupilOffsetY = -gridSize * 0.05;
+                eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5;
+                eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5;
+                pupilOffsetY = -gridSize * 0.04;
             } else if (direction.y === 1) { // Baixo
-                eye1X = headX - gridSize * 0.25; eye1Y = headY;
-                eye2X = headX + gridSize * 0.25; eye2Y = headY;
-                pupilOffsetY = gridSize * 0.05;
+                eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5;
+                eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5;
+                pupilOffsetY = gridSize * 0.04;
             } else if (direction.x === -1) { // Esquerda
-                eye1X = headX; eye1Y = headY - gridSize * 0.25;
-                eye2X = headX; eye2Y = headY + gridSize * 0.25;
-                pupilOffsetX = -gridSize * 0.05;
+                eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist;
+                eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist;
+                pupilOffsetX = -gridSize * 0.04;
             } else { // Direita ou parado
-                eye1X = headX; eye1Y = headY - gridSize * 0.25;
-                eye2X = headX; eye2Y = headY + gridSize * 0.25;
-                pupilOffsetX = gridSize * 0.05;
+                eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist;
+                eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist;
+                pupilOffsetX = gridSize * 0.04;
             }
             
-            // Olhos brancos
             ctx.fillStyle = '#fff';
             ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
 
-            // Pupilas pretas
             ctx.fillStyle = '#1a0c2e';
             ctx.beginPath(); ctx.arc(eye1X + pupilOffsetX, eye1Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(eye2X + pupilOffsetX, eye2Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
 
 
-            // Língua
             if (tongueState.counter < tongueState.flickerDuration && (direction.x !== 0 || direction.y !== 0)) {
                 ctx.strokeStyle = '#ff3366';
                 ctx.lineWidth = 2;
@@ -649,12 +646,12 @@
                 ctx.lineTo(tongueEndX, tongueEndY);
                 
                 const forkLength = gridSize * 0.3;
-                if (direction.x !== 0) { // Horizontal
+                if (direction.x !== 0) { 
                     ctx.moveTo(tongueEndX, tongueEndY);
                     ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY - forkLength);
                     ctx.moveTo(tongueEndX, tongueEndY);
                     ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY + forkLength);
-                } else { // Vertical
+                } else { 
                     ctx.moveTo(tongueEndX, tongueEndY);
                     ctx.lineTo(tongueEndX - forkLength, tongueEndY - direction.y * forkLength * 0.5);
                     ctx.moveTo(tongueEndX, tongueEndY);
@@ -681,7 +678,6 @@
             ctx.shadowColor = foodGlow;
             ctx.shadowBlur = 15;
             
-            // Corpo principal
             ctx.beginPath();
             ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
             const gradient = ctx.createRadialGradient(
@@ -693,13 +689,11 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Brilho superior
             ctx.beginPath();
             ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
             ctx.fill();
             
-            // Talo
             ctx.beginPath();
             ctx.moveTo(appleX, appleY - appleRadius * 0.7);
             ctx.strokeStyle = appleStemColor;
@@ -707,7 +701,6 @@
             ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4);
             ctx.stroke();
 
-            // Folha
             ctx.beginPath();
             ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
             ctx.fillStyle = appleLeafColor;
