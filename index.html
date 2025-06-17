@@ -575,13 +575,6 @@
         ];
 
         // --- Autenticação e Sincronização de Dados ---
-        loginButton.addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
-        });
-
-        logoutButton.addEventListener('click', () => {
-            signOut(auth).catch(error => console.error("Erro no logout:", error));
-        });
         
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -606,25 +599,28 @@
             const userDoc = await getDoc(userRef);
             let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
 
+            const defaultUserData = {
+                name: user.displayName,
+                photoURL: user.photoURL,
+                highScore: 0,
+                totalCoins: 0,
+                rewardCollected: false,
+                purchasedBgs: ['default'],
+                selectedBg: 'default',
+            };
+
             if (userDoc.exists()) {
-                userData = userDoc.data();
+                userData = { ...defaultUserData, ...userDoc.data() };
                 userData.totalCoins = (userData.totalCoins || 0) + localCoins;
                 await updateDoc(userRef, { totalCoins: userData.totalCoins });
             } else {
-                userData = {
-                    name: user.displayName,
-                    photoURL: user.photoURL,
-                    highScore: 0,
-                    totalCoins: localCoins,
-                    rewardCollected: false,
-                    purchasedBgs: ['default'],
-                    selectedBg: 'default',
-                }
+                userData = defaultUserData;
+                userData.totalCoins = localCoins;
                 await setDoc(userRef, { ...userData, createdAt: serverTimestamp() });
             }
             localStorage.removeItem('ssnake_coins');
             coins = userData.totalCoins;
-            checkNotifications(user);
+            await checkNotifications(user);
         }
         
         function loadLocalData() {
@@ -656,15 +652,11 @@
              previousScreen = startScreen;
              showScreen(notificationScreen);
              notificationDot.classList.add('hidden');
-        }
-        notificationBell.addEventListener('click', showNotificationHandler);
-        notificationBell.addEventListener('touchstart', (e) => { e.preventDefault(); showNotificationHandler()});
+        };
 
         const hideNotificationHandler = () => showScreen(startScreen);
-        notificationBackButton.addEventListener('click', hideNotificationHandler);
-        notificationBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); hideNotificationHandler(); });
         
-        collectRewardButton.addEventListener('click', async () => {
+        async function collectReward() {
             const user = auth.currentUser;
             if(!user || collectRewardButton.disabled) return;
             
@@ -678,7 +670,7 @@
                 totalCoins: userData.totalCoins,
                 rewardCollected: true
             });
-        });
+        }
 
 
         // --- Placar (Leaderboard) ---
@@ -705,14 +697,16 @@
             }
         }
         
-        leaderboardButton.addEventListener('click', () => {
-            previousScreen = startScreen;
-            getLeaderboard();
-            showScreen(leaderboardScreen);
-        });
-        leaderboardBackButton.addEventListener('click', () => showScreen(startScreen));
         
-        // --- Lógica de Navegação ---
+        // --- Lógica de Navegação e Handlers ---
+        function addSafeListener(element, handler) {
+             element.addEventListener('click', handler);
+             element.addEventListener('touchstart', (e) => {
+                 e.preventDefault();
+                 handler(e);
+             });
+        }
+        
         function showScreen(screen) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
             screen.classList.remove('hidden');
@@ -731,74 +725,32 @@
             renderBackgroundSelection();
             showScreen(optionsScreen);
         };
-        optionsButton.addEventListener('click', showOptionsHandler);
-        optionsButton.addEventListener('touchstart', (e) => {e.preventDefault(); showOptionsHandler()});
         
         const showTipsHandler = () => {
              previousScreen = startScreen;
              showScreen(tipsScreen);
         };
-        tipsButton.addEventListener('click', showTipsHandler);
-        tipsButton.addEventListener('touchstart', (e) => { e.preventDefault(); showTipsHandler(); });
         
-        tipsBackButton.addEventListener('click', () => showScreen(previousScreen));
-        tipsBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(previousScreen); });
+        const showShopHandler = () => {
+            previousScreen = startScreen;
+            renderShopItems();
+            showScreen(shopScreen);
+        };
         
-        shopButton.addEventListener('click', () => {
-             previousScreen = startScreen;
-             renderShopItems();
-             showScreen(shopScreen);
-        });
-        shopBackButton.addEventListener('click', () => showScreen(startScreen));
-
-
         const handlePauseOptions = () => {
             previousScreen = gameScreen;
             updateOptionButtons();
             renderBackgroundSelection();
             showScreen(optionsScreen);
-        }
-        pauseOptionsButton.addEventListener('click', handlePauseOptions);
-        pauseOptionsButton.addEventListener('touchstart', (e) => { e.preventDefault(); handlePauseOptions(); });
-
-        backButton.addEventListener('click', () => {
-            showScreen(previousScreen);
-            if (previousScreen === gameScreen) {
-                pauseOverlay.classList.remove('hidden');
-            }
-        });
-        
-        // --- Lógica do Jogo ---
-        startButton.addEventListener('click', startGame);
-        restartButton.addEventListener('click', startGame);
-        homeButton.addEventListener('click', () => showScreen(startScreen));
+        };
         
         const pauseHomeHandler = () => {
             endGame(false);
             showScreen(startScreen);
         };
-        pauseHomeButton.addEventListener('click', pauseHomeHandler);
-        pauseHomeButton.addEventListener('touchstart', (e) => { e.preventDefault(); pauseHomeHandler(); });
         
-        pauseButton.addEventListener('click', togglePause);
-        pauseButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
+        // --- Lógica do Jogo ---
         
-        resumeButton.addEventListener('click', togglePause);
-        resumeButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
-
-        optionsScreen.addEventListener('click', (e) => {
-            const controlButton = e.target.closest('[data-control]');
-            if(controlButton) {
-                gameSettings.controlMode = controlButton.dataset.control;
-                updateOptionButtons();
-            }
-            const ratioButton = e.target.closest('[data-ratio]');
-            if(ratioButton) {
-                gameSettings.aspectRatio = ratioButton.dataset.ratio;
-                updateOptionButtons();
-            }
-        });
-
         function setupCanvas() {
             const dpr = window.devicePixelRatio || 1;
             const topBarHeight = topBar.offsetHeight || 60;
@@ -835,14 +787,9 @@
             const dpr = window.devicePixelRatio || 1;
             snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
             score = 0;
-            if(!auth.currentUser) {
-                coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
-            } else {
-                coins = userData.totalCoins;
-            }
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
-            coinCountSpan.textContent = coins;
+            coinCountSpan.textContent = userData.totalCoins;
             placeFood();
             
             bonusApples = [];
@@ -1305,9 +1252,21 @@
                 }
             });
         }
+
+        function addSafeListener(element, handler) {
+            element.addEventListener('click', handler);
+            element.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handler(e);
+            });
+        }
         
-        shopBackButton.addEventListener('click', () => showScreen(startScreen));
-        shopBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(startScreen); });
+        addSafeListener(shopButton, () => {
+             previousScreen = startScreen;
+             renderShopItems();
+             showScreen(shopScreen);
+        });
+        addSafeListener(shopBackButton, () => showScreen(startScreen));
 
         shopItemsContainer.addEventListener('click', async (e) => {
             const target = e.target.closest('[data-item-id]');
@@ -1332,7 +1291,7 @@
                 }
                 
                 coinCountSpan.textContent = userData.totalCoins;
-                renderShopItems(); // Re-render to update button state
+                renderShopItems(); 
                 target.textContent = "Comprado";
                 target.disabled = true;
             } else {
@@ -1347,7 +1306,7 @@
              
              userData.selectedBg = target.dataset.bgId;
              applyBackground();
-             renderBackgroundSelection(); // Re-render to update active state
+             renderBackgroundSelection();
              
              const user = auth.currentUser;
              if(user) {
