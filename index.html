@@ -221,10 +221,25 @@
         
         #game-screen { justify-content: flex-start; }
         #top-bar {
-            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
             padding: 10px 0; margin-bottom: 10px;
         }
-        #score-display { font-size: 1.5rem; font-weight: 700; color: var(--text-color); text-shadow: 0 0 5px var(--cyan-glow); }
+        #stats-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #score-display { font-size: 1.5rem; font-weight: 700; color: var(--text-color); text-shadow: 0 0 5px var(--cyan-glow); margin-bottom: 5px; }
+        #coin-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--food-color);
+            text-shadow: 0 0 8px var(--cyan-glow);
+        }
+
         #pause-button {
             background: transparent; border: 2px solid var(--text-color); color: var(--text-color);
             width: 40px; height: 40px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
@@ -306,7 +321,10 @@
         <!-- Tela de Jogo -->
         <div id="game-screen" class="screen hidden">
             <div id="top-bar" class="hidden">
-                <div id="score-display">Score: 0</div>
+                <div id="stats-container">
+                    <div id="score-display">Score: 0</div>
+                    <div id="coin-display">$ <span id="coin-count">0</span></div>
+                </div>
                 <button id="pause-button">
                     <svg id="pause-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
                     <svg id="play-icon" class="hidden" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
@@ -334,7 +352,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
         // --- Configuração do Firebase ---
         const firebaseConfig = {
@@ -388,19 +406,20 @@
         const scoreDisplay = document.getElementById('score-display');
         const finalScoreDisplay = document.getElementById('final-score');
         const scoreList = document.getElementById('score-list');
+        const coinCountSpan = document.getElementById('coin-count');
 
         // --- Configurações do Jogo ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
         let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'mobile' : 'notebook' };
         let gridSize = 15;
-        let snake, food, score, direction, gameInterval;
+        let snake, food, score, coins, direction, gameInterval;
         let isPaused = false;
         let previousScreen = startScreen;
         let touchStartX = 0, touchStartY = 0;
         const preventDefaultHandler = (e) => e.preventDefault();
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
 
-        // --- Autenticação ---
+        // --- Autenticação e Sincronização de Dados ---
         loginButton.addEventListener('click', () => {
             signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
         });
@@ -409,25 +428,50 @@
             signOut(auth).catch(error => console.error("Erro no logout:", error));
         });
         
-        onAuthStateChanged(auth, user => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 userProfile.classList.remove('hidden');
                 userName.textContent = user.displayName;
                 userPhoto.src = user.photoURL;
                 loginButton.classList.add('hidden');
                 logoutButton.classList.remove('hidden');
+                await syncUserData(user);
             } else {
                 userProfile.classList.add('hidden');
                 loginButton.classList.remove('hidden');
                 logoutButton.classList.add('hidden');
             }
         });
+        
+        async function syncUserData(user) {
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+            let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+
+            if (userDoc.exists()) {
+                const cloudData = userDoc.data();
+                const cloudCoins = cloudData.totalCoins || 0;
+                coins = cloudCoins + localCoins;
+                await updateDoc(userRef, { totalCoins: coins });
+            } else {
+                coins = localCoins;
+                await setDoc(userRef, {
+                    name: user.displayName,
+                    photoURL: user.photoURL,
+                    highScore: 0,
+                    totalCoins: coins,
+                    createdAt: serverTimestamp()
+                });
+            }
+            localStorage.setItem('ssnake_coins', coins);
+            coinCountSpan.textContent = coins;
+        }
 
         // --- Placar (Leaderboard) ---
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
-                const q = query(collection(db, "scores"), orderBy("score", "desc"), limit(10));
+                const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
                 const querySnapshot = await getDocs(q);
                 scoreList.innerHTML = '';
                 if(querySnapshot.empty) {
@@ -438,7 +482,7 @@
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const li = document.createElement('li');
-                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.score}</span>`;
+                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore}</span>`;
                     scoreList.appendChild(li);
                 });
             } catch (error) {
@@ -526,8 +570,10 @@
             setupCanvas();
             snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
             score = 0;
+            coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
+            coinCountSpan.textContent = coins;
             placeFood();
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
@@ -556,7 +602,9 @@
             tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
             if (head.x === food.x && head.y === food.y) {
                 score++;
+                coins++;
                 scoreDisplay.textContent = `Score: ${score}`;
+                coinCountSpan.textContent = coins;
                 placeFood();
             } else {
                 snake.pop();
@@ -737,33 +785,32 @@
             gameScreen.removeEventListener('touchmove', preventDefaultHandler);
             gameScreen.removeEventListener('touchend', handleTouchEnd);
             
-            const user = auth.currentUser;
-            if (user && score > 0) {
-                try {
-                    const scoresRef = collection(db, "scores");
-                    const q = query(scoresRef, where("uid", "==", user.uid));
-                    const querySnapshot = await getDocs(q);
+            localStorage.setItem('ssnake_coins', coins);
 
-                    if (querySnapshot.empty) {
-                        await addDoc(scoresRef, {
-                            uid: user.uid,
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userRef);
+
+                    if (userDoc.exists()) {
+                        const existingData = userDoc.data();
+                        const updateData = { totalCoins: coins };
+                        if (score > (existingData.highScore || 0)) {
+                            updateData.highScore = score;
+                        }
+                        await updateDoc(userRef, updateData);
+                    } else {
+                         await setDoc(userRef, {
                             name: user.displayName,
                             photoURL: user.photoURL,
-                            score: score,
+                            highScore: score,
+                            totalCoins: coins,
                             createdAt: serverTimestamp()
                         });
-                    } else {
-                        const userDoc = querySnapshot.docs[0];
-                        const existingScore = userDoc.data().score;
-                        if (score > existingScore) {
-                            const docRef = doc(db, "scores", userDoc.id);
-                            await updateDoc(docRef, {
-                                score: score
-                            });
-                        }
                     }
                 } catch (error) {
-                    console.error("Erro ao salvar pontuação: ", error);
+                    console.error("Erro ao salvar dados do usuário: ", error);
                 }
             }
 
@@ -777,3 +824,4 @@
     </script>
 </body>
 </html>
+
