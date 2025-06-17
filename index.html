@@ -25,6 +25,7 @@
             --cyan-glow: rgba(0, 255, 255, 0.7);  /* Brilho ciano para UI */
             --golden-apple-glow: rgba(255, 215, 0, 0.8);
             --green-apple-glow: rgba(46, 204, 113, 0.8);
+            --blue-apple-glow: rgba(52, 152, 219, 0.8);
         }
 
         * {
@@ -69,16 +70,27 @@
         }
         
         /* Novos Fundos */
-         .background-city::before {
+        .background-matrix::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://i.imgur.com/4l3j9xY.gif');
-            background-size: cover; background-position: center; z-index: -1;
+            background: #000;
+            color: #0F0;
+            font-family: monospace;
+            font-size: 1rem;
+            animation: fall 100s linear infinite;
+            background-image:
+                radial-gradient(rgba(0, 128, 0, 0.2) 1px, transparent 1px),
+                radial-gradient(rgba(0, 128, 0, 0.2) 1px, transparent 1px);
+            background-position: 0 0, 25px 25px;
+            background-size: 50px 50px;
+            z-index: -1;
         }
 
-        .background-mountains::before {
+        .background-nebula::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://i.imgur.com/2L0A855.gif');
-            background-size: cover; background-position: center; z-index: -1;
+            background: linear-gradient(45deg, #3a1c71, #000033, #3a1c71, #d76d77, #ffaf7b, #000033);
+            background-size: 400% 400%;
+            animation: nebulaFlow 20s ease infinite;
+            z-index: -1;
         }
 
         .background-wavy::before {
@@ -121,6 +133,12 @@
         @keyframes moveWaves { from { background-position: 0 0; } to { background-position: 120px 60px; } }
         @keyframes moveHex { from { background-position: 0 0; } to { background-position: 200% 0; } }
         @keyframes moveStars { from { background-position: 0 0; } to { background-position: -10000px 5000px; } }
+        @keyframes fall { to { background-position: 0 100vh; } }
+        @keyframes nebulaFlow {
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
+        }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
         @keyframes ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
@@ -400,6 +418,7 @@
                     <h3>Maçãs Bônus</h3>
                     <p class="tip-text">- Maçã Dourada: Permite atravessar as paredes por 30 segundos.</p>
                     <p class="tip-text">- Maçã Verde: Te deixa imortal a colisões com seu corpo por 30 segundos.</p>
+                    <p class="tip-text">- Maçã Azul: Cria um campo magnético por 45 segundos que atrai maçãs próximas.</p>
                 </div>
                 <div class="option-group">
                     <h3>Dica Extra</h3>
@@ -549,7 +568,8 @@
         let bonusApples = [];
         let powerUps = {
             wrap: { active: false, endTime: 0, duration: 30000 },
-            immortal: { active: false, endTime: 0, duration: 30000 }
+            immortal: { active: false, endTime: 0, duration: 30000 },
+            magnet: { active: false, endTime: 0, duration: 45000 }
         };
 
         const snakeColors = {
@@ -565,8 +585,8 @@
         const shopItems = {
             backgrounds: [
                 { id: 'sunset', name: 'Pôr do Sol', price: 50 },
-                { id: 'city', name: 'Cidade Cyber', price: 750 },
-                { id: 'mountains', name: 'Montanhas Retrô', price: 1200 },
+                { id: 'matrix', name: 'Chuva Digital', price: 750 },
+                { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 },
                 { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 },
                 { id: 'hexagons', name: 'Colmeia Digital', price: 2500 },
                 { id: 'stars', name: 'Espaço Sideral', price: 3000 }
@@ -601,7 +621,7 @@
 
         async function renderNotifications() {
             notificationList.innerHTML = '<h2>Notificações</h2>';
-            notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>';
+            notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui. Jogue para ganhar mais S$!</p>';
         }
 
         // --- Função do Placar ---
@@ -636,6 +656,8 @@
                     glow = 'var(--golden-apple-glow)'; colorLight = '#FFD700'; colorDark = '#FDB813'; break;
                 case 'green':
                     glow = 'var(--green-apple-glow)'; colorLight = '#2ecc71'; colorDark = '#27ae60'; break;
+                case 'blue':
+                    glow = 'var(--blue-apple-glow)'; colorLight = '#3498db'; colorDark = '#2980b9'; break;
                 default: // red
                     glow = 'var(--food-glow)'; 
                     colorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
@@ -790,7 +812,14 @@
         function spawnBonusApple() {
             if (Math.random() > 0.5) { 
                 const rand = Math.random();
-                let type = rand < 0.5 ? 'golden' : 'green';
+                let type;
+                if (rand < 0.20) {
+                    type = 'blue';
+                } else if (rand < 0.60) {
+                    type = 'golden';
+                } else {
+                    type = 'green';
+                }
                 
                 const dpr = window.devicePixelRatio || 1;
                 const gridWidth = canvas.width / dpr / gridSize;
@@ -819,17 +848,17 @@
             } else if (type === 'green') {
                 powerUps.immortal.active = true;
                 powerUps.immortal.endTime = now + powerUps.immortal.duration;
+            } else if (type === 'blue') {
+                powerUps.magnet.active = true;
+                powerUps.magnet.endTime = now + powerUps.magnet.duration;
             }
         }
 
         function checkPowerupEnd() {
             const now = Date.now();
-            if (powerUps.wrap.active && now > powerUps.wrap.endTime) {
-                powerUps.wrap.active = false;
-            }
-            if (powerUps.immortal.active && now > powerUps.immortal.endTime) {
-                powerUps.immortal.active = false;
-            }
+            if (powerUps.wrap.active && now > powerUps.wrap.endTime) powerUps.wrap.active = false;
+            if (powerUps.immortal.active && now > powerUps.immortal.endTime) powerUps.immortal.active = false;
+            if (powerUps.magnet.active && now > powerUps.magnet.endTime) powerUps.magnet.active = false;
         }
 
         function updatePowerupTimers() {
@@ -842,6 +871,10 @@
             if (powerUps.immortal.active) {
                 const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000);
                 if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`);
+            }
+            if (powerUps.magnet.active) {
+                const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000);
+                if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`);
             }
 
             if (activeTimers.length > 0) {
@@ -918,12 +951,14 @@
                 const now = Date.now();
                 if(powerUps.wrap.active) powerUps.wrap.endTime = now + powerUps.wrap.duration;
                 if(powerUps.immortal.active) powerUps.immortal.endTime = now + powerUps.immortal.duration;
+                if(powerUps.magnet.active) powerUps.magnet.endTime = now + powerUps.magnet.duration;
                 gameInterval = setInterval(gameLoop, 140);
             } else { // Pause
                 clearInterval(gameInterval);
                 const now = Date.now();
                 if(powerUps.wrap.active) powerUps.wrap.duration = powerUps.wrap.endTime - now;
                 if(powerUps.immortal.active) powerUps.immortal.duration = powerUps.immortal.endTime - now;
+                if(powerUps.magnet.active) powerUps.magnet.duration = powerUps.magnet.endTime - now;
             }
             isPaused = !isPaused;
             pauseOverlay.classList.toggle('hidden');
@@ -1045,6 +1080,12 @@
             showScreen(screens.shop);
         };
         
+        const showNotificationHandler = () => {
+            previousScreen = screens.start;
+            renderNotifications();
+            showScreen(screens.notifications);
+        };
+
         const handlePauseOptions = () => {
             pauseOverlay.classList.add('hidden');
             previousScreen = screens.game;
@@ -1104,6 +1145,8 @@
             powerUps.wrap.endTime = 0;
             powerUps.immortal.active = false;
             powerUps.immortal.endTime = 0;
+            powerUps.magnet.active = false;
+            powerUps.magnet.endTime = 0;
             powerupTimerDisplay.classList.add('hidden');
             
             if (gameInterval) clearInterval(gameInterval);
@@ -1123,11 +1166,13 @@
         
         function update() {
             if (direction.x === 0 && direction.y === 0) return;
+
             const dpr = window.devicePixelRatio || 1;
-            let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
             const gridWidth = canvas.width / dpr / gridSize;
             const gridHeight = canvas.height / dpr / gridSize;
 
+            let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+            
             if (powerUps.wrap.active) {
                 if (head.x < 0) head.x = gridWidth - 1;
                 if (head.x >= gridWidth) head.x = 0;
@@ -1135,26 +1180,59 @@
                 if (head.y >= gridHeight) head.y = 0;
             }
 
+            // Magnet logic
+            if (powerUps.magnet.active) {
+                const magnetRange = 4;
+                const moveApple = (apple) => {
+                    let dx = head.x - apple.x;
+                    let dy = head.y - apple.y;
+                    if (Math.abs(dx) < magnetRange && Math.abs(dy) < magnetRange) {
+                        let nextX = apple.x;
+                        let nextY = apple.y;
+                        if (Math.abs(dx) > Math.abs(dy)) {
+                           nextX += Math.sign(dx);
+                        } else {
+                           nextY += Math.sign(dy);
+                        }
+                        const isOccupied = snake.some(segment => segment.x === nextX && segment.y === nextY);
+                        if (!isOccupied) {
+                            apple.x = nextX;
+                            apple.y = nextY;
+                        }
+                    }
+                };
+                moveApple(food);
+                bonusApples.forEach(moveApple);
+            }
+            
+            // Move snake
             snake.unshift(head);
             tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
             
+            // Check for apple collision
+            let ateApple = false;
             if (head.x === food.x && head.y === food.y) {
+                ateApple = true;
                 score++;
                 coins++;
                 scoreDisplay.textContent = `Score: ${score}`;
                 coinCountSpan.textContent = coins;
                 placeFood();
                 spawnBonusApple();
-            } else {
-                snake.pop();
             }
             
+            // Check for bonus apple collision
             bonusApples.forEach((apple, index) => {
                 if (head.x === apple.x && head.y === apple.y) {
+                    ateApple = true;
                     activateBonus(apple.type);
                     bonusApples.splice(index, 1);
                 }
             });
+
+            if (!ateApple) {
+                snake.pop();
+            }
 
             if (checkCollision()) {
                 endGame();
@@ -1208,12 +1286,41 @@
             const purchasedItems = activeTab === 'backgrounds' ? userData.purchasedBgs : userData.purchasedSnakeColors;
             const selectedItem = activeTab === 'backgrounds' ? userData.selectedBg : userData.selectedSnakeColor;
 
-            items.forEach(item => {
+            // Adiciona o item padrão no início da lista para seleção
+            const defaultId = 'default';
+            const defaultItem = activeTab === 'backgrounds' 
+                ? { id: defaultId, name: 'Padrão' }
+                : { id: defaultId, name: 'Magenta Padrão' };
+
+            const allDisplayItems = [defaultItem, ...items];
+
+            // Renderiza itens comprados primeiro
+            allDisplayItems.filter(item => item.id === 'default' || purchasedItems.includes(item.id)).forEach(item => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'shop-item';
-
-                const owned = purchasedItems.includes(item.id);
                 const isSelected = item.id === selectedItem;
+
+                let previewHtml = '';
+                if(activeTab === 'snakeColors') {
+                    const colorValue = snakeColors[item.id].color;
+                    previewHtml = `<div class="color-preview" style="background-color: ${colorValue};"></div>`;
+                }
+                
+                let buttonHtml;
+                if (isSelected) {
+                    buttonHtml = `<button class="menu-button active" disabled>Selecionado</button>`;
+                } else {
+                    buttonHtml = `<button class="menu-button" data-select-id="${item.id}" data-type="${activeTab}">Selecionar</button>`;
+                }
+                
+                itemEl.innerHTML = `<div class="shop-item-details">${previewHtml}<h3>${item.name}</h3></div> ${buttonHtml}`;
+                shopItemsContainer.appendChild(itemEl);
+            });
+            
+            // Adiciona os itens não comprados no final
+             items.filter(item => !purchasedItems.includes(item.id)).forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'shop-item';
                 const canAfford = userData.totalCoins >= item.price;
                 
                 let previewHtml = '';
@@ -1221,21 +1328,12 @@
                     const colorValue = snakeColors[item.id].color;
                     previewHtml = `<div class="color-preview" style="background-color: ${colorValue};"></div>`;
                 }
-
-                let buttonHtml;
-                if(owned) {
-                    if (isSelected) {
-                        buttonHtml = `<button class="menu-button active" disabled>Selecionado</button>`;
-                    } else {
-                        buttonHtml = `<button class="menu-button" data-select-id="${item.id}" data-type="${activeTab}">Selecionar</button>`;
-                    }
-                } else {
-                    buttonHtml = `<button class="menu-button" data-item-id="${item.id}" data-price="${item.price}" data-type="${activeTab}" ${canAfford ? '' : 'disabled'}>S$ ${item.price}</button>`;
-                }
+                
+                const buttonHtml = `<button class="menu-button" data-item-id="${item.id}" data-price="${item.price}" data-type="${activeTab}" ${canAfford ? '' : 'disabled'}>S$ ${item.price}</button>`;
 
                 itemEl.innerHTML = `<div class="shop-item-details">${previewHtml}<h3>${item.name}</h3></div> ${buttonHtml}`;
                 shopItemsContainer.appendChild(itemEl);
-            });
+             });
         }
         
         async function selectItem(itemId, type) {
@@ -1285,18 +1383,23 @@
             addSafeListener(buttons.resume, togglePause);
             addSafeListener(buttons.pauseOptions, handlePauseOptions);
             addSafeListener(buttons.pauseHome, pauseHomeHandler);
+            addSafeListener(buttons.notificationBell, showNotificationHandler);
+            addSafeListener(buttons.logout, () => {
+                signOut(auth).catch(error => console.error("Erro no logout:", error));
+            });
             
             addSafeListener(buttons.back, () => {
                  if(previousScreen === screens.game) {
                     showScreen(screens.game);
                     pauseOverlay.classList.remove('hidden');
                  } else {
-                    showScreen(previousScreen);
+                    showScreen(screens.start);
                  }
             });
             addSafeListener(buttons.shopBack, () => showScreen(screens.start));
             addSafeListener(buttons.leaderboardBack, () => showScreen(screens.start));
             addSafeListener(buttons.tipsBack, () => showScreen(screens.start));
+            addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
             
             shopTabs.addEventListener('click', (e) => {
                 const tab = e.target.closest('.shop-tab');
