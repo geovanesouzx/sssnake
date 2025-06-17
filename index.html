@@ -26,6 +26,7 @@
             --golden-apple-glow: rgba(255, 215, 0, 0.8);
             --green-apple-glow: rgba(46, 204, 113, 0.8);
             --purple-apple-glow: rgba(155, 89, 182, 0.8);
+            --blue-apple-glow: rgba(52, 152, 219, 0.8);
         }
 
         * {
@@ -45,38 +46,39 @@
             min-height: 100vh;
             overflow: hidden;
             position: relative;
-            transition: background-image 0.5s ease;
+            transition: all 0.5s ease;
         }
 
         .background-default::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 linear-gradient(to right, rgba(0, 255, 255, 0.2) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: moveGrid 20s linear infinite;
-            transform: perspective(300px) rotateX(60deg);
-            z-index: -1;
+            background-size: 40px 40px; animation: moveGrid 20s linear infinite;
+            transform: perspective(300px) rotateX(60deg); z-index: -1;
         }
         
         .background-sunset::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(#3a1c71, #d76d77, #ffaf7b);
-            z-index: -1;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(#3a1c71, #d76d77, #ffaf7b); z-index: -1;
         }
         
         .background-pulse::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image:
-                radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0, transparent 60%);
-            animation: pulse 4s infinite;
-            z-index: -1;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0, transparent 60%);
+            animation: pulse 4s infinite; z-index: -1;
+        }
+        
+        .background-city::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://i.imgur.com/4l3j9xY.gif');
+            background-size: cover; background-position: center; z-index: -1;
+        }
+
+        .background-mountains::before {
+             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+             background-image: url('https://i.imgur.com/2L0A855.gif');
+             background-size: cover; background-position: center; z-index: -1;
         }
 
 
@@ -327,6 +329,24 @@
             font-size: 3rem; color: #ff3366; text-shadow: 0 0 15px rgba(255, 51, 102, 0.7); margin-bottom: 20px;
         }
         #final-score { font-size: 1.5rem; margin-bottom: 40px; color: var(--text-color); }
+
+        .shop-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .shop-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .shop-tab.active {
+            opacity: 1;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
     </style>
 </head>
 <body class="background-default">
@@ -358,7 +378,11 @@
         <!-- Tela da Loja -->
         <div id="shop-screen" class="screen hidden">
             <div class="scrollable-content">
-                <h2>Loja de Fundos</h2>
+                <h2>Loja</h2>
+                 <div class="shop-tabs">
+                    <div class="shop-tab active" data-tab="backgrounds">Fundos</div>
+                    <div class="shop-tab" data-tab="colors">Cores da Cobra</div>
+                </div>
                 <div id="shop-items-container"></div>
             </div>
             <button id="shop-back-button" class="menu-button">Voltar</button>
@@ -561,8 +585,8 @@
             highScore: 0,
             totalCoins: 0,
             purchasedBgs: ['default'],
-            collectedRewards: [],
-            selectedBg: 'default'
+            selectedBg: 'default',
+            collectedRewards: []
         };
 
         const shopItems = [
@@ -733,6 +757,11 @@
         
         
         // --- Lógica de Navegação e Handlers ---
+        function addSafeListener(element, handler) {
+             element.addEventListener('click', handler);
+             element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false });
+        }
+        
         function showScreen(screen) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
             screen.classList.remove('hidden');
@@ -1214,8 +1243,6 @@
                 try {
                     const userRef = doc(db, "users", user.uid);
                     const userDoc = await getDoc(userRef);
-                    
-                    userData.totalCoins = coins;
 
                     if (userDoc.exists()) {
                         const existingData = userDoc.data();
@@ -1294,87 +1321,119 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Event listener único para todos os botões, usando delegação de eventos
-            document.body.addEventListener('click', async (e) => {
-                const target = e.target.closest('button, div[id=notification-bell]');
-                if (!target) return;
-                
-                const id = target.id;
-                
-                if (id === 'login-button') signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
-                if (id === 'logout-button') signOut(auth).catch(error => console.error("Erro no logout:", error));
-                if (id === 'start-button') startGame();
-                if (id === 'leaderboard-button') { previousScreen = screens.start; getLeaderboard(); showScreen(screens.leaderboard); }
-                if (id === 'options-button') showOptionsHandler();
-                if (id === 'tips-button') showTipsHandler();
-                if (id === 'shop-button') showShopHandler();
-                if (id === 'leaderboard-back-button' || id === 'shop-back-button') showScreen(screens.start);
-                if (id === 'tips-back-button' || id === 'notification-back-button') showScreen(previousScreen);
-                if (id === 'back-button') { showScreen(previousScreen); if (previousScreen === screens.game) pauseOverlay.classList.remove('hidden'); }
-                if (id === 'restart-button') startGame();
-                if (id === 'home-button') showScreen(screens.start);
-                if (id === 'pause-button' || id === 'resume-button') togglePause();
-                if (id === 'pause-home-button') pauseHomeHandler();
-                if (id === 'pause-options-button') handlePauseOptions();
-                if (id === 'notification-bell') showNotificationHandler();
-                if (target.dataset.rewardId) await collectReward(target);
-                if (id === 'clear-notifications-button') await markAllNotificationsRead();
+            
+            function addSafeListener(element, handler) {
+                 element.addEventListener('click', handler);
+                 element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false });
+            }
 
-                if (target.closest('#shop-items-container')) {
-                    const itemId = target.dataset.itemId;
-                    if (itemId) {
-                        const itemPrice = parseInt(target.dataset.price);
-                        if (userData.totalCoins >= itemPrice) {
-                            userData.totalCoins -= itemPrice;
-                            userData.purchasedBgs.push(itemId);
-                            
-                            const user = auth.currentUser;
-                            if (user) {
-                                await updateDoc(doc(db, "users", user.uid), {
-                                    totalCoins: userData.totalCoins,
-                                    purchasedBgs: userData.purchasedBgs
-                                });
-                            } else {
-                                localStorage.setItem('ssnake_coins', userData.totalCoins);
-                                localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
-                            }
-                            
-                            coinCountSpan.textContent = userData.totalCoins;
-                            renderShopItems();
-                        } else {
-                            target.classList.add('shake');
-                            setTimeout(() => target.classList.remove('shake'), 300);
-                        }
-                    }
-                }
+            addSafeListener(buttons.login, () => {
+                signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
+            });
+            addSafeListener(buttons.logout, () => {
+                signOut(auth).catch(error => console.error("Erro no logout:", error));
+            });
+            
+            addSafeListener(buttons.start, startGame);
+            addSafeListener(buttons.restart, startGame);
+            addSafeListener(buttons.home, () => showScreen(screens.start));
+            
+            addSafeListener(buttons.leaderboard, () => {
+                previousScreen = screens.start;
+                getLeaderboard();
+                showScreen(screens.leaderboard);
+            });
+            addSafeListener(buttons.leaderboardBack, () => showScreen(screens.start));
+            
+            addSafeListener(buttons.options, showOptionsHandler);
+            addSafeListener(buttons.tips, showTipsHandler);
+            addSafeListener(buttons.shop, showShopHandler);
 
-                if(target.closest('#background-selection-container')) {
-                    const bgId = target.dataset.bgId;
-                    if (bgId) {
-                        userData.selectedBg = bgId;
-                        applyBackground();
-                        renderBackgroundSelection();
-                        
-                        const user = auth.currentUser;
-                        if(user) {
-                            await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
-                        } else {
-                            localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
-                        }
-                    }
-                }
+            addSafeListener(buttons.tipsBack, () => showScreen(previousScreen));
+            addSafeListener(buttons.shopBack, () => showScreen(screens.start));
+            
+            addSafeListener(buttons.pause, togglePause);
+            addSafeListener(buttons.resume, togglePause);
+            addSafeListener(buttons.pauseHome, pauseHomeHandler);
+            addSafeListener(buttons.pauseOptions, handlePauseOptions);
+            
+            addSafeListener(buttons.notificationBell, showNotificationHandler);
+            addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
+            
+            notificationList.addEventListener('click', async (e) => {
+                const rewardButton = e.target.closest('[data-reward-id]');
+                if (rewardButton) await collectReward(rewardButton);
 
-                if (target.closest('#options-screen [data-control]')) {
-                    gameSettings.controlMode = target.dataset.control;
-                    updateOptionButtons();
-                }
-                 if (target.closest('#options-screen [data-ratio]')) {
-                    gameSettings.aspectRatio = target.dataset.ratio;
-                    updateOptionButtons();
-                }
-
+                if (e.target.closest('#clear-notifications-button')) await markAllNotificationsRead();
             });
 
+            addSafeListener(buttons.back, () => {
+                showScreen(previousScreen);
+                if (previousScreen === screens.game) {
+                    pauseOverlay.classList.remove('hidden');
+                }
+            });
+
+            shopItemsContainer.addEventListener('click', async (e) => {
+                const target = e.target.closest('[data-item-id]');
+                if(!target || target.disabled) return;
+                
+                const itemId = target.dataset.itemId;
+                const itemPrice = parseInt(target.dataset.price);
+
+                if(userData.totalCoins >= itemPrice) {
+                    userData.totalCoins -= itemPrice;
+                    userData.purchasedBgs.push(itemId);
+                    
+                    const user = auth.currentUser;
+                    if(user) {
+                         await updateDoc(doc(db, "users", user.uid), {
+                            totalCoins: userData.totalCoins,
+                            purchasedBgs: userData.purchasedBgs
+                        });
+                    } else {
+                        localStorage.setItem('ssnake_coins', userData.totalCoins);
+                        localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
+                    }
+                    
+                    coinCountSpan.textContent = userData.totalCoins;
+                    renderShopItems();
+                } else {
+                    target.classList.add('shake');
+                    setTimeout(() => target.classList.remove('shake'), 300);
+                }
+            });
+
+            backgroundSelectionContainer.addEventListener('click', async (e) => {
+                 const target = e.target.closest('[data-bg-id]');
+                 if(!target) return;
+                 
+                 userData.selectedBg = target.dataset.bgId;
+                 applyBackground();
+                 renderBackgroundSelection();
+                 
+                 const user = auth.currentUser;
+                 if(user) {
+                     await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
+                 } else {
+                     localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
+                 }
+            });
+            
+            screens.options.addEventListener('click', (e) => {
+                const controlButton = e.target.closest('[data-control]');
+                if(controlButton) {
+                    gameSettings.controlMode = controlButton.dataset.control;
+                    updateOptionButtons();
+                }
+                const ratioButton = e.target.closest('[data-ratio]');
+                if(ratioButton) {
+                    gameSettings.aspectRatio = ratioButton.dataset.ratio;
+                    updateOptionButtons();
+                }
+            });
+
+            updateOptionButtons();
             loadLocalData();
             applyBackground();
         });
