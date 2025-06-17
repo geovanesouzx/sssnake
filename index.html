@@ -218,6 +218,11 @@
             cursor: not-allowed;
             opacity: 0.7;
         }
+        
+        .shop-item .menu-button {
+             padding: 10px 25px;
+             font-size: 0.9rem;
+        }
 
         #login-button {
             background: #fff;
@@ -738,6 +743,14 @@
         
         tipsBackButton.addEventListener('click', () => showScreen(previousScreen));
         tipsBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(previousScreen); });
+        
+        shopButton.addEventListener('click', () => {
+             previousScreen = startScreen;
+             renderShopItems();
+             showScreen(shopScreen);
+        });
+        shopBackButton.addEventListener('click', () => showScreen(startScreen));
+
 
         const handlePauseOptions = () => {
             previousScreen = gameScreen;
@@ -1293,12 +1306,8 @@
             });
         }
         
-        shopButton.addEventListener('click', () => {
-             previousScreen = startScreen;
-             renderShopItems();
-             showScreen(shopScreen);
-        });
         shopBackButton.addEventListener('click', () => showScreen(startScreen));
+        shopBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(startScreen); });
 
         shopItemsContainer.addEventListener('click', async (e) => {
             const target = e.target.closest('[data-item-id]');
@@ -1354,4 +1363,3 @@
     </script>
 </body>
 </html>
-
