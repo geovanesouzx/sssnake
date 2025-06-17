@@ -517,11 +517,13 @@
             showScreen(optionsScreen);
         });
 
-        pauseOptionsButton.addEventListener('click', () => {
+        const handlePauseOptions = () => {
             previousScreen = gameScreen;
             updateOptionButtons();
             showScreen(optionsScreen);
-        });
+        }
+        pauseOptionsButton.addEventListener('click', handlePauseOptions);
+        pauseOptionsButton.addEventListener('touchstart', (e) => { e.preventDefault(); handlePauseOptions(); });
 
         backButton.addEventListener('click', () => {
             showScreen(previousScreen);
@@ -540,28 +542,25 @@
             showScreen(startScreen);
         };
         pauseHomeButton.addEventListener('click', pauseHomeHandler);
-        pauseHomeButton.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            pauseHomeHandler();
-        });
+        pauseHomeButton.addEventListener('touchstart', (e) => { e.preventDefault(); pauseHomeHandler(); });
         
         pauseButton.addEventListener('click', togglePause);
-        pauseButton.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            togglePause();
-        });
+        pauseButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
         
         resumeButton.addEventListener('click', togglePause);
-        resumeButton.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            togglePause();
-        });
-        
-        pauseOptionsButton.addEventListener('touchstart', (e) => {
-             e.preventDefault();
-             previousScreen = gameScreen;
-             updateOptionButtons();
-             showScreen(optionsScreen);
+        resumeButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
+
+        optionsScreen.addEventListener('click', (e) => {
+            const controlButton = e.target.closest('[data-control]');
+            if(controlButton) {
+                gameSettings.controlMode = controlButton.dataset.control;
+                updateOptionButtons();
+            }
+            const ratioButton = e.target.closest('[data-ratio]');
+            if(ratioButton) {
+                gameSettings.aspectRatio = ratioButton.dataset.ratio;
+                updateOptionButtons();
+            }
         });
 
         function setupCanvas() {
@@ -804,9 +803,9 @@
             gameInterval = null;
             topBar.classList.add('hidden');
             document.removeEventListener('keydown', handleKeyInput);
-            gameScreen.removeEventListener('touchstart', handleTouchStart);
-            gameScreen.removeEventListener('touchmove', preventDefaultHandler);
-            gameScreen.removeEventListener('touchend', handleTouchEnd);
+            canvas.removeEventListener('touchstart', handleTouchStart);
+            canvas.removeEventListener('touchmove', preventDefaultHandler);
+            canvas.removeEventListener('touchend', handleTouchEnd);
             
             localStorage.setItem('ssnake_coins', coins);
 
@@ -847,5 +846,6 @@
     </script>
 </body>
 </html>
+
 
 
