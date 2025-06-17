@@ -48,7 +48,7 @@
             transition: all 0.5s ease;
         }
 
-        /* Fundos Padrão */
+        /* Fundos Padrão e Novos */
         .background-default::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -69,28 +69,20 @@
             animation: pulse 4s infinite; z-index: -1;
         }
         
-        /* Novos Fundos */
         .background-matrix::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            color: #0F0;
-            font-family: monospace;
-            font-size: 1rem;
+            background: #000; color: #0F0; font-family: monospace; font-size: 1rem;
             animation: fall 100s linear infinite;
             background-image:
                 radial-gradient(rgba(0, 128, 0, 0.2) 1px, transparent 1px),
                 radial-gradient(rgba(0, 128, 0, 0.2) 1px, transparent 1px);
-            background-position: 0 0, 25px 25px;
-            background-size: 50px 50px;
-            z-index: -1;
+            background-position: 0 0, 25px 25px; background-size: 50px 50px; z-index: -1;
         }
 
         .background-nebula::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(45deg, #3a1c71, #000033, #3a1c71, #d76d77, #ffaf7b, #000033);
-            background-size: 400% 400%;
-            animation: nebulaFlow 20s ease infinite;
-            z-index: -1;
+            background-size: 400% 400%; animation: nebulaFlow 20s ease infinite; z-index: -1;
         }
 
         .background-wavy::before {
@@ -99,33 +91,26 @@
                 radial-gradient(circle at 100% 100%, transparent 20px, var(--secondary-color) 21px, var(--secondary-color) 30px, transparent 31px),
                 radial-gradient(circle at 0% 0%, transparent 20px, var(--secondary-color) 21px, var(--secondary-color) 30px, transparent 31px);
             background-color: var(--primary-color);
-            background-size: 60px 60px;
-            animation: moveWaves 10s linear infinite;
-            z-index: -1;
+            background-size: 60px 60px; animation: moveWaves 10s linear infinite; z-index: -1;
         }
         
         .background-hexagons::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%232a1a4a' fill-opacity='0.4' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.99-7.5L26 15v18.5l-13 7.5L0 33.5V15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            animation: moveHex 30s linear infinite;
-            z-index: -1;
+            animation: moveHex 30s linear infinite; z-index: -1;
         }
 
         .background-stars::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-            z-index: -2;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); z-index: -2;
         }
         .background-stars::after {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            animation: moveStars 50s linear infinite;
-            z-index: -1;
+            animation: moveStars 50s linear infinite; z-index: -1;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         /* Animações */
         @keyframes moveGrid { from { background-position: 0 0; } to { background-position: 0 -100vh; } }
@@ -134,18 +119,14 @@
         @keyframes moveHex { from { background-position: 0 0; } to { background-position: 200% 0; } }
         @keyframes moveStars { from { background-position: 0 0; } to { background-position: -10000px 5000px; } }
         @keyframes fall { to { background-position: 0 100vh; } }
-        @keyframes nebulaFlow {
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
-        }
+        @keyframes nebulaFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
         @keyframes ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
         .shake { animation: shake 0.3s ease; }
 
-        /* Container principal */
+        /* Estrutura e UI */
         .game-container {
             width: 95vw; height: 95vh; max-width: 600px; max-height: 800px;
             background-color: rgba(42, 26, 74, 0.5); backdrop-filter: blur(12px);
@@ -161,20 +142,12 @@
             animation: fadeIn 0.8s ease-out; position: relative; 
         }
 
-        h1, h2 {
-            font-weight: 700;
-            text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
-        }
-
+        h1, h2 { font-weight: 700; text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color); }
         #start-screen h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 20px; }
 
-        /* Regra para padronizar o tamanho dos botões na tela inicial */
         #start-screen .menu-button {
-            width: 280px; 
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 280px; box-sizing: border-box; display: flex;
+            justify-content: center; align-items: center;
         }
 
         #notification-bell {
@@ -192,9 +165,7 @@
             border-radius: 50%; border: 2px solid #ff3366; animation: ring 1.5s infinite;
         }
 
-        .user-profile {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-        }
+        .user-profile { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
         .user-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent-color); }
         .user-profile span { font-size: 1rem; }
 
@@ -223,11 +194,7 @@
         #login-button:hover { box-shadow: 0 0 25px #fff; }
         #login-button svg { width: 24px; height: 24px; }
 
-        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen {
-            justify-content: space-between;
-        }
-        
-        #shop-screen {
+        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen, #shop-screen {
             justify-content: space-between;
         }
         
@@ -237,32 +204,14 @@
 
         .scrollable-content { overflow-y: auto; padding: 0 10px; width: 100%; }
         
-        /* Layout da tela de Opções Centralizado */
         #options-screen .scrollable-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-grow: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
         
-        .option-group {
-            margin-bottom: 25px; 
-            text-align: center;
-            width: 100%;
-        }
-
-        .option-group h3 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: var(--text-color);
-            font-weight: 400;
-        }
-
-        .shop-item, .notification-item {
-             margin-bottom: 15px;
-             text-align: left;
-        }
+        .option-group { margin-bottom: 25px; text-align: center; width: 100%; }
+        .option-group h3 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-color); font-weight: 400; }
+        .shop-item, .notification-item { margin-bottom: 15px; text-align: left; }
         
         .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; }
         
@@ -283,10 +232,7 @@
         #score-list .name { flex-grow: 1; }
         #score-list .score { font-weight: 900; color: var(--food-color); }
         
-        /* Estilos da Loja */
-        .shop-tabs {
-            display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--accent-color);
-        }
+        .shop-tabs { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--accent-color); }
         .shop-tab { padding: 10px 20px; cursor: pointer; opacity: 0.6; }
         .shop-tab.active { opacity: 1; border-bottom: 3px solid var(--accent-color); }
 
@@ -297,7 +243,6 @@
         .shop-item .menu-button { padding: 10px 25px; font-size: 0.9rem; width: auto; }
         .shop-item-details { display: flex; align-items: center; gap: 15px; }
         .color-preview { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--text-color); }
-
 
         #game-screen { justify-content: flex-start; }
         #top-bar {
@@ -330,22 +275,14 @@
         }
         #pause-overlay h2 { font-size: 2.5rem; color: var(--text-color); margin-bottom: 20px; }
         
-        canvas {
-            background-color: rgba(13, 2, 28, 0.8); border-radius: 12px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-        }
-
-        #game-over-screen h2 {
-            font-size: 3rem; color: #ff3366; text-shadow: 0 0 15px rgba(255, 51, 102, 0.7); margin-bottom: 20px;
-        }
+        canvas { background-color: rgba(13, 2, 28, 0.8); border-radius: 12px; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        #game-over-screen h2 { font-size: 3rem; color: #ff3366; text-shadow: 0 0 15px rgba(255, 51, 102, 0.7); margin-bottom: 20px; }
         #final-score { font-size: 1.5rem; margin-bottom: 40px; color: var(--text-color); }
-
     </style>
 </head>
 <body class="background-default">
 
     <div class="game-container">
-        <!-- Tela Inicial -->
         <div id="start-screen" class="screen">
             <div id="notification-bell" class="hidden">
                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"></path></svg>
@@ -368,7 +305,6 @@
             <button id="logout-button" class="menu-button hidden">Sair</button>
         </div>
         
-        <!-- Tela da Loja -->
         <div id="shop-screen" class="screen hidden">
             <div class="scrollable-content" style="flex-grow: 1; display: flex; flex-direction: column; width:100%;">
                 <h2>Loja</h2>
@@ -381,7 +317,6 @@
             <button id="shop-back-button" class="menu-button" style="flex-shrink: 0;">Voltar</button>
         </div>
 
-        <!-- Tela de Opções -->
         <div id="options-screen" class="screen hidden">
             <div class="scrollable-content">
                 <h2>Opções</h2>
@@ -404,7 +339,6 @@
             <button id="back-button" class="menu-button">Voltar</button>
         </div>
         
-        <!-- Tela de Dicas -->
         <div id="tips-screen" class="screen hidden">
              <div class="scrollable-content">
                 <h2>Dicas</h2>
@@ -428,16 +362,11 @@
             <button id="tips-back-button" class="menu-button">Voltar</button>
         </div>
         
-        <!-- Tela de Notificações -->
         <div id="notification-screen" class="screen hidden">
-             <div class="scrollable-content" id="notification-list">
-                <!-- Notificações serão injetadas aqui -->
-            </div>
+             <div class="scrollable-content" id="notification-list"></div>
             <button id="notification-back-button" class="menu-button">Voltar</button>
         </div>
 
-
-        <!-- Tela do Placar -->
         <div id="leaderboard-screen" class="screen hidden">
              <div>
                 <h2>Placar</h2>
@@ -446,7 +375,6 @@
              <button id="leaderboard-back-button" class="menu-button">Voltar</button>
         </div>
         
-        <!-- Tela de Jogo -->
         <div id="game-screen" class="screen hidden">
             <div id="top-bar" class="hidden">
                 <div id="stats-container">
@@ -468,7 +396,6 @@
             </div>
         </div>
         
-        <!-- Tela de Game Over -->
         <div id="game-over-screen" class="screen hidden">
              <h2>Game Over</h2>
              <p id="final-score">Seu Score: 0</p>
@@ -477,13 +404,12 @@
         </div>
     </div>
 
-    <!-- SDKs do Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc, setDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
-        // --- Configuração do Firebase ---
+        // Configuração Firebase Corrigida
         const firebaseConfig = {
             apiKey: "AIzaSyDhcu3_fdWIJbPAiVqUpe_AwJgZiC-XoB8",
             authDomain: "sssnake-e464c.firebaseapp.com",
@@ -500,7 +426,7 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // --- Elementos do DOM ---
+        // --- Elementos do DOM (permanecem os mesmos) ---
         const screens = {
             start: document.getElementById('start-screen'),
             options: document.getElementById('options-screen'),
@@ -554,8 +480,8 @@
         const notificationList = document.getElementById('notification-list');
         const shopItemsContainer = document.getElementById('shop-items-container');
         const shopTabs = document.querySelector('.shop-tabs');
-
-        // --- Configurações do Jogo e Dados ---
+        
+        // --- Configurações do Jogo e Dados (com novos itens) ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
         let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'mobile' : 'notebook' };
         let gridSize = 15;
@@ -602,39 +528,23 @@
         };
 
         let userData = {
-            highScore: 0,
-            totalCoins: 0,
-            purchasedBgs: ['default'],
-            selectedBg: 'default',
-            purchasedSnakeColors: ['default'],
-            selectedSnakeColor: 'default',
-            collectedRewards: []
+            highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default',
+            purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: []
         };
         
-        // --- Declaração de Funções ---
-        
-        // --- Funções de Notificação ---
-        async function checkNotifications(user) {
-            if (!user) return;
-            buttons.notificationBell.classList.remove('hidden');
-        }
-
+        // --- Declaração de Funções (o resto do código permanece o mesmo) ---
+        async function checkNotifications(user) { if (!user) return; buttons.notificationBell.classList.remove('hidden'); }
         async function renderNotifications() {
             notificationList.innerHTML = '<h2>Notificações</h2>';
             notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui. Jogue para ganhar mais S$!</p>';
         }
-
-        // --- Função do Placar ---
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
                 const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
                 const querySnapshot = await getDocs(q);
                 scoreList.innerHTML = '';
-                if(querySnapshot.empty) {
-                    scoreList.innerHTML = '<li>Nenhuma pontuação registrada.</li>';
-                    return;
-                }
+                if(querySnapshot.empty) { scoreList.innerHTML = '<li>Nenhuma pontuação registrada.</li>'; return; }
                 let rank = 1;
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
@@ -642,145 +552,74 @@
                     li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore || 0}</span>`;
                     scoreList.appendChild(li);
                 });
-            } catch (error) {
-                console.error("Erro ao buscar placar:", error);
-                scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>';
-            }
+            } catch (error) { console.error("Erro ao buscar placar:", error); scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>'; }
         }
-
-        // --- Funções de Desenho ---
         function drawAppleShape(appleX, appleY, type) {
             let colorLight, colorDark, glow;
             switch(type) {
-                case 'golden':
-                    glow = 'var(--golden-apple-glow)'; colorLight = '#FFD700'; colorDark = '#FDB813'; break;
-                case 'green':
-                    glow = 'var(--green-apple-glow)'; colorLight = '#2ecc71'; colorDark = '#27ae60'; break;
-                case 'blue':
-                    glow = 'var(--blue-apple-glow)'; colorLight = '#3498db'; colorDark = '#2980b9'; break;
-                default: // red
+                case 'golden': glow = 'var(--golden-apple-glow)'; colorLight = '#FFD700'; colorDark = '#FDB813'; break;
+                case 'green': glow = 'var(--green-apple-glow)'; colorLight = '#2ecc71'; colorDark = '#27ae60'; break;
+                case 'blue': glow = 'var(--blue-apple-glow)'; colorLight = '#3498db'; colorDark = '#2980b9'; break;
+                default:
                     glow = 'var(--food-glow)'; 
                     colorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
                     colorDark = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-dark').trim();
             }
-            
             const appleRadius = (gridSize / 2) * 0.95; 
             const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
             const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
-            
             ctx.save();
             ctx.shadowColor = glow; ctx.shadowBlur = 15;
-            
             ctx.beginPath();
             ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
             const gradient = ctx.createRadialGradient(appleX - appleRadius * 0.2, appleY - appleRadius * 0.2, 0, appleX, appleY, appleRadius * 1.2);
-            gradient.addColorStop(0, colorLight);
-            gradient.addColorStop(1, colorDark);
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
+            gradient.addColorStop(0, colorLight); gradient.addColorStop(1, colorDark); ctx.fillStyle = gradient; ctx.fill();
             ctx.beginPath();
             ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.fill();
-            
-            ctx.beginPath();
-            ctx.moveTo(appleX, appleY - appleRadius * 0.7);
-            ctx.strokeStyle = appleStemColor;
-            ctx.lineWidth = 2;
-            ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4);
-            ctx.stroke();
-            
-            ctx.beginPath();
-            ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.fill();
+            ctx.beginPath(); ctx.moveTo(appleX, appleY - appleRadius * 0.7);
+            ctx.strokeStyle = appleStemColor; ctx.lineWidth = 2;
+            ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
             ctx.fillStyle = appleLeafColor;
-            ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8);
-            ctx.fill();
+            ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8); ctx.fill();
             ctx.restore();
         }
-
-        function drawApple() {
-            const appleX = food.x * gridSize + gridSize / 2;
-            const appleY = food.y * gridSize + gridSize / 2;
-            drawAppleShape(appleX, appleY, 'red');
-        }
-
-        function drawBonusApple(apple) {
-            const appleX = apple.x * gridSize + gridSize / 2;
-            const appleY = apple.y * gridSize + gridSize / 2;
-            drawAppleShape(appleX, appleY, apple.type);
-        }
-
+        function drawApple() { const appleX = food.x * gridSize + gridSize / 2; const appleY = food.y * gridSize + gridSize / 2; drawAppleShape(appleX, appleY, 'red'); }
+        function drawBonusApple(apple) { const appleX = apple.x * gridSize + gridSize / 2; const appleY = apple.y * gridSize + gridSize / 2; drawAppleShape(appleX, appleY, apple.type); }
         function drawSnake() {
             const snakeColor = snakeColors[userData.selectedSnakeColor].color;
-            ctx.save();
-            ctx.shadowColor = snakeColor;
-            ctx.shadowBlur = 10;
-            
+            ctx.save(); ctx.shadowColor = snakeColor; ctx.shadowBlur = 10;
             if (snake.length > 1) {
-                 ctx.strokeStyle = snakeColor;
-                 ctx.lineWidth = gridSize * 0.9;
-                 ctx.lineCap = 'round';
-                 ctx.lineJoin = 'round';
-                 ctx.beginPath();
-                 ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
+                 ctx.strokeStyle = snakeColor; ctx.lineWidth = gridSize * 0.9; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                 ctx.beginPath(); ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
                  for (let i = 1; i < snake.length; i++) {
-                     const segment = snake[i];
-                     const prevSegment = snake[i-1];
+                     const segment = snake[i]; const prevSegment = snake[i-1];
                      if(Math.abs(segment.x - prevSegment.x) > 1 || Math.abs(segment.y - prevSegment.y) > 1) {
-                         ctx.stroke();
-                         ctx.beginPath();
-                         ctx.moveTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
-                     } else {
-                         ctx.lineTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
-                     }
+                         ctx.stroke(); ctx.beginPath(); ctx.moveTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
+                     } else { ctx.lineTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2); }
                  }
                  ctx.stroke();
             }
-
-            const head = snake[0];
-            const headX = head.x * gridSize + gridSize / 2;
-            const headY = head.y * gridSize + gridSize / 2;
-            
-            ctx.beginPath();
-            ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2);
-            ctx.fillStyle = snakeColor;
-            ctx.fill();
-
+            const head = snake[0]; const headX = head.x * gridSize + gridSize / 2; const headY = head.y * gridSize + gridSize / 2;
+            ctx.beginPath(); ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2); ctx.fillStyle = snakeColor; ctx.fill();
             ctx.shadowBlur = 0;
-            
-            const eyeRadius = gridSize * 0.15;
-            const pupilRadius = gridSize * 0.08;
+            const eyeRadius = gridSize * 0.15; const pupilRadius = gridSize * 0.08;
             let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
             const eyeDist = gridSize * 0.25;
-            
-            if (direction.y === -1) { 
-                eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5;
-                pupilOffsetY = -gridSize * 0.04;
-            } else if (direction.y === 1) {
-                eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5;
-                pupilOffsetY = gridSize * 0.04;
-            } else if (direction.x === -1) {
-                eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist;
-                pupilOffsetX = -gridSize * 0.04;
-            } else { // right or stopped
-                eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist;
-                pupilOffsetX = gridSize * 0.04;
-            }
-            
+            if (direction.y === -1) { eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5; pupilOffsetY = -gridSize * 0.04;
+            } else if (direction.y === 1) { eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5; pupilOffsetY = gridSize * 0.04;
+            } else if (direction.x === -1) { eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist; pupilOffsetX = -gridSize * 0.04;
+            } else { eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist; pupilOffsetX = gridSize * 0.04; }
             ctx.fillStyle = '#fff';
             ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
-
             ctx.fillStyle = '#1a0c2e';
             ctx.beginPath(); ctx.arc(eye1X + pupilOffsetX, eye1Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(eye2X + pupilOffsetX, eye2Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
-
             if (tongueState.counter < tongueState.flickerDuration && (direction.x !== 0 || direction.y !== 0)) {
                 ctx.strokeStyle = '#ff3366'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-                const tongueLength = gridSize * 0.8;
-                const tongueEndX = headX + direction.x * tongueLength;
-                const tongueEndY = headY + direction.y * tongueLength;
+                const tongueLength = gridSize * 0.8; const tongueEndX = headX + direction.x * tongueLength; const tongueEndY = headY + direction.y * tongueLength;
                 ctx.beginPath(); ctx.moveTo(headX, headY); ctx.lineTo(tongueEndX, tongueEndY);
                 const forkLength = gridSize * 0.3;
                 if (direction.x !== 0) {
@@ -792,168 +631,90 @@
                 }
                 ctx.stroke();
             }
-            
             ctx.restore();
         }
-
-        // --- Funções de Lógica do Jogo ---
         function placeFood() {
-            const dpr = window.devicePixelRatio || 1;
-            const gridWidth = canvas.width / dpr / gridSize;
-            const gridHeight = canvas.height / dpr / gridSize;
-            do {
-                food = { 
-                    x: Math.floor(Math.random() * gridWidth), 
-                    y: Math.floor(Math.random() * gridHeight) 
-                };
+            const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
+            do { food = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
             } while (snake.some(segment => segment.x === food.x && segment.y === food.y));
         }
-
         function spawnBonusApple() {
             if (Math.random() > 0.5) { 
-                const rand = Math.random();
-                let type;
-                if (rand < 0.20) {
-                    type = 'blue';
-                } else if (rand < 0.60) {
-                    type = 'golden';
-                } else {
-                    type = 'green';
-                }
-                
-                const dpr = window.devicePixelRatio || 1;
-                const gridWidth = canvas.width / dpr / gridSize;
-                const gridHeight = canvas.height / dpr / gridSize;
+                const rand = Math.random(); let type;
+                if (rand < 0.20) type = 'blue';
+                else if (rand < 0.60) type = 'golden';
+                else type = 'green';
+                const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
                 let bonusX, bonusY;
-                do {
-                    bonusX = Math.floor(Math.random() * gridWidth);
-                    bonusY = Math.floor(Math.random() * gridHeight);
+                do { bonusX = Math.floor(Math.random() * gridWidth); bonusY = Math.floor(Math.random() * gridHeight);
                 } while (snake.some(s => s.x === bonusX && s.y === bonusY) || (food.x === bonusX && food.y === bonusY) || bonusApples.some(a => a.x === bonusX && a.y === bonusY));
-
-                const newApple = { x: bonusX, y: bonusY, type };
-                bonusApples.push(newApple);
-                
-                setTimeout(() => {
-                    const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y);
-                    if (index !== -1) bonusApples.splice(index, 1);
-                }, 7000);
+                const newApple = { x: bonusX, y: bonusY, type }; bonusApples.push(newApple);
+                setTimeout(() => { const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y); if (index !== -1) bonusApples.splice(index, 1); }, 7000);
             }
         }
-
         function activateBonus(type) {
             const now = Date.now();
-            if (type === 'golden') {
-                powerUps.wrap.active = true;
-                powerUps.wrap.endTime = now + powerUps.wrap.duration;
-            } else if (type === 'green') {
-                powerUps.immortal.active = true;
-                powerUps.immortal.endTime = now + powerUps.immortal.duration;
-            } else if (type === 'blue') {
-                powerUps.magnet.active = true;
-                powerUps.magnet.endTime = now + powerUps.magnet.duration;
-            }
+            if (type === 'golden') { powerUps.wrap.active = true; powerUps.wrap.endTime = now + powerUps.wrap.duration; } 
+            else if (type === 'green') { powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; } 
+            else if (type === 'blue') { powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; }
         }
-
         function checkPowerupEnd() {
             const now = Date.now();
             if (powerUps.wrap.active && now > powerUps.wrap.endTime) powerUps.wrap.active = false;
             if (powerUps.immortal.active && now > powerUps.immortal.endTime) powerUps.immortal.active = false;
             if (powerUps.magnet.active && now > powerUps.magnet.endTime) powerUps.magnet.active = false;
         }
-
         function updatePowerupTimers() {
-            let activeTimers = [];
-            const now = Date.now();
-            if (powerUps.wrap.active) {
-                const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000);
-                if (remaining > 0) activeTimers.push(`Portal: ${remaining}s`);
-            }
-            if (powerUps.immortal.active) {
-                const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000);
-                if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`);
-            }
-            if (powerUps.magnet.active) {
-                const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000);
-                if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`);
-            }
-
-            if (activeTimers.length > 0) {
-                powerupTimerDisplay.innerHTML = activeTimers.map(t => `<div class="timer-item">${t}</div>`).join('');
-                powerupTimerDisplay.classList.remove('hidden');
-            } else {
-                powerupTimerDisplay.classList.add('hidden');
-            }
+            let activeTimers = []; const now = Date.now();
+            if (powerUps.wrap.active) { const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Portal: ${remaining}s`); }
+            if (powerUps.immortal.active) { const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`); }
+            if (powerUps.magnet.active) { const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`); }
+            if (activeTimers.length > 0) { powerupTimerDisplay.innerHTML = activeTimers.map(t => `<div class="timer-item">${t}</div>`).join(''); powerupTimerDisplay.classList.remove('hidden');
+            } else { powerupTimerDisplay.classList.add('hidden'); }
         }
-
         function setDirection(newDirection) {
             if (isPaused) return;
-            const goingUp = direction.y === -1;
-            const goingDown = direction.y === 1;
-            const goingRight = direction.x === 1;
-            const goingLeft = direction.x === -1;
-
+            const goingUp = direction.y === -1, goingDown = direction.y === 1, goingRight = direction.x === 1, goingLeft = direction.x === -1;
             if (newDirection === 'left' && !goingRight) direction = { x: -1, y: 0 };
             if (newDirection === 'up' && !goingDown) direction = { x: 0, y: -1 };
             if (newDirection === 'right' && !goingLeft) direction = { x: 1, y: 0 };
             if (newDirection === 'down' && !goingUp) direction = { x: 0, y: 1 };
         }
-
         function handleKeyInput(event) {
-            const keyPressed = event.key.toLowerCase();
-            if (keyPressed === 'p') { togglePause(); return; }
+            const keyPressed = event.key.toLowerCase(); if (keyPressed === 'p') { togglePause(); return; }
             if (gameSettings.controlMode !== 'keyboard' || isPaused) return;
             if (['arrowleft', 'a'].includes(keyPressed)) setDirection('left');
             if (['arrowup', 'w'].includes(keyPressed)) setDirection('up');
             if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
             if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
         }
-
         function handleTouchStart(event) {
             if (gameSettings.controlMode !== 'touch' || isPaused) return;
-            event.preventDefault();
-            touchStartX = event.touches[0].clientX;
-            touchStartY = event.touches[0].clientY;
+            event.preventDefault(); touchStartX = event.touches[0].clientX; touchStartY = event.touches[0].clientY;
         }
-
         function handleTouchEnd(event) {
             if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused) return;
-            const touchEndX = event.changedTouches[0].clientX;
-            const touchEndY = event.changedTouches[0].clientY;
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
-            } else {
-                if (Math.abs(diffY) > 30) setDirection(diffY > 0 ? 'down' : 'up');
-            }
-            touchStartX = 0;
-            touchStartY = 0;
+            const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
+            if (Math.abs(diffX) > Math.abs(diffY)) { if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
+            } else { if (Math.abs(diffY) > 30) setDirection(diffY > 0 ? 'down' : 'up'); }
+            touchStartX = 0; touchStartY = 0;
         }
-
         function checkCollision() {
-            const head = snake[0];
-            const dpr = window.devicePixelRatio || 1;
-            const gridWidth = canvas.width / dpr / gridSize;
-            const gridHeight = canvas.height / dpr / gridSize;
-            if (!powerUps.wrap.active && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) {
-                return true;
-            }
-            if (!powerUps.immortal.active) {
-                for (let i = 1; i < snake.length; i++) {
-                    if (head.x === snake[i].x && head.y === snake[i].y) return true;
-                }
-            }
+            const head = snake[0]; const dpr = window.devicePixelRatio || 1;
+            const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
+            if (!powerUps.wrap.active && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) return true;
+            if (!powerUps.immortal.active) { for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; } }
             return false;
         }
-        
         function togglePause() {
-            if (isPaused) { // Resume
+            if (isPaused) {
                 const now = Date.now();
                 if(powerUps.wrap.active) powerUps.wrap.endTime = now + powerUps.wrap.duration;
                 if(powerUps.immortal.active) powerUps.immortal.endTime = now + powerUps.immortal.duration;
                 if(powerUps.magnet.active) powerUps.magnet.endTime = now + powerUps.magnet.duration;
                 gameInterval = setInterval(gameLoop, 140);
-            } else { // Pause
+            } else {
                 clearInterval(gameInterval);
                 const now = Date.now();
                 if(powerUps.wrap.active) powerUps.wrap.duration = powerUps.wrap.endTime - now;
@@ -961,417 +722,243 @@
                 if(powerUps.magnet.active) powerUps.magnet.duration = powerUps.magnet.endTime - now;
             }
             isPaused = !isPaused;
-            pauseOverlay.classList.toggle('hidden');
-            pauseIcon.classList.toggle('hidden');
-            playIcon.classList.toggle('hidden');
+            pauseOverlay.classList.toggle('hidden'); pauseIcon.classList.toggle('hidden'); playIcon.classList.toggle('hidden');
         }
-
-        // --- Autenticação e Sincronização de Dados ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                userProfile.classList.remove('hidden');
-                userName.textContent = user.displayName;
-                userPhoto.src = user.photoURL;
-                buttons.login.classList.add('hidden');
-                buttons.logout.classList.remove('hidden');
+                userProfile.classList.remove('hidden'); userName.textContent = user.displayName; userPhoto.src = user.photoURL;
+                buttons.login.classList.add('hidden'); buttons.logout.classList.remove('hidden');
                 await loadUserData(user);
             } else {
-                userProfile.classList.add('hidden');
-                buttons.login.classList.remove('hidden');
-                buttons.logout.classList.add('hidden');
-                buttons.notificationBell.classList.add('hidden');
+                userProfile.classList.add('hidden'); buttons.login.classList.remove('hidden'); buttons.logout.classList.add('hidden'); buttons.notificationBell.classList.add('hidden');
                 loadLocalData();
             }
             applyAllCustomizations();
         });
-
         async function loadUserData(user) {
+            const localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            const localBgs = JSON.parse(localStorage.getItem('ssnake_bgs')) || [];
+            const localColors = JSON.parse(localStorage.getItem('ssnake_colors')) || [];
+            const localHighScore = parseInt(localStorage.getItem('ssnake_highscore')) || 0;
+
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
 
             const defaultData = {
                 name: user.displayName, photoURL: user.photoURL, highScore: 0, totalCoins: 0,
                 purchasedBgs: ['default'], selectedBg: 'default',
-                purchasedSnakeColors: ['default'], selectedSnakeColor: 'default',
-                collectedRewards: [],
+                purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [],
             };
 
+            let cloudData;
             if (userDoc.exists()) {
-                userData = { ...defaultData, ...userDoc.data() };
+                cloudData = { ...defaultData, ...userDoc.data() };
             } else {
-                userData = defaultData;
-                await setDoc(userRef, { ...userData, createdAt: serverTimestamp() });
+                cloudData = defaultData;
             }
+            cloudData.totalCoins += localCoins;
+            cloudData.purchasedBgs = [...new Set([...cloudData.purchasedBgs, ...localBgs])];
+            cloudData.purchasedSnakeColors = [...new Set([...cloudData.purchasedSnakeColors, ...localColors])];
+            if (localHighScore > (cloudData.highScore || 0)) {
+                cloudData.highScore = localHighScore;
+            }
+            userData = cloudData;
+            await setDoc(userRef, userData, { merge: true });
+
+            localStorage.removeItem('ssnake_coins');
+            localStorage.removeItem('ssnake_bgs');
+            localStorage.removeItem('ssnake_colors');
+            localStorage.removeItem('ssnake_highscore');
+            
             await checkNotifications(user);
         }
-        
         function loadLocalData() {
             userData.totalCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            userData.highScore = parseInt(localStorage.getItem('ssnake_highscore')) || 0;
             userData.selectedBg = localStorage.getItem('ssnake_selected_bg') || 'default';
             userData.purchasedBgs = JSON.parse(localStorage.getItem('ssnake_bgs')) || ['default'];
             userData.selectedSnakeColor = localStorage.getItem('ssnake_selected_color') || 'default';
             userData.purchasedSnakeColors = JSON.parse(localStorage.getItem('ssnake_colors')) || ['default'];
         }
-
         async function saveUserData() {
             const user = auth.currentUser;
             const dataToSave = {
-                highScore: userData.highScore,
-                totalCoins: userData.totalCoins,
-                purchasedBgs: userData.purchasedBgs,
-                selectedBg: userData.selectedBg,
-                purchasedSnakeColors: userData.purchasedSnakeColors,
-                selectedSnakeColor: userData.selectedSnakeColor,
+                highScore: userData.highScore, totalCoins: userData.totalCoins,
+                purchasedBgs: userData.purchasedBgs, selectedBg: userData.selectedBg,
+                purchasedSnakeColors: userData.purchasedSnakeColors, selectedSnakeColor: userData.selectedSnakeColor,
             };
-
             if (user) {
-                try {
-                    await updateDoc(doc(db, "users", user.uid), dataToSave);
-                } catch(e) {
-                    console.error("Error saving user data:", e);
-                }
+                try { await updateDoc(doc(db, "users", user.uid), dataToSave); } catch(e) { console.error("Error saving user data:", e); }
             } else {
                 localStorage.setItem('ssnake_coins', dataToSave.totalCoins);
                 localStorage.setItem('ssnake_bgs', JSON.stringify(dataToSave.purchasedBgs));
                 localStorage.setItem('ssnake_selected_bg', dataToSave.selectedBg);
                 localStorage.setItem('ssnake_colors', JSON.stringify(dataToSave.purchasedSnakeColors));
                 localStorage.setItem('ssnake_selected_color', dataToSave.selectedSnakeColor);
+                localStorage.setItem('ssnake_highscore', dataToSave.highScore);
             }
         }
-        
-        // --- Navegação e UI ---
-        function addSafeListener(element, handler) {
-             if (element) {
-                element.addEventListener('click', handler);
-                element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false });
-             }
-        }
-        
-        function showScreen(screen) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            screen.classList.remove('hidden');
-        }
-        
+        function addSafeListener(element, handler) { if (element) { element.addEventListener('click', handler); element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false }); } }
+        function showScreen(screen) { document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); screen.classList.remove('hidden'); }
         function updateOptionButtons() {
             document.querySelectorAll('[data-control]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-control="${gameSettings.controlMode}"]`).classList.add('active');
             document.querySelectorAll('[data-ratio]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
         }
-        
-        function applyAllCustomizations() {
-            applyBackground();
-        }
-
-        const showOptionsHandler = () => {
-            previousScreen = screens.start;
-            updateOptionButtons();
-            showScreen(screens.options);
-        };
-        
-        const showTipsHandler = () => {
-             previousScreen = screens.start;
-             showScreen(screens.tips);
-        };
-
-        const showShopHandler = () => {
-            previousScreen = screens.start;
-            renderShop('backgrounds'); // Inicia na aba de fundos
-            showScreen(screens.shop);
-        };
-        
-        const showNotificationHandler = () => {
-            previousScreen = screens.start;
-            renderNotifications();
-            showScreen(screens.notifications);
-        };
-
-        const handlePauseOptions = () => {
-            pauseOverlay.classList.add('hidden');
-            previousScreen = screens.game;
-            updateOptionButtons();
-            showScreen(screens.options);
-        };
-        
-        const pauseHomeHandler = () => {
-            endGame(false);
-            showScreen(screens.start);
-        };
-        
-        // --- Lógica Principal do Jogo ---
+        function applyAllCustomizations() { applyBackground(); }
+        const showOptionsHandler = () => { previousScreen = screens.start; updateOptionButtons(); showScreen(screens.options); };
+        const showTipsHandler = () => { previousScreen = screens.start; showScreen(screens.tips); };
+        const showShopHandler = () => { previousScreen = screens.start; renderShop('backgrounds'); showScreen(screens.shop); };
+        const showNotificationHandler = () => { previousScreen = screens.start; renderNotifications(); showScreen(screens.notifications); };
+        const handlePauseOptions = () => { pauseOverlay.classList.add('hidden'); previousScreen = screens.game; updateOptionButtons(); showScreen(screens.options); };
+        const pauseHomeHandler = () => { endGame(false); showScreen(screens.start); };
         function setupCanvas() {
-            const dpr = window.devicePixelRatio || 1;
-            const topBarHeight = topBar.offsetHeight || 60;
-            const containerWidth = screens.game.clientWidth;
-            const containerHeight = screens.game.clientHeight - topBarHeight;
+            const dpr = window.devicePixelRatio || 1; const topBarHeight = topBar.offsetHeight || 60;
+            const containerWidth = screens.game.clientWidth; const containerHeight = screens.game.clientHeight - topBarHeight;
             let canvasWidth, canvasHeight;
-            if (gameSettings.aspectRatio === 'notebook') {
-                const canvasSize = Math.min(containerWidth, containerHeight);
-                canvasWidth = Math.floor(canvasSize / gridSize) * gridSize;
-                canvasHeight = canvasWidth;
-            } else {
-                const baseSize = Math.min(containerWidth, containerHeight);
-                canvasWidth = Math.floor(baseSize / gridSize) * gridSize;
-                canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize;
-            }
-            
-            canvas.width = canvasWidth * dpr;
-            canvas.height = canvasHeight * dpr;
-            canvas.style.width = `${canvasWidth}px`;
-            canvas.style.height = `${canvasHeight}px`;
-            ctx.scale(dpr, dpr);
-            topBar.style.width = `${canvasWidth}px`;
+            if (gameSettings.aspectRatio === 'notebook') { const canvasSize = Math.min(containerWidth, containerHeight); canvasWidth = Math.floor(canvasSize / gridSize) * gridSize; canvasHeight = canvasWidth;
+            } else { const baseSize = Math.min(containerWidth, containerHeight); canvasWidth = Math.floor(baseSize / gridSize) * gridSize; canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize; }
+            canvas.width = canvasWidth * dpr; canvas.height = canvasHeight * dpr;
+            canvas.style.width = `${canvasWidth}px`; canvas.style.height = `${canvasHeight}px`;
+            ctx.scale(dpr, dpr); topBar.style.width = `${canvasWidth}px`;
         }
-        
         function startGame() {
-            showScreen(screens.game);
-            isPaused = false;
-            topBar.classList.remove('hidden');
-            pauseOverlay.classList.add('hidden');
-            pauseIcon.classList.remove('hidden');
-            playIcon.classList.add('hidden');
+            showScreen(screens.game); isPaused = false;
+            topBar.classList.remove('hidden'); pauseOverlay.classList.add('hidden');
+            pauseIcon.classList.remove('hidden'); playIcon.classList.add('hidden');
             setupCanvas();
             const dpr = window.devicePixelRatio || 1;
             snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
-            score = 0;
-            coins = userData.totalCoins;
-            direction = { x: 0, y: 0 };
-            scoreDisplay.textContent = 'Score: 0';
-            coinCountSpan.textContent = coins;
+            score = 0; coins = userData.totalCoins; direction = { x: 0, y: 0 };
+            scoreDisplay.textContent = 'Score: 0'; coinCountSpan.textContent = coins;
             placeFood();
-            
             bonusApples = [];
-            powerUps.wrap.active = false;
-            powerUps.wrap.endTime = 0;
-            powerUps.immortal.active = false;
-            powerUps.immortal.endTime = 0;
-            powerUps.magnet.active = false;
-            powerUps.magnet.endTime = 0;
+            Object.keys(powerUps).forEach(key => { powerUps[key].active = false; powerUps[key].endTime = 0; });
             powerupTimerDisplay.classList.add('hidden');
-            
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
-            
             document.addEventListener('keydown', handleKeyInput);
             canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
             canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
             canvas.addEventListener('touchend', handleTouchEnd);
         }
-        
-        function gameLoop() { 
-            if(isPaused) return;
-            update(); 
-            draw(); 
-        }
-        
+        function gameLoop() { if(isPaused) return; update(); draw(); }
         function update() {
             if (direction.x === 0 && direction.y === 0) return;
-
-            const dpr = window.devicePixelRatio || 1;
-            const gridWidth = canvas.width / dpr / gridSize;
-            const gridHeight = canvas.height / dpr / gridSize;
-
+            const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
             let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
             
             if (powerUps.wrap.active) {
-                if (head.x < 0) head.x = gridWidth - 1;
-                if (head.x >= gridWidth) head.x = 0;
-                if (head.y < 0) head.y = gridHeight - 1;
-                if (head.y >= gridHeight) head.y = 0;
+                if (head.x < 0) head.x = gridWidth - 1; else if (head.x >= gridWidth) head.x = 0;
+                if (head.y < 0) head.y = gridHeight - 1; else if (head.y >= gridHeight) head.y = 0;
             }
 
-            // Magnet logic
             if (powerUps.magnet.active) {
                 const magnetRange = 4;
                 const moveApple = (apple) => {
-                    let dx = head.x - apple.x;
-                    let dy = head.y - apple.y;
+                    let dx = head.x - apple.x, dy = head.y - apple.y;
                     if (Math.abs(dx) < magnetRange && Math.abs(dy) < magnetRange) {
-                        let nextX = apple.x;
-                        let nextY = apple.y;
-                        if (Math.abs(dx) > Math.abs(dy)) {
-                           nextX += Math.sign(dx);
-                        } else {
-                           nextY += Math.sign(dy);
-                        }
+                        let nextX = apple.x, nextY = apple.y;
+                        if (Math.abs(dx) > Math.abs(dy)) nextX += Math.sign(dx); else nextY += Math.sign(dy);
                         const isOccupied = snake.some(segment => segment.x === nextX && segment.y === nextY);
-                        if (!isOccupied) {
-                            apple.x = nextX;
-                            apple.y = nextY;
-                        }
+                        if (!isOccupied) { apple.x = nextX; apple.y = nextY; }
                     }
                 };
-                moveApple(food);
-                bonusApples.forEach(moveApple);
+                moveApple(food); bonusApples.forEach(moveApple);
             }
             
-            // Move snake
             snake.unshift(head);
             tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
             
-            // Check for apple collision
             let ateApple = false;
             if (head.x === food.x && head.y === food.y) {
-                ateApple = true;
-                score++;
-                coins++;
-                scoreDisplay.textContent = `Score: ${score}`;
-                coinCountSpan.textContent = coins;
-                placeFood();
-                spawnBonusApple();
+                ateApple = true; score++; coins++;
+                scoreDisplay.textContent = `Score: ${score}`; coinCountSpan.textContent = coins;
+                placeFood(); spawnBonusApple();
             }
             
-            // Check for bonus apple collision
             bonusApples.forEach((apple, index) => {
                 if (head.x === apple.x && head.y === apple.y) {
-                    ateApple = true;
-                    activateBonus(apple.type);
-                    bonusApples.splice(index, 1);
+                    ateApple = true; activateBonus(apple.type); bonusApples.splice(index, 1);
                 }
             });
-
-            if (!ateApple) {
-                snake.pop();
-            }
-
-            if (checkCollision()) {
-                endGame();
-            }
-            checkPowerupEnd();
+            if (!ateApple) { snake.pop(); }
+            if (checkCollision()) { endGame(); } checkPowerupEnd();
         }
-        
         function draw() {
             const dpr = window.devicePixelRatio || 1;
             ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-            drawApple();
-            bonusApples.forEach(drawBonusApple);
-            drawSnake();
-            updatePowerupTimers();
+            drawApple(); bonusApples.forEach(drawBonusApple); drawSnake(); updatePowerupTimers();
         }
-
         async function endGame(showGameOverScreen = true) {
-            clearInterval(gameInterval);
-            gameInterval = null;
-            
+            clearInterval(gameInterval); gameInterval = null;
             document.removeEventListener('keydown', handleKeyInput);
             canvas.removeEventListener('touchstart', handleTouchStart);
             canvas.removeEventListener('touchmove', preventDefaultHandler);
             canvas.removeEventListener('touchend', handleTouchEnd);
             
             userData.totalCoins = coins;
-            if(score > userData.highScore) {
-                userData.highScore = score;
-            }
+            if(score > userData.highScore) { userData.highScore = score; }
             await saveUserData();
-
             if (showGameOverScreen) {
                 topBar.classList.add('hidden');
                 finalScoreDisplay.textContent = `Seu Score: ${score}`;
                 showScreen(screens.gameOver);
             }
         }
-        
-        // --- Lógica da Loja e Customização ---
-        function applyBackground() {
-            document.body.className = `background-${userData.selectedBg}`;
-        }
-        
+        function applyBackground() { document.body.className = `background-${userData.selectedBg}`; }
         function renderShop(activeTab) {
             shopItemsContainer.innerHTML = '';
             document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.shop-tab[data-tab="${activeTab}"]`).classList.add('active');
-
             const items = shopItems[activeTab];
             const purchasedItems = activeTab === 'backgrounds' ? userData.purchasedBgs : userData.purchasedSnakeColors;
             const selectedItem = activeTab === 'backgrounds' ? userData.selectedBg : userData.selectedSnakeColor;
-
-            // Adiciona o item padrão no início da lista para seleção
             const defaultId = 'default';
-            const defaultItem = activeTab === 'backgrounds' 
-                ? { id: defaultId, name: 'Padrão' }
-                : { id: defaultId, name: 'Magenta Padrão' };
-
+            const defaultItem = activeTab === 'backgrounds' ? { id: defaultId, name: 'Padrão' } : { id: defaultId, name: 'Magenta Padrão' };
             const allDisplayItems = [defaultItem, ...items];
-
-            // Renderiza itens comprados primeiro
             allDisplayItems.filter(item => item.id === 'default' || purchasedItems.includes(item.id)).forEach(item => {
-                const itemEl = document.createElement('div');
-                itemEl.className = 'shop-item';
+                const itemEl = document.createElement('div'); itemEl.className = 'shop-item';
                 const isSelected = item.id === selectedItem;
-
                 let previewHtml = '';
-                if(activeTab === 'snakeColors') {
-                    const colorValue = snakeColors[item.id].color;
-                    previewHtml = `<div class="color-preview" style="background-color: ${colorValue};"></div>`;
-                }
-                
+                if(activeTab === 'snakeColors') { previewHtml = `<div class="color-preview" style="background-color: ${snakeColors[item.id].color};"></div>`; }
                 let buttonHtml;
-                if (isSelected) {
-                    buttonHtml = `<button class="menu-button active" disabled>Selecionado</button>`;
-                } else {
-                    buttonHtml = `<button class="menu-button" data-select-id="${item.id}" data-type="${activeTab}">Selecionar</button>`;
-                }
-                
+                if (isSelected) { buttonHtml = `<button class="menu-button active" disabled>Selecionado</button>`; } 
+                else { buttonHtml = `<button class="menu-button" data-select-id="${item.id}" data-type="${activeTab}">Selecionar</button>`; }
                 itemEl.innerHTML = `<div class="shop-item-details">${previewHtml}<h3>${item.name}</h3></div> ${buttonHtml}`;
                 shopItemsContainer.appendChild(itemEl);
             });
-            
-            // Adiciona os itens não comprados no final
-             items.filter(item => !purchasedItems.includes(item.id)).forEach(item => {
-                const itemEl = document.createElement('div');
-                itemEl.className = 'shop-item';
+            items.filter(item => !purchasedItems.includes(item.id)).forEach(item => {
+                const itemEl = document.createElement('div'); itemEl.className = 'shop-item';
                 const canAfford = userData.totalCoins >= item.price;
-                
                 let previewHtml = '';
-                if(activeTab === 'snakeColors') {
-                    const colorValue = snakeColors[item.id].color;
-                    previewHtml = `<div class="color-preview" style="background-color: ${colorValue};"></div>`;
-                }
-                
+                if(activeTab === 'snakeColors') { previewHtml = `<div class="color-preview" style="background-color: ${snakeColors[item.id].color};"></div>`; }
                 const buttonHtml = `<button class="menu-button" data-item-id="${item.id}" data-price="${item.price}" data-type="${activeTab}" ${canAfford ? '' : 'disabled'}>S$ ${item.price}</button>`;
-
                 itemEl.innerHTML = `<div class="shop-item-details">${previewHtml}<h3>${item.name}</h3></div> ${buttonHtml}`;
                 shopItemsContainer.appendChild(itemEl);
              });
         }
-        
         async function selectItem(itemId, type) {
-             if (type === 'backgrounds') {
-                userData.selectedBg = itemId;
-                applyBackground();
-            } else if (type === 'snakeColors') {
-                userData.selectedSnakeColor = itemId;
-            }
-            await saveUserData();
-            renderShop(type);
+             if (type === 'backgrounds') { userData.selectedBg = itemId; applyBackground(); } 
+             else if (type === 'snakeColors') { userData.selectedSnakeColor = itemId; }
+            await saveUserData(); renderShop(type);
         }
-
         async function buyItem(itemId, price, type) {
             if (userData.totalCoins >= price) {
                 userData.totalCoins -= price;
-                
-                if (type === 'backgrounds') {
-                    userData.purchasedBgs.push(itemId);
-                } else if (type === 'snakeColors') {
-                    userData.purchasedSnakeColors.push(itemId);
-                }
-
+                if (type === 'backgrounds') { userData.purchasedBgs.push(itemId); } 
+                else if (type === 'snakeColors') { userData.purchasedSnakeColors.push(itemId); }
                 coinCountSpan.textContent = userData.totalCoins;
                 await saveUserData();
-                await selectItem(itemId, type); // Auto-seleciona após a compra
+                await selectItem(itemId, type);
             } else {
                 const button = document.querySelector(`[data-item-id="${itemId}"]`);
-                if(button) {
-                    button.classList.add('shake');
-                    setTimeout(() => button.classList.remove('shake'), 300);
-                }
+                if(button) { button.classList.add('shake'); setTimeout(() => button.classList.remove('shake'), 300); }
             }
         }
-
-        // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
-            
             addSafeListener(buttons.start, startGame);
             addSafeListener(buttons.shop, showShopHandler);
             addSafeListener(buttons.leaderboard, () => { getLeaderboard(); showScreen(screens.leaderboard); });
@@ -1384,41 +971,19 @@
             addSafeListener(buttons.pauseOptions, handlePauseOptions);
             addSafeListener(buttons.pauseHome, pauseHomeHandler);
             addSafeListener(buttons.notificationBell, showNotificationHandler);
-            addSafeListener(buttons.logout, () => {
-                signOut(auth).catch(error => console.error("Erro no logout:", error));
-            });
-            
-            addSafeListener(buttons.back, () => {
-                 if(previousScreen === screens.game) {
-                    showScreen(screens.game);
-                    pauseOverlay.classList.remove('hidden');
-                 } else {
-                    showScreen(screens.start);
-                 }
-            });
+            addSafeListener(buttons.logout, () => { signOut(auth).catch(error => console.error("Erro no logout:", error)); });
+            addSafeListener(buttons.back, () => { if(previousScreen === screens.game) { showScreen(screens.game); pauseOverlay.classList.remove('hidden'); } else { showScreen(screens.start); } });
             addSafeListener(buttons.shopBack, () => showScreen(screens.start));
             addSafeListener(buttons.leaderboardBack, () => showScreen(screens.start));
             addSafeListener(buttons.tipsBack, () => showScreen(screens.start));
             addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
-            
-            shopTabs.addEventListener('click', (e) => {
-                const tab = e.target.closest('.shop-tab');
-                if (tab) renderShop(tab.dataset.tab);
-            });
-
+            shopTabs.addEventListener('click', (e) => { const tab = e.target.closest('.shop-tab'); if (tab) renderShop(tab.dataset.tab); });
             shopItemsContainer.addEventListener('click', (e) => {
                 const buyButton = e.target.closest('[data-item-id]');
                 const selectButton = e.target.closest('[data-select-id]');
-
-                if (buyButton && !buyButton.disabled) {
-                    const { itemId, price, type } = buyButton.dataset;
-                    buyItem(itemId, parseInt(price), type);
-                } else if (selectButton) {
-                    const { selectId, type } = selectButton.dataset;
-                    selectItem(selectId, type);
-                }
+                if (buyButton && !buyButton.disabled) { const { itemId, price, type } = buyButton.dataset; buyItem(itemId, parseInt(price), type); } 
+                else if (selectButton) { const { selectId, type } = selectButton.dataset; selectItem(selectId, type); }
             });
-            
             loadLocalData();
             applyAllCustomizations();
             updateOptionButtons();
