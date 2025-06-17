@@ -23,6 +23,9 @@
             --glow-color: rgba(255, 0, 255, 0.7);
             --food-glow: rgba(231, 76, 60, 0.7); /* Brilho avermelhado */
             --cyan-glow: rgba(0, 255, 255, 0.7);  /* Brilho ciano para UI */
+            --golden-apple-glow: rgba(255, 215, 0, 0.8);
+            --green-apple-glow: rgba(46, 204, 113, 0.8);
+            --purple-apple-glow: rgba(155, 89, 182, 0.8);
         }
 
         * {
@@ -183,16 +186,24 @@
         #login-button svg { width: 24px; height: 24px; }
 
 
-        #options-screen, #leaderboard-screen { justify-content: space-between; }
-        #options-screen h2, #leaderboard-screen h2 {
+        #options-screen, #leaderboard-screen, #tips-screen { justify-content: space-between; }
+        #options-screen h2, #leaderboard-screen h2, #tips-screen h2 {
             font-size: 2.5rem;
             color: var(--accent-color);
             margin-bottom: 20px;
+            flex-shrink: 0;
         }
-        .option-group { margin-bottom: 15px; }
-        .option-group h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400; }
+
+        .scrollable-content {
+            overflow-y: auto;
+            padding-right: 10px;
+        }
         
-        .credits-text { font-size: 1rem; color: var(--text-color); margin-bottom: 10px; }
+        .option-group { margin-bottom: 15px; }
+        .option-group h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400; text-align: left;}
+        
+        .credits-text, .tip-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; text-align: left; }
+        
         .credits-link {
             font-family: var(--font-family); display: inline-block; color: var(--apple-color-light); text-decoration: none;
             border: 1px solid var(--apple-color-light); padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease-out;
@@ -203,8 +214,6 @@
         #score-list {
             list-style: none;
             width: 100%;
-            max-height: 60vh;
-            overflow-y: auto;
             text-align: left;
         }
         #score-list li {
@@ -221,7 +230,7 @@
         
         #game-screen { justify-content: flex-start; }
         #top-bar {
-            width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
             padding: 10px 0; margin-bottom: 10px;
         }
         #stats-container {
@@ -238,6 +247,23 @@
             font-weight: 700;
             color: var(--food-color);
             text-shadow: 0 0 8px var(--cyan-glow);
+        }
+
+        #powerup-timer-display {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .timer-item {
+            background-color: rgba(0,0,0,0.4);
+            color: var(--text-color);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-shadow: 0 0 5px var(--cyan-glow);
         }
 
         #pause-button {
@@ -279,6 +305,7 @@
             <button id="start-button" class="menu-button">Iniciar Jogo</button>
             <button id="leaderboard-button" class="menu-button">Placar</button>
             <button id="options-button" class="menu-button">Opções</button>
+            <button id="tips-button" class="menu-button">Dicas</button>
             <button id="login-button" class="menu-button">
                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
                 <span>Login com Google</span>
@@ -288,7 +315,7 @@
 
         <!-- Tela de Opções -->
         <div id="options-screen" class="screen hidden">
-            <div>
+            <div class="scrollable-content">
                 <h2>Opções</h2>
                 <div class="option-group">
                     <h3>Controles</h3>
@@ -308,6 +335,30 @@
             </div>
             <button id="back-button" class="menu-button">Voltar</button>
         </div>
+        
+        <!-- Tela de Dicas -->
+        <div id="tips-screen" class="screen hidden">
+             <div class="scrollable-content">
+                <h2>Dicas</h2>
+                <div class="option-group">
+                    <h3>Como Jogar</h3>
+                    <p class="tip-text">- PC: Use as Setas ou as teclas WASD para mover a cobra.</p>
+                    <p class="tip-text">- Celular: Deslize o dedo na tela para a direção desejada.</p>
+                    <p class="tip-text">- Pressione 'P' para pausar e continuar o jogo.</p>
+                </div>
+                 <div class="option-group">
+                    <h3>Maçãs Bônus</h3>
+                    <p class="tip-text">- Maçã Dourada: Permite atravessar as paredes por 30 segundos.</p>
+                    <p class="tip-text">- Maçã Verde: Te deixa imortal a colisões com seu corpo por 30 segundos.</p>
+                    <p class="tip-text">- Maçã Roxa: Te dá de 5 a 10 moedas extras.</p>
+                </div>
+                <div class="option-group">
+                    <h3>Dica Extra</h3>
+                    <p class="tip-text">A língua da cobra sempre aponta para a direção em que ela está se movendo!</p>
+                </div>
+            </div>
+            <button id="tips-back-button" class="menu-button">Voltar</button>
+        </div>
 
         <!-- Tela do Placar -->
         <div id="leaderboard-screen" class="screen hidden">
@@ -325,6 +376,7 @@
                     <div id="score-display">Score: 0</div>
                     <div id="coin-display">$ <span id="coin-count">0</span></div>
                 </div>
+                 <div id="powerup-timer-display" class="hidden"></div>
                 <button id="pause-button">
                     <svg id="pause-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
                     <svg id="play-icon" class="hidden" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
@@ -377,6 +429,7 @@
         const gameScreen = document.getElementById('game-screen');
         const gameOverScreen = document.getElementById('game-over-screen');
         const leaderboardScreen = document.getElementById('leaderboard-screen');
+        const tipsScreen = document.getElementById('tips-screen');
         
         const startButton = document.getElementById('start-button');
         const optionsButton = document.getElementById('options-button');
@@ -387,6 +440,8 @@
         const logoutButton = document.getElementById('logout-button');
         const leaderboardButton = document.getElementById('leaderboard-button');
         const leaderboardBackButton = document.getElementById('leaderboard-back-button');
+        const tipsButton = document.getElementById('tips-button');
+        const tipsBackButton = document.getElementById('tips-back-button');
         
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
@@ -407,6 +462,7 @@
         const finalScoreDisplay = document.getElementById('final-score');
         const scoreList = document.getElementById('score-list');
         const coinCountSpan = document.getElementById('coin-count');
+        const powerupTimerDisplay = document.getElementById('powerup-timer-display');
 
         // --- Configurações do Jogo ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -418,6 +474,11 @@
         let touchStartX = 0, touchStartY = 0;
         const preventDefaultHandler = (e) => e.preventDefault();
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
+        let bonusApples = [];
+        let powerUps = {
+            wrap: { active: false, endTime: 0, duration: 30000 },
+            immortal: { active: false, endTime: 0, duration: 30000 }
+        };
 
         // --- Autenticação e Sincronização de Dados ---
         loginButton.addEventListener('click', () => {
@@ -463,7 +524,7 @@
                     createdAt: serverTimestamp()
                 });
             }
-            localStorage.setItem('ssnake_coins', coins);
+            localStorage.removeItem('ssnake_coins');
             coinCountSpan.textContent = coins;
         }
 
@@ -516,6 +577,13 @@
             updateOptionButtons();
             showScreen(optionsScreen);
         });
+        
+        tipsButton.addEventListener('click', () => {
+             previousScreen = startScreen;
+             showScreen(tipsScreen);
+        });
+        tipsBackButton.addEventListener('click', () => showScreen(previousScreen));
+
 
         const handlePauseOptions = () => {
             previousScreen = gameScreen;
@@ -592,13 +660,24 @@
             setupCanvas();
             snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
             score = 0;
-            coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            if(!auth.currentUser) {
+                coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            }
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
             coinCountSpan.textContent = coins;
             placeFood();
+            
+            bonusApples = [];
+            powerUps.wrap.active = false;
+            powerUps.wrap.endTime = 0;
+            powerUps.immortal.active = false;
+            powerUps.immortal.endTime = 0;
+            powerupTimerDisplay.classList.add('hidden');
+            
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
+            
             document.addEventListener('keydown', handleKeyInput);
             canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
             canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
@@ -611,34 +690,65 @@
             pauseOverlay.classList.toggle('hidden');
             pauseIcon.classList.toggle('hidden');
             playIcon.classList.toggle('hidden');
-            if (isPaused) clearInterval(gameInterval);
-            else gameInterval = setInterval(gameLoop, 140);
+            if (isPaused) {
+                 clearInterval(gameInterval);
+                 const now = Date.now();
+                 if(powerUps.wrap.active) powerUps.wrap.duration = powerUps.wrap.endTime - now;
+                 if(powerUps.immortal.active) powerUps.immortal.duration = powerUps.immortal.endTime - now;
+            }
+            else {
+                 const now = Date.now();
+                 if(powerUps.wrap.active) powerUps.wrap.endTime = now + powerUps.wrap.duration;
+                 if(powerUps.immortal.active) powerUps.immortal.endTime = now + powerUps.immortal.duration;
+                 gameInterval = setInterval(gameLoop, 140);
+            }
         }
 
         function gameLoop() { update(); draw(); }
         
         function update() {
             if (direction.x === 0 && direction.y === 0) return;
-            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+            let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+            if (powerUps.wrap.active) {
+                if (head.x < 0) head.x = canvas.width / gridSize - 1;
+                if (head.x >= canvas.width / gridSize) head.x = 0;
+                if (head.y < 0) head.y = canvas.height / gridSize - 1;
+                if (head.y >= canvas.height / gridSize) head.y = 0;
+            }
+
             snake.unshift(head);
             tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
+            
             if (head.x === food.x && head.y === food.y) {
                 score++;
                 coins++;
                 scoreDisplay.textContent = `Score: ${score}`;
                 coinCountSpan.textContent = coins;
                 placeFood();
+                spawnBonusApple();
             } else {
                 snake.pop();
             }
+            
+            bonusApples.forEach((apple, index) => {
+                if (head.x === apple.x && head.y === apple.y) {
+                    activateBonus(apple.type);
+                    bonusApples.splice(index, 1);
+                }
+            });
+
             if (checkCollision()) endGame();
+            checkPowerupEnd();
         }
         
         function draw() {
             ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             drawApple();
+            bonusApples.forEach(drawBonusApple);
             drawSnake();
+            updatePowerupTimers();
         }
 
         function drawSnake() {
@@ -655,7 +765,15 @@
                  ctx.beginPath();
                  ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
                  for (let i = 1; i < snake.length; i++) {
-                     ctx.lineTo(snake[i].x * gridSize + gridSize / 2, snake[i].y * gridSize + gridSize / 2);
+                     const segment = snake[i];
+                     const prevSegment = snake[i-1];
+                     if(Math.abs(segment.x - prevSegment.x) > 1 || Math.abs(segment.y - prevSegment.y) > 1) {
+                         ctx.stroke();
+                         ctx.beginPath();
+                         ctx.moveTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
+                     } else {
+                        ctx.lineTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
+                     }
                  }
                  ctx.stroke();
             }
@@ -674,7 +792,6 @@
             const eyeRadius = gridSize * 0.15;
             const pupilRadius = gridSize * 0.08;
             let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
-
             const eyeDist = gridSize * 0.25;
             
             if (direction.y === -1) { 
@@ -718,29 +835,62 @@
 
             ctx.restore();
         }
-
+        
         function drawApple() {
-            const appleColorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
-            const appleColorDark = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-dark').trim();
-            const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
-            const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
-            const foodGlow = getComputedStyle(document.documentElement).getPropertyValue('--food-glow').trim();
             const appleX = food.x * gridSize + gridSize / 2;
             const appleY = food.y * gridSize + gridSize / 2;
+            drawAppleShape(appleX, appleY, 'red');
+        }
+        
+        function drawBonusApple(apple) {
+            const appleX = apple.x * gridSize + gridSize / 2;
+            const appleY = apple.y * gridSize + gridSize / 2;
+            drawAppleShape(appleX, appleY, apple.type);
+        }
+
+        function drawAppleShape(appleX, appleY, type) {
+            let colorLight, colorDark, glow;
+             switch(type) {
+                case 'golden':
+                    glow = 'var(--golden-apple-glow)'; colorLight = '#FFD700'; colorDark = '#FDB813'; break;
+                case 'green':
+                    glow = 'var(--green-apple-glow)'; colorLight = '#2ecc71'; colorDark = '#27ae60'; break;
+                case 'purple':
+                    glow = 'var(--purple-apple-glow)'; colorLight = '#9b59b6'; colorDark = '#8e44ad'; break;
+                default: // red
+                    glow = 'var(--food-glow)'; colorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
+                    colorDark = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-dark').trim();
+            }
+            
             const appleRadius = (gridSize / 2) * 0.95; 
+            const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
+            const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
+            
             ctx.save();
-            ctx.shadowColor = foodGlow; ctx.shadowBlur = 15;
-            ctx.beginPath(); ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
+            ctx.shadowColor = glow; ctx.shadowBlur = 15;
+            
+            ctx.beginPath();
+            ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
             const gradient = ctx.createRadialGradient(appleX - appleRadius * 0.2, appleY - appleRadius * 0.2, 0, appleX, appleY, appleRadius * 1.2);
-            gradient.addColorStop(0, appleColorLight); gradient.addColorStop(1, appleColorDark);
-            ctx.fillStyle = gradient; ctx.fill();
-            ctx.beginPath(); ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.fill();
-            ctx.beginPath(); ctx.moveTo(appleX, appleY - appleRadius * 0.7);
-            ctx.strokeStyle = appleStemColor; ctx.lineWidth = 2;
+            gradient.addColorStop(0, colorLight);
+            gradient.addColorStop(1, colorDark);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(appleX, appleY - appleRadius * 0.7);
+            ctx.strokeStyle = appleStemColor;
+            ctx.lineWidth = 2;
             ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4);
             ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
+            
+            ctx.beginPath();
+            ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
             ctx.fillStyle = appleLeafColor;
             ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8);
             ctx.fill();
@@ -750,6 +900,86 @@
         function placeFood() {
             food = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
             if (snake.some(segment => segment.x === food.x && segment.y === food.y)) placeFood();
+        }
+
+        function spawnBonusApple() {
+            if (Math.random() > 0.5) { // 50% de chance de spawnar um bônus
+                const rand = Math.random();
+                let type;
+
+                if (rand < 0.15) type = 'golden';
+                else if (rand < 0.35) type = 'green';
+                else if (rand < 0.50) type = 'purple';
+                else return;
+                
+                let bonusX, bonusY;
+                do {
+                    bonusX = Math.floor(Math.random() * (canvas.width / gridSize));
+                    bonusY = Math.floor(Math.random() * (canvas.height / gridSize));
+                } while (snake.some(s => s.x === bonusX && s.y === bonusY) || (food.x === bonusX && food.y === bonusY) || bonusApples.some(a => a.x === bonusX && a.y === bonusY));
+
+                const newApple = { x: bonusX, y: bonusY, type };
+                bonusApples.push(newApple);
+                
+                setTimeout(() => {
+                    const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y);
+                    if (index !== -1) bonusApples.splice(index, 1);
+                }, 7000);
+            }
+        }
+
+        function activateBonus(type) {
+            const now = Date.now();
+            switch(type) {
+                case 'golden':
+                    powerUps.wrap.active = true;
+                    powerUps.wrap.endTime = now + powerUps.wrap.duration;
+                    break;
+                case 'green':
+                    powerUps.immortal.active = true;
+                    powerUps.immortal.endTime = now + powerUps.immortal.duration;
+                    break;
+                case 'purple':
+                    const extraCoins = Math.floor(Math.random() * 6) + 5;
+                    coins += extraCoins;
+                    coinCountSpan.textContent = coins;
+                    break;
+            }
+        }
+
+        function checkPowerupEnd() {
+            const now = Date.now();
+            if (powerUps.wrap.active && now > powerUps.wrap.endTime) {
+                powerUps.wrap.active = false;
+            }
+            if (powerUps.immortal.active && now > powerUps.immortal.endTime) {
+                powerUps.immortal.active = false;
+            }
+        }
+
+        function updatePowerupTimers() {
+            powerupTimerDisplay.innerHTML = '';
+            const now = Date.now();
+            let hasActivePowerup = false;
+
+            if (powerUps.wrap.active) {
+                const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000);
+                const timerEl = document.createElement('div');
+                timerEl.className = 'timer-item';
+                timerEl.textContent = `Portal: ${remaining}s`;
+                powerupTimerDisplay.appendChild(timerEl);
+                hasActivePowerup = true;
+            }
+            if (powerUps.immortal.active) {
+                const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000);
+                 const timerEl = document.createElement('div');
+                timerEl.className = 'timer-item';
+                timerEl.textContent = `Escudo: ${remaining}s`;
+                powerupTimerDisplay.appendChild(timerEl);
+                hasActivePowerup = true;
+            }
+
+            powerupTimerDisplay.classList.toggle('hidden', !hasActivePowerup);
         }
         
         function setDirection(newDirection) {
@@ -791,9 +1021,11 @@
         
         function checkCollision() {
             const head = snake[0];
-            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) return true;
-            for (let i = 1; i < snake.length; i++) {
-                if (head.x === snake[i].x && head.y === snake[i].y) return true;
+            if (!powerUps.wrap.active && (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize)) return true;
+            if (!powerUps.immortal.active) {
+                for (let i = 1; i < snake.length; i++) {
+                    if (head.x === snake[i].x && head.y === snake[i].y) return true;
+                }
             }
             return false;
         }
@@ -807,8 +1039,6 @@
             canvas.removeEventListener('touchmove', preventDefaultHandler);
             canvas.removeEventListener('touchend', handleTouchEnd);
             
-            localStorage.setItem('ssnake_coins', coins);
-
             const user = auth.currentUser;
             if (user) {
                 try {
@@ -834,6 +1064,8 @@
                 } catch (error) {
                     console.error("Erro ao salvar dados do usuário: ", error);
                 }
+            } else {
+                 localStorage.setItem('ssnake_coins', coins);
             }
 
             if (showGameOverScreen) {
