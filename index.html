@@ -534,12 +534,35 @@
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', startGame);
         homeButton.addEventListener('click', () => showScreen(startScreen));
-        pauseHomeButton.addEventListener('click', () => {
+        
+        const pauseHomeHandler = () => {
             endGame(false);
             showScreen(startScreen);
+        };
+        pauseHomeButton.addEventListener('click', pauseHomeHandler);
+        pauseHomeButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            pauseHomeHandler();
         });
+        
         pauseButton.addEventListener('click', togglePause);
+        pauseButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            togglePause();
+        });
+        
         resumeButton.addEventListener('click', togglePause);
+        resumeButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            togglePause();
+        });
+        
+        pauseOptionsButton.addEventListener('touchstart', (e) => {
+             e.preventDefault();
+             previousScreen = gameScreen;
+             updateOptionButtons();
+             showScreen(optionsScreen);
+        });
 
         function setupCanvas() {
             const topBarHeight = topBar.offsetHeight || 60;
@@ -578,9 +601,9 @@
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
             document.addEventListener('keydown', handleKeyInput);
-            gameScreen.addEventListener('touchstart', handleTouchStart, { passive: false });
-            gameScreen.addEventListener('touchmove', preventDefaultHandler, { passive: false });
-            gameScreen.addEventListener('touchend', handleTouchEnd);
+            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
+            canvas.addEventListener('touchend', handleTouchEnd);
         }
         
         function togglePause() {
@@ -824,4 +847,5 @@
     </script>
 </body>
 </html>
+
 
