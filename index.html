@@ -334,7 +334,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
         // --- Configuração do Firebase ---
         const firebaseConfig = {
@@ -738,16 +738,31 @@
             gameScreen.removeEventListener('touchend', handleTouchEnd);
             
             const user = auth.currentUser;
-            if(user && score > 0) {
+            if (user && score > 0) {
                 try {
-                    await addDoc(collection(db, "scores"), {
-                        uid: user.uid,
-                        name: user.displayName,
-                        photoURL: user.photoURL,
-                        score: score,
-                        createdAt: serverTimestamp()
-                    });
-                } catch(error) {
+                    const scoresRef = collection(db, "scores");
+                    const q = query(scoresRef, where("uid", "==", user.uid));
+                    const querySnapshot = await getDocs(q);
+
+                    if (querySnapshot.empty) {
+                        await addDoc(scoresRef, {
+                            uid: user.uid,
+                            name: user.displayName,
+                            photoURL: user.photoURL,
+                            score: score,
+                            createdAt: serverTimestamp()
+                        });
+                    } else {
+                        const userDoc = querySnapshot.docs[0];
+                        const existingScore = userDoc.data().score;
+                        if (score > existingScore) {
+                            const docRef = doc(db, "scores", userDoc.id);
+                            await updateDoc(docRef, {
+                                score: score
+                            });
+                        }
+                    }
+                } catch (error) {
                     console.error("Erro ao salvar pontuação: ", error);
                 }
             }
