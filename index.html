@@ -45,21 +45,37 @@
             min-height: 100vh;
             overflow: hidden;
             position: relative;
+            transition: background-image 0.5s ease;
         }
 
-        body::before {
+        .background-default::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 linear-gradient(to right, rgba(0, 255, 255, 0.2) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
             background-size: 40px 40px;
             animation: moveGrid 20s linear infinite;
             transform: perspective(300px) rotateX(60deg);
+            z-index: -1;
+        }
+        
+        .background-sunset::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(#3a1c71, #d76d77, #ffaf7b);
+            z-index: -1;
+        }
+        
+        .background-pulse::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0, transparent 60%);
+            animation: pulse 4s infinite;
             z-index: -1;
         }
 
@@ -69,25 +85,13 @@
         }
 
         /* Animações */
-        @keyframes moveGrid {
-            from { background-position: 0 0; }
-            to { background-position: 0 -100vh; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes popIn {
-             from { opacity: 0; transform: scale(0.8); }
-             to { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes ring {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.8); opacity: 0; }
-        }
+        @keyframes moveGrid { from { background-position: 0 0; } to { background-position: 0 -100vh; } }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.5; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+        .shake { animation: shake 0.3s ease; }
 
         /* Container principal do jogo (Efeito Glassmorphism) */
         .game-container {
@@ -128,6 +132,9 @@
         }
 
         /* Estilos da tela inicial e outras telas com menus */
+        #start-screen {
+            position: relative;
+        }
         #start-screen h1 {
             font-size: 3.5rem;
             color: var(--accent-color);
@@ -136,8 +143,8 @@
 
         #notification-bell {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 0;
+            right: 0;
             width: 40px;
             height: 40px;
             cursor: pointer;
@@ -204,10 +211,12 @@
             box-shadow: 0 0 25px var(--glow-color), inset 0 0 8px rgba(255,255,255,0.4);
         }
         
-        .menu-button.active {
+        .menu-button.active, .menu-button:disabled {
             background: var(--food-color);
             color: var(--primary-color);
             box-shadow: 0 0 20px var(--cyan-glow);
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         #login-button {
@@ -224,8 +233,8 @@
         #login-button svg { width: 24px; height: 24px; }
 
 
-        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen { justify-content: space-between; }
-        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2 {
+        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen, #shop-screen { justify-content: space-between; }
+        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2, #shop-screen h2 {
             font-size: 2.5rem;
             color: var(--accent-color);
             margin-bottom: 20px;
@@ -235,12 +244,13 @@
         .scrollable-content {
             overflow-y: auto;
             padding-right: 10px;
+            width: 100%;
         }
         
-        .option-group { margin-bottom: 15px; }
-        .option-group h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400; text-align: left;}
+        .option-group, .shop-item { margin-bottom: 15px; text-align: left;}
+        .option-group h3, .shop-item h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400;}
         
-        .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; text-align: left; }
+        .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; }
         
         .credits-link {
             font-family: var(--font-family); display: inline-block; color: var(--apple-color-light); text-decoration: none;
@@ -252,55 +262,39 @@
         #score-list {
             list-style: none;
             width: 100%;
-            text-align: left;
         }
         #score-list li {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: rgba(0,0,0,0.2);
-            border-bottom: 1px solid rgba(255,0,255,0.2);
+            display: flex; align-items: center; padding: 10px;
+            background-color: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,0,255,0.2);
         }
         #score-list li:nth-child(odd) { background-color: rgba(0,0,0,0.3); }
         #score-list .rank { font-weight: 900; width: 40px; }
         #score-list .name { flex-grow: 1; }
         #score-list .score { font-weight: 900; color: var(--food-color); }
         
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
         #game-screen { justify-content: flex-start; }
         #top-bar {
             width: 100%; display: flex; justify-content: space-between; align-items: center;
             padding: 10px 0; margin-bottom: 10px;
         }
-        #stats-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+        #stats-container { display: flex; flex-direction: column; align-items: flex-start; }
         #score-display { font-size: 1.5rem; font-weight: 700; color: var(--text-color); text-shadow: 0 0 5px var(--cyan-glow); margin-bottom: 5px; }
-        #coin-display {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--food-color);
-            text-shadow: 0 0 8px var(--cyan-glow);
-        }
+        #coin-display { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 700; color: var(--food-color); text-shadow: 0 0 8px var(--cyan-glow); }
 
-        #powerup-timer-display {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+        #powerup-timer-display { display: flex; flex-direction: column; gap: 5px; align-items: center; }
 
         .timer-item {
-            background-color: rgba(0,0,0,0.4);
-            color: var(--text-color);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border: 1px solid rgba(255,255,255,0.2);
+            background-color: rgba(0,0,0,0.4); color: var(--text-color); padding: 2px 8px; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.2);
             text-shadow: 0 0 5px var(--cyan-glow);
         }
 
@@ -330,7 +324,7 @@
         #final-score { font-size: 1.5rem; margin-bottom: 40px; color: var(--text-color); }
     </style>
 </head>
-<body>
+<body class="background-default">
 
     <div class="game-container">
         <!-- Tela Inicial -->
@@ -345,6 +339,7 @@
                 <span id="user-name"></span>
             </div>
             <button id="start-button" class="menu-button">Iniciar Jogo</button>
+            <button id="shop-button" class="menu-button">Loja</button>
             <button id="leaderboard-button" class="menu-button">Placar</button>
             <button id="options-button" class="menu-button">Opções</button>
             <button id="tips-button" class="menu-button">Dicas</button>
@@ -353,6 +348,15 @@
                 <span>Login com Google</span>
             </button>
             <button id="logout-button" class="menu-button hidden">Sair</button>
+        </div>
+        
+        <!-- Tela da Loja -->
+        <div id="shop-screen" class="screen hidden">
+            <div class="scrollable-content">
+                <h2>Loja de Fundos</h2>
+                <div id="shop-items-container"></div>
+            </div>
+            <button id="shop-back-button" class="menu-button">Voltar</button>
         </div>
 
         <!-- Tela de Opções -->
@@ -368,6 +372,10 @@
                     <h3>Proporção da Tela</h3>
                     <button data-ratio="notebook" class="menu-button">Notebook</button>
                     <button data-ratio="mobile" class="menu-button">Celular</button>
+                </div>
+                 <div class="option-group">
+                    <h3>Fundos</h3>
+                    <div id="background-selection-container"></div>
                 </div>
                 <div class="option-group">
                     <h3>Créditos</h3>
@@ -491,6 +499,7 @@
         const leaderboardScreen = document.getElementById('leaderboard-screen');
         const tipsScreen = document.getElementById('tips-screen');
         const notificationScreen = document.getElementById('notification-screen');
+        const shopScreen = document.getElementById('shop-screen');
         
         const startButton = document.getElementById('start-button');
         const optionsButton = document.getElementById('options-button');
@@ -507,6 +516,10 @@
         const notificationDot = document.getElementById('notification-dot');
         const notificationBackButton = document.getElementById('notification-back-button');
         const collectRewardButton = document.getElementById('collect-reward-button');
+        const shopButton = document.getElementById('shop-button');
+        const shopBackButton = document.getElementById('shop-back-button');
+        const shopItemsContainer = document.getElementById('shop-items-container');
+        const backgroundSelectionContainer = document.getElementById('background-selection-container');
         
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
@@ -533,7 +546,7 @@
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
         let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'mobile' : 'notebook' };
         let gridSize = 15;
-        let snake, food, score, coins, direction, gameInterval;
+        let snake, food, score, coins = 0, direction, gameInterval;
         let isPaused = false;
         let previousScreen = startScreen;
         let touchStartX = 0, touchStartY = 0;
@@ -544,6 +557,17 @@
             wrap: { active: false, endTime: 0, duration: 30000 },
             immortal: { active: false, endTime: 0, duration: 30000 }
         };
+        let userData = {
+            highScore: 0,
+            totalCoins: 0,
+            purchasedBgs: ['default'],
+            selectedBg: 'default'
+        };
+
+        const shopItems = [
+            { id: 'sunset', name: 'Pôr do Sol Retrô', price: 500 },
+            { id: 'pulse', name: 'Pulso Neon', price: 1000 }
+        ];
 
         // --- Autenticação e Sincronização de Dados ---
         loginButton.addEventListener('click', () => {
@@ -561,49 +585,65 @@
                 userPhoto.src = user.photoURL;
                 loginButton.classList.add('hidden');
                 logoutButton.classList.remove('hidden');
-                await syncUserData(user);
-                checkNotifications(user);
+                await loadUserData(user);
             } else {
                 userProfile.classList.add('hidden');
                 loginButton.classList.remove('hidden');
                 logoutButton.classList.add('hidden');
                 notificationBell.classList.add('hidden');
+                loadLocalData();
             }
+            applyBackground();
         });
-        
-        async function syncUserData(user) {
+
+        async function loadUserData(user) {
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
             let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
 
             if (userDoc.exists()) {
-                const cloudData = userDoc.data();
-                coins = (cloudData.totalCoins || 0) + localCoins;
-                await updateDoc(userRef, { totalCoins: coins });
+                userData = userDoc.data();
+                userData.totalCoins = (userData.totalCoins || 0) + localCoins;
+                await updateDoc(userRef, { totalCoins: userData.totalCoins });
             } else {
-                coins = localCoins;
-                await setDoc(userRef, {
+                userData = { // Reset user data object for new user
                     name: user.displayName,
                     photoURL: user.photoURL,
                     highScore: 0,
-                    totalCoins: coins,
+                    totalCoins: localCoins,
                     rewardCollected: false,
-                    createdAt: serverTimestamp()
-                });
+                    purchasedBgs: ['default'],
+                    selectedBg: 'default',
+                }
+                await setDoc(userRef, { ...userData, createdAt: serverTimestamp() });
             }
             localStorage.removeItem('ssnake_coins');
+            coins = userData.totalCoins;
+            checkNotifications(user);
         }
+        
+        function loadLocalData() {
+            coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            userData.totalCoins = coins;
+            userData.purchasedBgs = JSON.parse(localStorage.getItem('ssnake_bgs')) || ['default'];
+            userData.selectedBg = localStorage.getItem('ssnake_selected_bg') || 'default';
+        }
+
 
         // --- Notificações ---
         async function checkNotifications(user) {
             if (!user) return;
+            notificationBell.classList.remove('hidden');
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
             if (userDoc.exists() && !userDoc.data().rewardCollected) {
-                notificationBell.classList.remove('hidden');
                 notificationDot.classList.remove('hidden');
+                collectRewardButton.disabled = false;
+                collectRewardButton.textContent = "Coletar 50 moedas";
             } else {
-                notificationBell.classList.add('hidden');
+                notificationDot.classList.add('hidden');
+                collectRewardButton.disabled = true;
+                collectRewardButton.textContent = "Coletado!";
             }
         }
         
@@ -617,15 +657,16 @@
         
         collectRewardButton.addEventListener('click', async () => {
             const user = auth.currentUser;
-            if(!user) return;
+            if(!user || collectRewardButton.disabled) return;
             
             collectRewardButton.disabled = true;
             collectRewardButton.textContent = "Coletado!";
             
             const userRef = doc(db, "users", user.uid);
-            coins += 50;
+            userData.totalCoins += 50;
+            coins = userData.totalCoins;
             await updateDoc(userRef, {
-                totalCoins: coins,
+                totalCoins: userData.totalCoins,
                 rewardCollected: true
             });
         });
@@ -678,6 +719,7 @@
         optionsButton.addEventListener('click', () => {
             previousScreen = startScreen;
             updateOptionButtons();
+            renderBackgroundSelection();
             showScreen(optionsScreen);
         });
         
@@ -691,6 +733,7 @@
         const handlePauseOptions = () => {
             previousScreen = gameScreen;
             updateOptionButtons();
+            renderBackgroundSelection();
             showScreen(optionsScreen);
         }
         pauseOptionsButton.addEventListener('click', handlePauseOptions);
@@ -767,14 +810,12 @@
             pauseIcon.classList.remove('hidden');
             playIcon.classList.add('hidden');
             setupCanvas();
+            const dpr = window.devicePixelRatio || 1;
             snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
             score = 0;
-            if(!auth.currentUser) {
-                coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
-            }
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
-            coinCountSpan.textContent = coins;
+            coinCountSpan.textContent = userData.totalCoins;
             placeFood();
             
             bonusApples = [];
@@ -820,8 +861,9 @@
             let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
             if (powerUps.wrap.active) {
-                const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
-                const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+                const dpr = window.devicePixelRatio || 1;
+                const gridWidth = canvas.width / dpr / gridSize;
+                const gridHeight = canvas.height / dpr / gridSize;
                 if (head.x < 0) head.x = gridWidth - 1;
                 if (head.x >= gridWidth) head.x = 0;
                 if (head.y < 0) head.y = gridHeight - 1;
@@ -1010,8 +1052,9 @@
         }
 
         function placeFood() {
-            const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
-            const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+            const dpr = window.devicePixelRatio || 1;
+            const gridWidth = canvas.width / dpr / gridSize;
+            const gridHeight = canvas.height / dpr / gridSize;
             food = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
             if (snake.some(segment => segment.x === food.x && segment.y === food.y)) placeFood();
         }
@@ -1026,8 +1069,9 @@
                 else if (rand < 0.50) type = 'purple';
                 else return;
                 
-                const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
-                const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+                const dpr = window.devicePixelRatio || 1;
+                const gridWidth = canvas.width / dpr / gridSize;
+                const gridHeight = canvas.height / dpr / gridSize;
                 let bonusX, bonusY;
                 do {
                     bonusX = Math.floor(Math.random() * gridWidth);
@@ -1132,8 +1176,9 @@
         
         function checkCollision() {
             const head = snake[0];
-            const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
-            const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+            const dpr = window.devicePixelRatio || 1;
+            const gridWidth = canvas.width / dpr / gridSize;
+            const gridHeight = canvas.height / dpr / gridSize;
             if (!powerUps.wrap.active && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) return true;
             if (!powerUps.immortal.active) {
                 for (let i = 1; i < snake.length; i++) {
@@ -1188,6 +1233,8 @@
         }
         
         updateOptionButtons();
+        loadLocalData(); // Carrega dados locais na inicialização
+        applyBackground();
     </script>
 </body>
 </html>
