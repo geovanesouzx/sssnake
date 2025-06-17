@@ -655,8 +655,9 @@
         notificationBell.addEventListener('click', showNotificationHandler);
         notificationBell.addEventListener('touchstart', (e) => { e.preventDefault(); showNotificationHandler()});
 
-        notificationBackButton.addEventListener('click', () => showScreen(startScreen));
-        notificationBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(startScreen)});
+        const hideNotificationHandler = () => showScreen(startScreen);
+        notificationBackButton.addEventListener('click', hideNotificationHandler);
+        notificationBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); hideNotificationHandler(); });
         
         collectRewardButton.addEventListener('click', async () => {
             const user = auth.currentUser;
@@ -1249,9 +1250,108 @@
             document.body.className = `background-${userData.selectedBg}`;
         }
         
+        function renderShopItems() {
+            shopItemsContainer.innerHTML = '';
+            shopItems.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'shop-item';
+
+                const owned = userData.purchasedBgs.includes(item.id);
+                const canAfford = userData.totalCoins >= item.price;
+                
+                let buttonHtml;
+                if(owned) {
+                    buttonHtml = `<button class="menu-button" disabled>Comprado</button>`;
+                } else {
+                    buttonHtml = `<button class="menu-button" data-item-id="${item.id}" data-price="${item.price}" ${canAfford ? '' : 'disabled'}>$ ${item.price}</button>`;
+                }
+
+                itemEl.innerHTML = `<h3>${item.name}</h3> ${buttonHtml}`;
+                shopItemsContainer.appendChild(itemEl);
+            });
+        }
+
+        function renderBackgroundSelection() {
+            backgroundSelectionContainer.innerHTML = '';
+            const allBgs = [
+                {id: 'default', name: 'Padrão'}, 
+                {id: 'sunset', name: 'Pôr do Sol'},
+                {id: 'pulse', name: 'Pulso Neon'}
+            ];
+
+            allBgs.forEach(bg => {
+                if(userData.purchasedBgs.includes(bg.id)){
+                    const btn = document.createElement('button');
+                    btn.className = 'menu-button';
+                    btn.textContent = bg.name;
+                    btn.dataset.bgId = bg.id;
+                    if(userData.selectedBg === bg.id) {
+                        btn.classList.add('active');
+                    }
+                    backgroundSelectionContainer.appendChild(btn);
+                }
+            });
+        }
+        
+        shopButton.addEventListener('click', () => {
+             previousScreen = startScreen;
+             renderShopItems();
+             showScreen(shopScreen);
+        });
+        shopBackButton.addEventListener('click', () => showScreen(startScreen));
+
+        shopItemsContainer.addEventListener('click', async (e) => {
+            const target = e.target.closest('[data-item-id]');
+            if(!target || target.disabled) return;
+            
+            const itemId = target.dataset.itemId;
+            const itemPrice = parseInt(target.dataset.price);
+
+            if(userData.totalCoins >= itemPrice) {
+                userData.totalCoins -= itemPrice;
+                userData.purchasedBgs.push(itemId);
+                
+                const user = auth.currentUser;
+                if(user) {
+                     await updateDoc(doc(db, "users", user.uid), {
+                        totalCoins: userData.totalCoins,
+                        purchasedBgs: userData.purchasedBgs
+                    });
+                } else {
+                    localStorage.setItem('ssnake_coins', userData.totalCoins);
+                    localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
+                }
+                
+                coinCountSpan.textContent = userData.totalCoins;
+                renderShopItems(); // Re-render to update button state
+                target.textContent = "Comprado";
+                target.disabled = true;
+            } else {
+                target.classList.add('shake');
+                setTimeout(() => target.classList.remove('shake'), 300);
+            }
+        });
+
+        backgroundSelectionContainer.addEventListener('click', async (e) => {
+             const target = e.target.closest('[data-bg-id]');
+             if(!target) return;
+             
+             userData.selectedBg = target.dataset.bgId;
+             applyBackground();
+             renderBackgroundSelection(); // Re-render to update active state
+             
+             const user = auth.currentUser;
+             if(user) {
+                 await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
+             } else {
+                 localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
+             }
+        });
+        
         updateOptionButtons();
         loadLocalData();
         applyBackground();
     </script>
 </body>
 </html>
+
