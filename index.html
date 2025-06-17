@@ -83,6 +83,11 @@
              from { opacity: 0; transform: scale(0.8); }
              to { opacity: 1; transform: scale(1); }
         }
+        
+        @keyframes ring {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
 
         /* Container principal do jogo (Efeito Glassmorphism) */
         .game-container {
@@ -127,6 +132,39 @@
             font-size: 3.5rem;
             color: var(--accent-color);
             margin-bottom: 20px;
+        }
+
+        #notification-bell {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        
+        #notification-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ff3366;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            border: 2px solid var(--primary-color);
+        }
+        
+        #notification-dot::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid #ff3366;
+            animation: ring 1.5s infinite;
         }
 
         .user-profile {
@@ -186,8 +224,8 @@
         #login-button svg { width: 24px; height: 24px; }
 
 
-        #options-screen, #leaderboard-screen, #tips-screen { justify-content: space-between; }
-        #options-screen h2, #leaderboard-screen h2, #tips-screen h2 {
+        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen { justify-content: space-between; }
+        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2 {
             font-size: 2.5rem;
             color: var(--accent-color);
             margin-bottom: 20px;
@@ -202,7 +240,7 @@
         .option-group { margin-bottom: 15px; }
         .option-group h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400; text-align: left;}
         
-        .credits-text, .tip-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; text-align: left; }
+        .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; text-align: left; }
         
         .credits-link {
             font-family: var(--font-family); display: inline-block; color: var(--apple-color-light); text-decoration: none;
@@ -297,6 +335,10 @@
     <div class="game-container">
         <!-- Tela Inicial -->
         <div id="start-screen" class="screen">
+            <div id="notification-bell" class="hidden">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"></path></svg>
+                 <div id="notification-dot" class="hidden"></div>
+            </div>
             <h1>Ssnake!!</h1>
             <div id="user-profile" class="user-profile hidden">
                 <img id="user-photo" src="" alt="Foto do Usuário">
@@ -359,6 +401,24 @@
             </div>
             <button id="tips-back-button" class="menu-button">Voltar</button>
         </div>
+        
+        <!-- Tela de Notificações -->
+        <div id="notification-screen" class="screen hidden">
+             <div class="scrollable-content">
+                <h2>Notificações</h2>
+                <div class="option-group">
+                    <h3>Atualização v1.5!</h3>
+                    <p class="notification-text">Novas maçãs bônus e sistema de moedas adicionados!</p>
+                </div>
+                 <div class="option-group">
+                    <h3>Recompensa de Login!</h3>
+                    <p class="notification-text">Obrigado por jogar! Colete suas 50 moedas de boas-vindas.</p>
+                    <button id="collect-reward-button" class="menu-button">Coletar 50 moedas</button>
+                </div>
+            </div>
+            <button id="notification-back-button" class="menu-button">Voltar</button>
+        </div>
+
 
         <!-- Tela do Placar -->
         <div id="leaderboard-screen" class="screen hidden">
@@ -430,6 +490,7 @@
         const gameOverScreen = document.getElementById('game-over-screen');
         const leaderboardScreen = document.getElementById('leaderboard-screen');
         const tipsScreen = document.getElementById('tips-screen');
+        const notificationScreen = document.getElementById('notification-screen');
         
         const startButton = document.getElementById('start-button');
         const optionsButton = document.getElementById('options-button');
@@ -442,6 +503,10 @@
         const leaderboardBackButton = document.getElementById('leaderboard-back-button');
         const tipsButton = document.getElementById('tips-button');
         const tipsBackButton = document.getElementById('tips-back-button');
+        const notificationBell = document.getElementById('notification-bell');
+        const notificationDot = document.getElementById('notification-dot');
+        const notificationBackButton = document.getElementById('notification-back-button');
+        const collectRewardButton = document.getElementById('collect-reward-button');
         
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
@@ -497,10 +562,12 @@
                 loginButton.classList.add('hidden');
                 logoutButton.classList.remove('hidden');
                 await syncUserData(user);
+                checkNotifications(user);
             } else {
                 userProfile.classList.add('hidden');
                 loginButton.classList.remove('hidden');
                 logoutButton.classList.add('hidden');
+                notificationBell.classList.add('hidden');
             }
         });
         
@@ -511,8 +578,7 @@
 
             if (userDoc.exists()) {
                 const cloudData = userDoc.data();
-                const cloudCoins = cloudData.totalCoins || 0;
-                coins = cloudCoins + localCoins;
+                coins = (cloudData.totalCoins || 0) + localCoins;
                 await updateDoc(userRef, { totalCoins: coins });
             } else {
                 coins = localCoins;
@@ -521,12 +587,49 @@
                     photoURL: user.photoURL,
                     highScore: 0,
                     totalCoins: coins,
+                    rewardCollected: false,
                     createdAt: serverTimestamp()
                 });
             }
             localStorage.removeItem('ssnake_coins');
-            coinCountSpan.textContent = coins;
         }
+
+        // --- Notificações ---
+        async function checkNotifications(user) {
+            if (!user) return;
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists() && !userDoc.data().rewardCollected) {
+                notificationBell.classList.remove('hidden');
+                notificationDot.classList.remove('hidden');
+            } else {
+                notificationBell.classList.add('hidden');
+            }
+        }
+        
+        notificationBell.addEventListener('click', () => {
+            previousScreen = startScreen;
+            showScreen(notificationScreen);
+            notificationDot.classList.add('hidden');
+        });
+
+        notificationBackButton.addEventListener('click', () => showScreen(startScreen));
+        
+        collectRewardButton.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if(!user) return;
+            
+            collectRewardButton.disabled = true;
+            collectRewardButton.textContent = "Coletado!";
+            
+            const userRef = doc(db, "users", user.uid);
+            coins += 50;
+            await updateDoc(userRef, {
+                totalCoins: coins,
+                rewardCollected: true
+            });
+        });
+
 
         // --- Placar (Leaderboard) ---
         async function getLeaderboard() {
@@ -543,7 +646,7 @@
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const li = document.createElement('li');
-                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore}</span>`;
+                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore || 0}</span>`;
                     scoreList.appendChild(li);
                 });
             } catch (error) {
@@ -632,6 +735,7 @@
         });
 
         function setupCanvas() {
+            const dpr = window.devicePixelRatio || 1;
             const topBarHeight = topBar.offsetHeight || 60;
             const containerWidth = gameScreen.clientWidth;
             const containerHeight = gameScreen.clientHeight - topBarHeight;
@@ -645,8 +749,13 @@
                 canvasWidth = Math.floor(baseSize / gridSize) * gridSize;
                 canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize;
             }
-            canvas.width = canvasWidth;
-            canvas.height = canvasHeight;
+            
+            canvas.width = canvasWidth * dpr;
+            canvas.height = canvasHeight * dpr;
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.style.height = `${canvasHeight}px`;
+            ctx.scale(dpr, dpr);
+
             topBar.style.width = `${canvasWidth}px`;
         }
         
@@ -658,7 +767,7 @@
             pauseIcon.classList.remove('hidden');
             playIcon.classList.add('hidden');
             setupCanvas();
-            snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
+            snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
             score = 0;
             if(!auth.currentUser) {
                 coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
@@ -711,10 +820,12 @@
             let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
             if (powerUps.wrap.active) {
-                if (head.x < 0) head.x = canvas.width / gridSize - 1;
-                if (head.x >= canvas.width / gridSize) head.x = 0;
-                if (head.y < 0) head.y = canvas.height / gridSize - 1;
-                if (head.y >= canvas.height / gridSize) head.y = 0;
+                const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
+                const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+                if (head.x < 0) head.x = gridWidth - 1;
+                if (head.x >= gridWidth) head.x = 0;
+                if (head.y < 0) head.y = gridHeight - 1;
+                if (head.y >= gridHeight) head.y = 0;
             }
 
             snake.unshift(head);
@@ -743,8 +854,9 @@
         }
         
         function draw() {
+            const dpr = window.devicePixelRatio || 1;
             ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
             drawApple();
             bonusApples.forEach(drawBonusApple);
             drawSnake();
@@ -898,7 +1010,9 @@
         }
 
         function placeFood() {
-            food = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
+            const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
+            const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+            food = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
             if (snake.some(segment => segment.x === food.x && segment.y === food.y)) placeFood();
         }
 
@@ -912,10 +1026,12 @@
                 else if (rand < 0.50) type = 'purple';
                 else return;
                 
+                const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
+                const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
                 let bonusX, bonusY;
                 do {
-                    bonusX = Math.floor(Math.random() * (canvas.width / gridSize));
-                    bonusY = Math.floor(Math.random() * (canvas.height / gridSize));
+                    bonusX = Math.floor(Math.random() * gridWidth);
+                    bonusY = Math.floor(Math.random() * gridHeight);
                 } while (snake.some(s => s.x === bonusX && s.y === bonusY) || (food.x === bonusX && food.y === bonusY) || bonusApples.some(a => a.x === bonusX && a.y === bonusY));
 
                 const newApple = { x: bonusX, y: bonusY, type };
@@ -958,28 +1074,23 @@
         }
 
         function updatePowerupTimers() {
-            powerupTimerDisplay.innerHTML = '';
+            let activeTimers = [];
             const now = Date.now();
-            let hasActivePowerup = false;
-
             if (powerUps.wrap.active) {
                 const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000);
-                const timerEl = document.createElement('div');
-                timerEl.className = 'timer-item';
-                timerEl.textContent = `Portal: ${remaining}s`;
-                powerupTimerDisplay.appendChild(timerEl);
-                hasActivePowerup = true;
+                activeTimers.push(`Portal: ${remaining}s`);
             }
             if (powerUps.immortal.active) {
                 const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000);
-                 const timerEl = document.createElement('div');
-                timerEl.className = 'timer-item';
-                timerEl.textContent = `Escudo: ${remaining}s`;
-                powerupTimerDisplay.appendChild(timerEl);
-                hasActivePowerup = true;
+                activeTimers.push(`Escudo: ${remaining}s`);
             }
 
-            powerupTimerDisplay.classList.toggle('hidden', !hasActivePowerup);
+            if (activeTimers.length > 0) {
+                powerupTimerDisplay.innerHTML = activeTimers.map(t => `<div class="timer-item">${t}</div>`).join('');
+                powerupTimerDisplay.classList.remove('hidden');
+            } else {
+                powerupTimerDisplay.classList.add('hidden');
+            }
         }
         
         function setDirection(newDirection) {
@@ -1021,7 +1132,9 @@
         
         function checkCollision() {
             const head = snake[0];
-            if (!powerUps.wrap.active && (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize)) return true;
+            const gridWidth = canvas.width / (window.devicePixelRatio || 1) / gridSize;
+            const gridHeight = canvas.height / (window.devicePixelRatio || 1) / gridSize;
+            if (!powerUps.wrap.active && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) return true;
             if (!powerUps.immortal.active) {
                 for (let i = 1; i < snake.length; i++) {
                     if (head.x === snake[i].x && head.y === snake[i].y) return true;
@@ -1078,5 +1191,3 @@
     </script>
 </body>
 </html>
-
-
