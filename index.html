@@ -644,10 +644,7 @@
             
             const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
             const querySnapshot = await getDocs(q);
-            const userRef = doc(db, "users", user.uid);
-            const userDoc = await getDoc(userRef);
-            const collected = userDoc.data().collectedRewards || [];
-
+            
             if (querySnapshot.empty) {
                  notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>';
             } else {
@@ -656,8 +653,8 @@
                     const notifEl = document.createElement('div');
                     notifEl.className = 'option-group';
                     let buttonHtml = '';
+                    const isCollected = userData.collectedRewards.includes(doc.id);
                     if (data.reward > 0) {
-                        const isCollected = collected.includes(doc.id);
                         buttonHtml = `<button class="menu-button" data-reward-id="${doc.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar ${data.reward} moedas`}</button>`;
                     }
                     notifEl.innerHTML = `<h3>${data.title}</h3><p class="notification-text">${data.message}</p>${buttonHtml}`;
@@ -669,21 +666,17 @@
              clearButton.className = 'menu-button';
              clearButton.textContent = 'Limpar Tudo';
              notificationList.appendChild(clearButton);
-             addSafeListener(clearButton, markAllNotificationsRead);
         }
 
-        async function collectReward(e) {
-            const button = e.target.closest('[data-reward-id]');
-            if(!button || button.disabled) return;
-            
+        async function collectReward(target) {
             const user = auth.currentUser;
-            if(!user) return;
+            if(!user || target.disabled) return;
 
-            const rewardId = button.dataset.rewardId;
-            const rewardAmount = parseInt(button.dataset.rewardAmount);
+            const rewardId = target.dataset.rewardId;
+            const rewardAmount = parseInt(target.dataset.rewardAmount);
             
-            button.disabled = true;
-            button.textContent = "Coletado!";
+            target.disabled = true;
+            target.textContent = "Coletado!";
             
             userData.totalCoins += rewardAmount;
             userData.collectedRewards.push(rewardId);
@@ -692,7 +685,7 @@
 
             await updateDoc(doc(db, "users", user.uid), {
                 totalCoins: userData.totalCoins,
-                collectedRewards: userData.collectedRewards
+                collectedRewards: arrayUnion(rewardId)
             });
         }
 
@@ -740,11 +733,6 @@
         
         
         // --- Lógica de Navegação e Handlers ---
-        function addSafeListener(element, handler) {
-             element.addEventListener('click', handler);
-             element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false });
-        }
-        
         function showScreen(screen) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
             screen.classList.remove('hidden');
@@ -775,6 +763,13 @@
             showScreen(screens.shop);
         };
         
+        const showNotificationHandler = () => {
+            previousScreen = screens.start;
+            renderNotifications();
+            showScreen(screens.notifications);
+            notificationDot.classList.add('hidden');
+        };
+
         const handlePauseOptions = () => {
             previousScreen = screens.game;
             updateOptionButtons();
@@ -792,8 +787,8 @@
         function setupCanvas() {
             const dpr = window.devicePixelRatio || 1;
             const topBarHeight = topBar.offsetHeight || 60;
-            const containerWidth = gameScreen.clientWidth;
-            const containerHeight = gameScreen.clientHeight - topBarHeight;
+            const containerWidth = screens.game.clientWidth;
+            const containerHeight = screens.game.clientHeight - topBarHeight;
             let canvasWidth, canvasHeight;
             if (gameSettings.aspectRatio === 'notebook') {
                 const canvasSize = Math.min(containerWidth, containerHeight);
@@ -1219,6 +1214,8 @@
                 try {
                     const userRef = doc(db, "users", user.uid);
                     const userDoc = await getDoc(userRef);
+                    
+                    userData.totalCoins = coins;
 
                     if (userDoc.exists()) {
                         const existingData = userDoc.data();
@@ -1299,12 +1296,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Event listener único para todos os botões, usando delegação de eventos
             document.body.addEventListener('click', async (e) => {
-                const target = e.target.closest('button');
+                const target = e.target.closest('button, div[id=notification-bell]');
                 if (!target) return;
                 
                 const id = target.id;
                 
-                // Botões do Menu Principal
                 if (id === 'login-button') signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
                 if (id === 'logout-button') signOut(auth).catch(error => console.error("Erro no logout:", error));
                 if (id === 'start-button') startGame();
@@ -1312,24 +1308,18 @@
                 if (id === 'options-button') showOptionsHandler();
                 if (id === 'tips-button') showTipsHandler();
                 if (id === 'shop-button') showShopHandler();
-
-                // Botões de Voltar
                 if (id === 'leaderboard-back-button' || id === 'shop-back-button') showScreen(screens.start);
                 if (id === 'tips-back-button' || id === 'notification-back-button') showScreen(previousScreen);
                 if (id === 'back-button') { showScreen(previousScreen); if (previousScreen === screens.game) pauseOverlay.classList.remove('hidden'); }
-
-                // Botões do Jogo
                 if (id === 'restart-button') startGame();
                 if (id === 'home-button') showScreen(screens.start);
                 if (id === 'pause-button' || id === 'resume-button') togglePause();
                 if (id === 'pause-home-button') pauseHomeHandler();
                 if (id === 'pause-options-button') handlePauseOptions();
-
-                // Notificações e Loja
                 if (id === 'notification-bell') showNotificationHandler();
-                if (id === 'collect-reward-button') await collectReward(e);
+                if (target.dataset.rewardId) await collectReward(target);
+                if (id === 'clear-notifications-button') await markAllNotificationsRead();
 
-                // Lógica da Loja e Opções
                 if (target.closest('#shop-items-container')) {
                     const itemId = target.dataset.itemId;
                     if (itemId) {
