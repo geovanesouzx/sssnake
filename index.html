@@ -787,9 +787,14 @@
             const dpr = window.devicePixelRatio || 1;
             snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
             score = 0;
+            if(!auth.currentUser) {
+                coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            } else {
+                coins = userData.totalCoins;
+            }
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
-            coinCountSpan.textContent = userData.totalCoins;
+            coinCountSpan.textContent = coins;
             placeFood();
             
             bonusApples = [];
@@ -1252,73 +1257,94 @@
                 }
             });
         }
-
-        function addSafeListener(element, handler) {
-            element.addEventListener('click', handler);
-            element.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                handler(e);
-            });
-        }
         
-        addSafeListener(shopButton, () => {
-             previousScreen = startScreen;
-             renderShopItems();
-             showScreen(shopScreen);
-        });
-        addSafeListener(shopBackButton, () => showScreen(startScreen));
-
-        shopItemsContainer.addEventListener('click', async (e) => {
-            const target = e.target.closest('[data-item-id]');
-            if(!target || target.disabled) return;
+        document.addEventListener('DOMContentLoaded', () => {
+            addSafeListener(startButton, startGame);
+            addSafeListener(restartButton, startGame);
+            addSafeListener(homeButton, () => showScreen(startScreen));
             
-            const itemId = target.dataset.itemId;
-            const itemPrice = parseInt(target.dataset.price);
+            addSafeListener(leaderboardButton, () => {
+                previousScreen = startScreen;
+                getLeaderboard();
+                showScreen(leaderboardScreen);
+            });
+            addSafeListener(leaderboardBackButton, () => showScreen(startScreen));
+            
+            addSafeListener(optionsButton, showOptionsHandler);
+            addSafeListener(tipsButton, showTipsHandler);
+            addSafeListener(shopButton, showShopHandler);
 
-            if(userData.totalCoins >= itemPrice) {
-                userData.totalCoins -= itemPrice;
-                userData.purchasedBgs.push(itemId);
-                
-                const user = auth.currentUser;
-                if(user) {
-                     await updateDoc(doc(db, "users", user.uid), {
-                        totalCoins: userData.totalCoins,
-                        purchasedBgs: userData.purchasedBgs
-                    });
-                } else {
-                    localStorage.setItem('ssnake_coins', userData.totalCoins);
-                    localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
+            addSafeListener(tipsBackButton, () => showScreen(previousScreen));
+            addSafeListener(shopBackButton, () => showScreen(startScreen));
+            
+            addSafeListener(pauseButton, togglePause);
+            addSafeListener(resumeButton, togglePause);
+            addSafeListener(pauseHomeButton, pauseHomeHandler);
+            addSafeListener(pauseOptionsButton, handlePauseOptions);
+            
+            addSafeListener(notificationBell, showNotificationHandler);
+            addSafeListener(notificationBackButton, hideNotificationHandler);
+            addSafeListener(collectRewardButton, collectReward);
+            
+            addSafeListener(backButton, () => {
+                showScreen(previousScreen);
+                if (previousScreen === gameScreen) {
+                    pauseOverlay.classList.remove('hidden');
                 }
-                
-                coinCountSpan.textContent = userData.totalCoins;
-                renderShopItems(); 
-                target.textContent = "Comprado";
-                target.disabled = true;
-            } else {
-                target.classList.add('shake');
-                setTimeout(() => target.classList.remove('shake'), 300);
-            }
-        });
+            });
 
-        backgroundSelectionContainer.addEventListener('click', async (e) => {
-             const target = e.target.closest('[data-bg-id]');
-             if(!target) return;
-             
-             userData.selectedBg = target.dataset.bgId;
-             applyBackground();
-             renderBackgroundSelection();
-             
-             const user = auth.currentUser;
-             if(user) {
-                 await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
-             } else {
-                 localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
-             }
+            shopItemsContainer.addEventListener('click', async (e) => {
+                const target = e.target.closest('[data-item-id]');
+                if(!target || target.disabled) return;
+                
+                const itemId = target.dataset.itemId;
+                const itemPrice = parseInt(target.dataset.price);
+
+                if(userData.totalCoins >= itemPrice) {
+                    userData.totalCoins -= itemPrice;
+                    userData.purchasedBgs.push(itemId);
+                    
+                    const user = auth.currentUser;
+                    if(user) {
+                         await updateDoc(doc(db, "users", user.uid), {
+                            totalCoins: userData.totalCoins,
+                            purchasedBgs: userData.purchasedBgs
+                        });
+                    } else {
+                        localStorage.setItem('ssnake_coins', userData.totalCoins);
+                        localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
+                    }
+                    
+                    coinCountSpan.textContent = userData.totalCoins;
+                    renderShopItems();
+                    target.textContent = "Comprado";
+                    target.disabled = true;
+                } else {
+                    target.classList.add('shake');
+                    setTimeout(() => target.classList.remove('shake'), 300);
+                }
+            });
+
+            backgroundSelectionContainer.addEventListener('click', async (e) => {
+                 const target = e.target.closest('[data-bg-id]');
+                 if(!target) return;
+                 
+                 userData.selectedBg = target.dataset.bgId;
+                 applyBackground();
+                 renderBackgroundSelection();
+                 
+                 const user = auth.currentUser;
+                 if(user) {
+                     await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
+                 } else {
+                     localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
+                 }
+            });
+
+            updateOptionButtons();
+            loadLocalData();
+            applyBackground();
         });
-        
-        updateOptionButtons();
-        loadLocalData();
-        applyBackground();
     </script>
 </body>
 </html>
