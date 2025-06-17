@@ -6,49 +6,65 @@
     <title>Ssnake!!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <style>
         /* Estilos gerais e de reset */
         :root {
-            --primary-color: #0d1117;
-            --secondary-color: #161b22;
-            --accent-color: #58a6ff;
-            --food-color: #f778ba;
-            --text-color: #c9d1d9;
-            --font-family: 'Poppins', sans-serif;
-            --glow-color: rgba(88, 166, 255, 0.5);
-            --food-glow: rgba(247, 120, 186, 0.6);
+            --primary-color: #1a0c2e;
+            --secondary-color: #2a1a4a;
+            --accent-color: #ff00ff; /* Magenta */
+            --food-color: #00ffff;   /* Ciano */
+            --text-color: #f0e6ff;
+            --font-family: 'Orbitron', sans-serif;
+            --glow-color: rgba(255, 0, 255, 0.7);
+            --food-glow: rgba(0, 255, 255, 0.7);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* Impede a seleção de texto nos controles de toque */
+            user-select: none;
         }
 
         body {
             font-family: var(--font-family);
-            background: linear-gradient(45deg, #0d1117, #1e293b, #0d1117);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-color: var(--primary-color);
             color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
+            position: relative;
         }
+
+        /* Fundo animado de grade Synthwave */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 255, 0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: moveGrid 20s linear infinite;
+            transform: perspective(300px) rotateX(60deg);
+            z-index: -1;
+        }
+
 
         .hidden {
             display: none !important;
         }
 
         /* Animações */
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes moveGrid {
+            from { background-position: 0 0; }
+            to { background-position: 0 -100vh; }
         }
 
         @keyframes fadeIn {
@@ -61,16 +77,16 @@
              to { opacity: 1; transform: scale(1); }
         }
 
-
-        /* Container principal do jogo */
+        /* Container principal do jogo (Efeito Glassmorphism) */
         .game-container {
             width: 95vw;
             height: 95vh;
             max-width: 600px;
             max-height: 800px;
-            background-color: rgba(22, 27, 34, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--secondary-color);
+            background-color: rgba(42, 26, 74, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 0, 255, 0.2);
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             display: flex;
@@ -78,7 +94,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            padding: 0; /* Removido o padding para dar mais espaço ao jogo */
+            padding: 20px;
         }
         
         /* Telas */
@@ -94,17 +110,12 @@
             position: relative; 
         }
 
-        /* Adiciona padding às telas que não são do jogo para manter o conteúdo centralizado */
-        #start-screen, #options-screen, #game-over-screen {
-            padding: 20px;
-        }
-
         h1, h2 {
             font-weight: 700;
-            text-shadow: 0 0 15px var(--glow-color);
+            text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
         }
 
-        /* Estilos da tela inicial */
+        /* Estilos da tela inicial e outras telas com menus */
         #start-screen h1 {
             font-size: 3.5rem;
             color: var(--accent-color);
@@ -113,37 +124,29 @@
 
         .menu-button {
             font-family: var(--font-family);
-            background: linear-gradient(45deg, var(--accent-color), #368ce8);
+            background: linear-gradient(45deg, var(--accent-color), #b300b3);
             color: #fff;
             border: none;
             padding: 15px 35px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            border-radius: 50px;
+            border-radius: 8px;
             transition: all 0.2s ease-out;
             margin: 10px;
-            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.3);
-        }
-        
-        .menu-button.pop-in {
-             animation: popIn 0.5s ease-out 0.4s backwards;
-        }
-        
-        #options-button.pop-in {
-            animation-delay: 0.6s;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), inset 0 0 5px rgba(255,255,255,0.3);
+            text-transform: uppercase;
         }
         
         .menu-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px var(--glow-color);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 25px var(--glow-color), inset 0 0 8px rgba(255,255,255,0.4);
         }
         
         .menu-button.active {
-            background: #fff;
+            background: var(--food-color);
             color: var(--primary-color);
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--food-glow);
         }
 
         /* Estilos da tela de opções */
@@ -164,40 +167,51 @@
             font-weight: 400;
         }
         
-        /* Estilos da tela de jogo */
+        /* --- Estilos da Tela de Jogo --- */
         #game-screen {
-             padding-top: 50px; /* Espaço no topo para o placar e botão de pausa */
+            justify-content: flex-start;
+        }
+
+        #top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 10px;
         }
         
         #score-display {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-color);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-            position: absolute;
-            top: 20px;
-            text-align: left;
+            text-shadow: 0 0 5px var(--food-glow);
         }
         
         #pause-button {
-            position: absolute;
-            top: 20px;
-            right: 30px;
             background: transparent;
             border: 2px solid var(--text-color);
             color: var(--text-color);
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            font-size: 1.2rem;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         #pause-button:hover {
             background: var(--text-color);
             color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        #pause-button svg {
+            width: 50%;
+            height: 50%;
+            fill: currentColor;
         }
         
         #pause-overlay {
@@ -206,14 +220,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(13, 2, 28, 0.7);
             color: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
-            border-radius: 20px; /* Para cobrir o container arredondado */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            z-index: 20;
         }
         
         #pause-overlay h2 {
@@ -223,7 +239,7 @@
         }
         
         canvas {
-            background-color: var(--primary-color);
+            background-color: rgba(13, 2, 28, 0.8);
             border-radius: 12px;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
@@ -233,39 +249,40 @@
             width: 100%;
             display: grid;
             grid-template-areas: ". up ." "left . right" ". down .";
-            gap: 10px;
+            gap: 15px;
             position: absolute;
             bottom: 20px;
-            padding: 0 50px;
+            padding: 0 40px;
         }
         
         .touch-button {
-            background-color: rgba(88, 166, 255, 0.2);
-            border: 1px solid rgba(88, 166, 255, 0.5);
+            background-color: rgba(0, 255, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.4);
             color: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            border-radius: 10px;
+            width: 65px;
+            height: 65px;
             font-size: 2rem;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
         .touch-button:active {
-            background-color: rgba(88, 166, 255, 0.5);
+            background-color: rgba(0, 255, 255, 0.4);
+            transform: scale(0.95);
         }
         #up-button    { grid-area: up; justify-self: center; }
         #down-button  { grid-area: down; justify-self: center; }
         #left-button  { grid-area: left; justify-self: start; }
         #right-button { grid-area: right; justify-self: end; }
 
-
         /* Estilos da tela de Game Over */
         #game-over-screen h2 {
             font-size: 3rem;
-            color: #e84a5f;
-            text-shadow: 0 0 15px rgba(232, 74, 95, 0.7);
+            color: #ff3366;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.7);
             margin-bottom: 20px;
         }
         
@@ -282,8 +299,8 @@
         <!-- Tela Inicial -->
         <div id="start-screen" class="screen">
             <h1>Ssnake!!</h1>
-            <button id="start-button" class="menu-button pop-in">Iniciar Jogo</button>
-            <button id="options-button" class="menu-button pop-in">Opções</button>
+            <button id="start-button" class="menu-button">Iniciar Jogo</button>
+            <button id="options-button" class="menu-button">Opções</button>
         </div>
 
         <!-- Tela de Opções -->
@@ -291,28 +308,33 @@
             <h2>Opções</h2>
             <div class="option-group">
                 <h3>Controles</h3>
-                <button id="keyboard-controls-button" data-control="keyboard" class="menu-button">Teclado</button>
-                <button id="touch-controls-button" data-control="touch" class="menu-button">Touch</button>
+                <button data-control="keyboard" class="menu-button">Teclado</button>
+                <button data-control="touch" class="menu-button">Touch</button>
             </div>
             <div class="option-group">
                 <h3>Proporção da Tela</h3>
-                <button id="notebook-ratio-button" data-ratio="notebook" class="menu-button">Notebook</button>
-                <button id="mobile-ratio-button" data-ratio="mobile" class="menu-button">Celular</button>
+                <button data-ratio="notebook" class="menu-button">Notebook</button>
+                <button data-ratio="mobile" class="menu-button">Celular</button>
             </div>
             <button id="back-button" class="menu-button">Voltar</button>
         </div>
         
         <!-- Tela de Jogo -->
         <div id="game-screen" class="screen hidden">
-            <div id="score-display">Score: 0</div>
-            <button id="pause-button">||</button>
+            <div id="top-bar" class="hidden">
+                <div id="score-display">Score: 0</div>
+                <button id="pause-button">
+                    <svg id="pause-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                    <svg id="play-icon" class="hidden" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                </button>
+            </div>
+            <canvas id="gameCanvas"></canvas>
             <div id="pause-overlay" class="hidden">
                 <h2>Pausado</h2>
                 <button id="resume-button" class="menu-button">Continuar</button>
                 <button id="pause-options-button" class="menu-button">Opções</button>
                 <button id="pause-home-button" class="menu-button">Tela Inicial</button>
             </div>
-            <canvas id="gameCanvas"></canvas>
             <div id="touch-controls" class="hidden">
                 <div id="up-button" class="touch-button">▲</div>
                 <div id="left-button" class="touch-button">◀</div>
@@ -342,7 +364,11 @@
         const backButton = document.getElementById('back-button');
         const restartButton = document.getElementById('restart-button');
         const homeButton = document.getElementById('home-button'); 
+        
+        const topBar = document.getElementById('top-bar');
         const pauseButton = document.getElementById('pause-button');
+        const pauseIcon = document.getElementById('pause-icon');
+        const playIcon = document.getElementById('play-icon');
         const pauseOverlay = document.getElementById('pause-overlay');
         const resumeButton = document.getElementById('resume-button');
         const pauseOptionsButton = document.getElementById('pause-options-button');
@@ -366,7 +392,7 @@
         let gridSize = 15;
         let snake, food, score, direction, gameInterval;
         let isPaused = false;
-        let previousScreen = startScreen; // Para saber para onde voltar da tela de opções
+        let previousScreen = startScreen;
 
         // --- Lógica de Navegação e Opções ---
         function showScreen(screen) {
@@ -379,13 +405,11 @@
         }
 
         function updateOptionButtons() {
+            document.querySelectorAll('[data-control]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-control="${gameSettings.controlMode}"]`).classList.add('active');
-            const otherControl = gameSettings.controlMode === 'keyboard' ? 'touch' : 'keyboard';
-            document.querySelector(`[data-control="${otherControl}"]`).classList.remove('active');
             
+            document.querySelectorAll('[data-ratio]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
-            const otherRatio = gameSettings.aspectRatio === 'notebook' ? 'mobile' : 'notebook';
-            document.querySelector(`[data-ratio="${otherRatio}"]`).classList.remove('active');
         }
         
         // --- Event Listeners ---
@@ -404,18 +428,16 @@
         });
 
         backButton.addEventListener('click', () => {
+            showScreen(previousScreen);
             if (previousScreen === gameScreen) {
-                showScreen(gameScreen);
-                pauseOverlay.classList.remove('hidden'); // Mantém o menu de pausa visível
-            } else {
-                showScreen(startScreen);
+                pauseOverlay.classList.remove('hidden');
             }
         });
 
         restartButton.addEventListener('click', startGame);
         homeButton.addEventListener('click', () => showScreen(startScreen));
         pauseHomeButton.addEventListener('click', () => {
-            endGame(false); // Encerra o jogo sem mostrar a tela de Game Over
+            endGame(false);
             showScreen(startScreen);
         });
         
@@ -423,12 +445,12 @@
         resumeButton.addEventListener('click', togglePause);
 
         optionsScreen.addEventListener('click', (e) => {
-            if (e.target.matches('[data-control]')) {
-                gameSettings.controlMode = e.target.dataset.control;
+            if (e.target.closest('[data-control]')) {
+                gameSettings.controlMode = e.target.closest('[data-control]').dataset.control;
                 updateOptionButtons();
             }
-            if (e.target.matches('[data-ratio]')) {
-                gameSettings.aspectRatio = e.target.dataset.ratio;
+            if (e.target.closest('[data-ratio]')) {
+                gameSettings.aspectRatio = e.target.closest('[data-ratio]').dataset.ratio;
                 updateOptionButtons();
             }
         });
@@ -436,9 +458,10 @@
         // --- Lógica do Jogo da Cobra ---
         function setupCanvas() {
             const touchControlsHeight = gameSettings.controlMode === 'touch' ? 120 : 0;
-            
+            const topBarHeight = topBar.offsetHeight || 60;
+
             const containerWidth = gameScreen.clientWidth;
-            const containerHeight = gameScreen.clientHeight - touchControlsHeight;
+            const containerHeight = gameScreen.clientHeight - touchControlsHeight - topBarHeight;
             
             let canvasWidth, canvasHeight;
             
@@ -447,34 +470,27 @@
                 canvasWidth = Math.floor(canvasSize / gridSize) * gridSize;
                 canvasHeight = canvasWidth;
             } else { // mobile
-                const baseSize = Math.min(containerWidth, containerHeight / 1.5);
+                const baseSize = Math.min(containerWidth, containerHeight);
                 canvasWidth = Math.floor(baseSize / gridSize) * gridSize;
                 canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize;
             }
 
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
-
-            const canvasLeftMargin = (gameScreen.clientWidth - canvas.width) / 2;
-            scoreDisplay.style.left = `${canvasLeftMargin}px`;
-            
-            const pauseButtonRightMargin = canvasLeftMargin;
-            pauseButton.style.right = `${pauseButtonRightMargin}px`;
+            topBar.style.width = `${canvasWidth}px`;
         }
         
         function startGame() {
             showScreen(gameScreen);
             isPaused = false;
+            topBar.classList.remove('hidden');
             pauseOverlay.classList.add('hidden');
-            pauseButton.textContent = '||';
+            pauseIcon.classList.remove('hidden');
+            playIcon.classList.add('hidden');
             
             setupCanvas();
             
-            if (gameSettings.controlMode === 'touch') {
-                touchControls.classList.remove('hidden');
-            } else {
-                touchControls.classList.add('hidden');
-            }
+            touchControls.classList.toggle('hidden', gameSettings.controlMode !== 'touch');
             
             snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
             score = 0;
@@ -494,14 +510,14 @@
             if (!gameInterval && !isPaused) return; 
             
             isPaused = !isPaused;
+            pauseOverlay.classList.toggle('hidden');
+            pauseIcon.classList.toggle('hidden');
+            playIcon.classList.toggle('hidden');
+            
             if (isPaused) {
                 clearInterval(gameInterval);
-                pauseOverlay.classList.remove('hidden');
-                pauseButton.classList.add('hidden');
             } else {
                 gameInterval = setInterval(gameLoop, 110);
-                pauseOverlay.classList.add('hidden');
-                pauseButton.classList.remove('hidden');
             }
         }
 
@@ -530,19 +546,24 @@
         }
         
         function draw() {
-            ctx.fillStyle = getCssVar('--primary-color');
+            const primaryColor = getCssVar('--primary-color').trim();
+            const accentColor = getCssVar('--accent-color').trim();
+            const foodColor = getCssVar('--food-color').trim();
+            const foodGlow = getCssVar('--food-glow').trim();
+
+            ctx.fillStyle = primaryColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.shadowColor = getCssVar('--accent-color');
+            ctx.shadowColor = accentColor;
             ctx.shadowBlur = 8;
-            ctx.fillStyle = getCssVar('--accent-color');
+            ctx.fillStyle = accentColor;
             snake.forEach(segment => {
                 ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 1, gridSize - 1);
             });
 
-            ctx.shadowColor = getCssVar('--food-glow');
+            ctx.shadowColor = foodGlow;
             ctx.shadowBlur = 12;
-            ctx.fillStyle = getCssVar('--food-color');
+            ctx.fillStyle = foodColor;
             ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
 
             ctx.shadowBlur = 0;
@@ -577,17 +598,16 @@
                 togglePause();
                 return;
             }
-            if (gameSettings.controlMode !== 'keyboard') return;
+            if (gameSettings.controlMode !== 'keyboard' || isPaused) return;
             
-            if (keyPressed === 'arrowleft' || keyPressed === 'a') setDirection('left');
-            if (keyPressed === 'arrowup' || keyPressed === 'w') setDirection('up');
-            if (keyPressed === 'arrowright' || keyPressed === 'd') setDirection('right');
-            if (keyPressed === 'arrowdown' || keyPressed === 's') setDirection('down');
+            if (['arrowleft', 'a'].includes(keyPressed)) setDirection('left');
+            if (['arrowup', 'w'].includes(keyPressed)) setDirection('up');
+            if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
+            if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
         }
         
         function handleTouchInput(event) {
-            if (isPaused) return;
-            if (gameSettings.controlMode !== 'touch') return;
+            if (isPaused || gameSettings.controlMode !== 'touch') return;
             const targetId = event.target.id;
             if (targetId === 'up-button') setDirection('up');
             if (targetId === 'down-button') setDirection('down');
@@ -611,6 +631,7 @@
         function endGame(showGameOverScreen = true) {
             clearInterval(gameInterval);
             gameInterval = null;
+            topBar.classList.add('hidden');
             document.removeEventListener('keydown', handleKeyInput);
             touchControls.removeEventListener('click', handleTouchInput);
             if (showGameOverScreen) {
