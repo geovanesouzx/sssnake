@@ -244,40 +244,6 @@
             box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
 
-        /* Controles de Toque */
-        #touch-controls {
-            width: 100%;
-            display: grid;
-            grid-template-areas: ". up ." "left . right" ". down .";
-            gap: 15px;
-            position: absolute;
-            bottom: 20px;
-            padding: 0 40px;
-        }
-        
-        .touch-button {
-            background-color: rgba(0, 255, 255, 0.15);
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            color: white;
-            border-radius: 10px;
-            width: 65px;
-            height: 65px;
-            font-size: 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .touch-button:active {
-            background-color: rgba(0, 255, 255, 0.4);
-            transform: scale(0.95);
-        }
-        #up-button    { grid-area: up; justify-self: center; }
-        #down-button  { grid-area: down; justify-self: center; }
-        #left-button  { grid-area: left; justify-self: start; }
-        #right-button { grid-area: right; justify-self: end; }
-
         /* Estilos da tela de Game Over */
         #game-over-screen h2 {
             font-size: 3rem;
@@ -335,12 +301,6 @@
                 <button id="pause-options-button" class="menu-button">Opções</button>
                 <button id="pause-home-button" class="menu-button">Tela Inicial</button>
             </div>
-            <div id="touch-controls" class="hidden">
-                <div id="up-button" class="touch-button">▲</div>
-                <div id="left-button" class="touch-button">◀</div>
-                <div id="right-button" class="touch-button">▶</div>
-                <div id="down-button" class="touch-button">▼</div>
-            </div>
         </div>
         
         <!-- Tela de Game Over -->
@@ -379,8 +339,6 @@
         const scoreDisplay = document.getElementById('score-display');
         const finalScoreDisplay = document.getElementById('final-score');
         
-        const touchControls = document.getElementById('touch-controls');
-
         // --- Configurações Iniciais e do Jogo ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
@@ -393,6 +351,8 @@
         let snake, food, score, direction, gameInterval;
         let isPaused = false;
         let previousScreen = startScreen;
+        let touchStartX = 0;
+        let touchStartY = 0;
 
         // --- Lógica de Navegação e Opções ---
         function showScreen(screen) {
@@ -457,11 +417,10 @@
 
         // --- Lógica do Jogo da Cobra ---
         function setupCanvas() {
-            const touchControlsHeight = gameSettings.controlMode === 'touch' ? 120 : 0;
             const topBarHeight = topBar.offsetHeight || 60;
 
             const containerWidth = gameScreen.clientWidth;
-            const containerHeight = gameScreen.clientHeight - touchControlsHeight - topBarHeight;
+            const containerHeight = gameScreen.clientHeight - topBarHeight;
             
             let canvasWidth, canvasHeight;
             
@@ -490,8 +449,6 @@
             
             setupCanvas();
             
-            touchControls.classList.toggle('hidden', gameSettings.controlMode !== 'touch');
-            
             snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
             score = 0;
             direction = { x: 0, y: 0 };
@@ -503,7 +460,8 @@
             gameInterval = setInterval(gameLoop, 110);
             
             document.addEventListener('keydown', handleKeyInput);
-            touchControls.addEventListener('click', handleTouchInput);
+            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+            canvas.addEventListener('touchend', handleTouchEnd);
         }
         
         function togglePause() {
@@ -606,13 +564,36 @@
             if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
         }
         
-        function handleTouchInput(event) {
-            if (isPaused || gameSettings.controlMode !== 'touch') return;
-            const targetId = event.target.id;
-            if (targetId === 'up-button') setDirection('up');
-            if (targetId === 'down-button') setDirection('down');
-            if (targetId === 'left-button') setDirection('left');
-            if (targetId === 'right-button') setDirection('right');
+        function handleTouchStart(event) {
+            if (gameSettings.controlMode !== 'touch') return;
+            event.preventDefault();
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+        }
+
+        function handleTouchEnd(event) {
+            if (gameSettings.controlMode !== 'touch' || touchStartX === 0) return;
+
+            const touchEndX = event.changedTouches[0].clientX;
+            const touchEndY = event.changedTouches[0].clientY;
+
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Swipe horizontal
+                if (Math.abs(diffX) > 30) { // Limite mínimo para detectar o swipe
+                    setDirection(diffX > 0 ? 'right' : 'left');
+                }
+            } else {
+                // Swipe vertical
+                if (Math.abs(diffY) > 30) { // Limite mínimo para detectar o swipe
+                    setDirection(diffY > 0 ? 'down' : 'up');
+                }
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
         }
         
         function checkCollision() {
@@ -633,7 +614,8 @@
             gameInterval = null;
             topBar.classList.add('hidden');
             document.removeEventListener('keydown', handleKeyInput);
-            touchControls.removeEventListener('click', handleTouchInput);
+            canvas.removeEventListener('touchstart', handleTouchStart);
+            canvas.removeEventListener('touchend', handleTouchEnd);
             if (showGameOverScreen) {
                 finalScoreDisplay.textContent = `Seu Score: ${score}`;
                 showScreen(gameOverScreen);
