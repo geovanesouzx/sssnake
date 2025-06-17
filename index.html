@@ -252,8 +252,8 @@
             width: 100%;
         }
         
-        .option-group, .shop-item { margin-bottom: 15px; text-align: left;}
-        .option-group h3, .shop-item h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400;}
+        .option-group, .shop-item, .notification-item { margin-bottom: 15px; text-align: left;}
+        .option-group h3, .shop-item h3, .notification-item h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400;}
         
         .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; }
         
@@ -417,17 +417,8 @@
         
         <!-- Tela de Notificações -->
         <div id="notification-screen" class="screen hidden">
-             <div class="scrollable-content">
-                <h2>Notificações</h2>
-                <div class="option-group">
-                    <h3>Atualização v1.5!</h3>
-                    <p class="notification-text">Novas maçãs bônus e sistema de moedas adicionados!</p>
-                </div>
-                 <div class="option-group">
-                    <h3>Recompensa de Login!</h3>
-                    <p class="notification-text">Obrigado por jogar! Colete suas 50 moedas de boas-vindas.</p>
-                    <button id="collect-reward-button" class="menu-button">Coletar 50 moedas</button>
-                </div>
+             <div class="scrollable-content" id="notification-list">
+                <!-- Notificações serão injetadas aqui -->
             </div>
             <button id="notification-back-button" class="menu-button">Voltar</button>
         </div>
@@ -477,7 +468,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc, setDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
         // --- Configuração do Firebase ---
         const firebaseConfig = {
@@ -497,47 +488,47 @@
         const provider = new GoogleAuthProvider();
 
         // --- Elementos do DOM ---
-        const startScreen = document.getElementById('start-screen');
-        const optionsScreen = document.getElementById('options-screen');
-        const gameScreen = document.getElementById('game-screen');
-        const gameOverScreen = document.getElementById('game-over-screen');
-        const leaderboardScreen = document.getElementById('leaderboard-screen');
-        const tipsScreen = document.getElementById('tips-screen');
-        const notificationScreen = document.getElementById('notification-screen');
-        const shopScreen = document.getElementById('shop-screen');
-        
-        const startButton = document.getElementById('start-button');
-        const optionsButton = document.getElementById('options-button');
-        const backButton = document.getElementById('back-button');
-        const restartButton = document.getElementById('restart-button');
-        const homeButton = document.getElementById('home-button');
-        const loginButton = document.getElementById('login-button');
-        const logoutButton = document.getElementById('logout-button');
-        const leaderboardButton = document.getElementById('leaderboard-button');
-        const leaderboardBackButton = document.getElementById('leaderboard-back-button');
-        const tipsButton = document.getElementById('tips-button');
-        const tipsBackButton = document.getElementById('tips-back-button');
-        const notificationBell = document.getElementById('notification-bell');
-        const notificationDot = document.getElementById('notification-dot');
-        const notificationBackButton = document.getElementById('notification-back-button');
-        const collectRewardButton = document.getElementById('collect-reward-button');
-        const shopButton = document.getElementById('shop-button');
-        const shopBackButton = document.getElementById('shop-back-button');
-        const shopItemsContainer = document.getElementById('shop-items-container');
-        const backgroundSelectionContainer = document.getElementById('background-selection-container');
+        const screens = {
+            start: document.getElementById('start-screen'),
+            options: document.getElementById('options-screen'),
+            game: document.getElementById('game-screen'),
+            gameOver: document.getElementById('game-over-screen'),
+            leaderboard: document.getElementById('leaderboard-screen'),
+            tips: document.getElementById('tips-screen'),
+            notifications: document.getElementById('notification-screen'),
+            shop: document.getElementById('shop-screen'),
+        };
+
+        const buttons = {
+            start: document.getElementById('start-button'),
+            options: document.getElementById('options-button'),
+            back: document.getElementById('back-button'),
+            restart: document.getElementById('restart-button'),
+            home: document.getElementById('home-button'),
+            login: document.getElementById('login-button'),
+            logout: document.getElementById('logout-button'),
+            leaderboard: document.getElementById('leaderboard-button'),
+            leaderboardBack: document.getElementById('leaderboard-back-button'),
+            tips: document.getElementById('tips-button'),
+            tipsBack: document.getElementById('tips-back-button'),
+            notificationBell: document.getElementById('notification-bell'),
+            notificationBack: document.getElementById('notification-back-button'),
+            shop: document.getElementById('shop-button'),
+            shopBack: document.getElementById('shop-back-button'),
+            pause: document.getElementById('pause-button'),
+            resume: document.getElementById('resume-button'),
+            pauseOptions: document.getElementById('pause-options-button'),
+            pauseHome: document.getElementById('pause-home-button')
+        };
         
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
         const userName = document.getElementById('user-name');
         
         const topBar = document.getElementById('top-bar');
-        const pauseButton = document.getElementById('pause-button');
         const pauseIcon = document.getElementById('pause-icon');
         const playIcon = document.getElementById('play-icon');
         const pauseOverlay = document.getElementById('pause-overlay');
-        const resumeButton = document.getElementById('resume-button');
-        const pauseOptionsButton = document.getElementById('pause-options-button');
-        const pauseHomeButton = document.getElementById('pause-home-button');
         
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -546,6 +537,10 @@
         const scoreList = document.getElementById('score-list');
         const coinCountSpan = document.getElementById('coin-count');
         const powerupTimerDisplay = document.getElementById('powerup-timer-display');
+        const notificationDot = document.getElementById('notification-dot');
+        const notificationList = document.getElementById('notification-list');
+        const shopItemsContainer = document.getElementById('shop-items-container');
+        const backgroundSelectionContainer = document.getElementById('background-selection-container');
 
         // --- Configurações do Jogo ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -553,7 +548,7 @@
         let gridSize = 15;
         let snake, food, score, coins = 0, direction, gameInterval;
         let isPaused = false;
-        let previousScreen = startScreen;
+        let previousScreen = screens.start;
         let touchStartX = 0, touchStartY = 0;
         const preventDefaultHandler = (e) => e.preventDefault();
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
@@ -566,6 +561,7 @@
             highScore: 0,
             totalCoins: 0,
             purchasedBgs: ['default'],
+            collectedRewards: [],
             selectedBg: 'default'
         };
 
@@ -581,14 +577,14 @@
                 userProfile.classList.remove('hidden');
                 userName.textContent = user.displayName;
                 userPhoto.src = user.photoURL;
-                loginButton.classList.add('hidden');
-                logoutButton.classList.remove('hidden');
+                buttons.login.classList.add('hidden');
+                buttons.logout.classList.remove('hidden');
                 await loadUserData(user);
             } else {
                 userProfile.classList.add('hidden');
-                loginButton.classList.remove('hidden');
-                logoutButton.classList.add('hidden');
-                notificationBell.classList.add('hidden');
+                buttons.login.classList.remove('hidden');
+                buttons.logout.classList.add('hidden');
+                buttons.notificationBell.classList.add('hidden');
                 loadLocalData();
             }
             applyBackground();
@@ -600,13 +596,8 @@
             let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
 
             const defaultUserData = {
-                name: user.displayName,
-                photoURL: user.photoURL,
-                highScore: 0,
-                totalCoins: 0,
-                rewardCollected: false,
-                purchasedBgs: ['default'],
-                selectedBg: 'default',
+                name: user.displayName, photoURL: user.photoURL, highScore: 0,
+                totalCoins: 0, collectedRewards: [], purchasedBgs: ['default'], selectedBg: 'default',
             };
 
             if (userDoc.exists()) {
@@ -634,44 +625,94 @@
         // --- Notificações ---
         async function checkNotifications(user) {
             if (!user) return;
-            notificationBell.classList.remove('hidden');
-            const userRef = doc(db, "users", user.uid);
-            const userDoc = await getDoc(userRef);
-            if (userDoc.exists() && !userDoc.data().rewardCollected) {
+            buttons.notificationBell.classList.remove('hidden');
+            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+            const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id));
+
+            if (unreadNotifs.length > 0) {
                 notificationDot.classList.remove('hidden');
-                collectRewardButton.disabled = false;
-                collectRewardButton.textContent = "Coletar 50 moedas";
             } else {
                 notificationDot.classList.add('hidden');
-                collectRewardButton.disabled = true;
-                collectRewardButton.textContent = "Coletado!";
             }
         }
         
-        const showNotificationHandler = () => {
-             previousScreen = startScreen;
-             showScreen(notificationScreen);
-             notificationDot.classList.add('hidden');
-        };
-
-        const hideNotificationHandler = () => showScreen(startScreen);
-        
-        async function collectReward() {
+        async function renderNotifications() {
+            notificationList.innerHTML = '<h2>Notificações</h2>';
             const user = auth.currentUser;
-            if(!user || collectRewardButton.disabled) return;
+            if(!user) return;
             
-            collectRewardButton.disabled = true;
-            collectRewardButton.textContent = "Coletado!";
-            
+            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
             const userRef = doc(db, "users", user.uid);
-            userData.totalCoins += 50;
+            const userDoc = await getDoc(userRef);
+            const collected = userDoc.data().collectedRewards || [];
+
+            if (querySnapshot.empty) {
+                 notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>';
+            } else {
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const notifEl = document.createElement('div');
+                    notifEl.className = 'option-group';
+                    let buttonHtml = '';
+                    if (data.reward > 0) {
+                        const isCollected = collected.includes(doc.id);
+                        buttonHtml = `<button class="menu-button" data-reward-id="${doc.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar ${data.reward} moedas`}</button>`;
+                    }
+                    notifEl.innerHTML = `<h3>${data.title}</h3><p class="notification-text">${data.message}</p>${buttonHtml}`;
+                    notificationList.appendChild(notifEl);
+                });
+            }
+             const clearButton = document.createElement('button');
+             clearButton.id = 'clear-notifications-button';
+             clearButton.className = 'menu-button';
+             clearButton.textContent = 'Limpar Tudo';
+             notificationList.appendChild(clearButton);
+             addSafeListener(clearButton, markAllNotificationsRead);
+        }
+
+        async function collectReward(e) {
+            const button = e.target.closest('[data-reward-id]');
+            if(!button || button.disabled) return;
+            
+            const user = auth.currentUser;
+            if(!user) return;
+
+            const rewardId = button.dataset.rewardId;
+            const rewardAmount = parseInt(button.dataset.rewardAmount);
+            
+            button.disabled = true;
+            button.textContent = "Coletado!";
+            
+            userData.totalCoins += rewardAmount;
+            userData.collectedRewards.push(rewardId);
             coins = userData.totalCoins;
-            await updateDoc(userRef, {
+            coinCountSpan.textContent = coins;
+
+            await updateDoc(doc(db, "users", user.uid), {
                 totalCoins: userData.totalCoins,
-                rewardCollected: true
+                collectedRewards: userData.collectedRewards
             });
         }
 
+        async function markAllNotificationsRead() {
+            const user = auth.currentUser;
+            if(!user) return;
+
+            const q = query(collection(db, "notifications"));
+            const querySnapshot = await getDocs(q);
+            const allNotifIds = querySnapshot.docs.map(d => d.id);
+            
+            userData.collectedRewards = [...new Set([...(userData.collectedRewards || []), ...allNotifIds])];
+            
+            await updateDoc(doc(db, "users", user.uid), {
+                collectedRewards: userData.collectedRewards
+            });
+
+            notificationDot.classList.add('hidden');
+            showScreen(screens.start);
+        }
 
         // --- Placar (Leaderboard) ---
         async function getLeaderboard() {
@@ -701,10 +742,7 @@
         // --- Lógica de Navegação e Handlers ---
         function addSafeListener(element, handler) {
              element.addEventListener('click', handler);
-             element.addEventListener('touchstart', (e) => {
-                 e.preventDefault();
-                 handler(e);
-             });
+             element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false });
         }
         
         function showScreen(screen) {
@@ -720,33 +758,33 @@
         }
         
         const showOptionsHandler = () => {
-            previousScreen = startScreen;
+            previousScreen = auth.currentUser ? screens.start : previousScreen;
             updateOptionButtons();
             renderBackgroundSelection();
-            showScreen(optionsScreen);
+            showScreen(screens.options);
         };
         
         const showTipsHandler = () => {
-             previousScreen = startScreen;
-             showScreen(tipsScreen);
+             previousScreen = screens.start;
+             showScreen(screens.tips);
         };
         
         const showShopHandler = () => {
-            previousScreen = startScreen;
+            previousScreen = screens.start;
             renderShopItems();
-            showScreen(shopScreen);
+            showScreen(screens.shop);
         };
         
         const handlePauseOptions = () => {
-            previousScreen = gameScreen;
+            previousScreen = screens.game;
             updateOptionButtons();
             renderBackgroundSelection();
-            showScreen(optionsScreen);
+            showScreen(screens.options);
         };
         
         const pauseHomeHandler = () => {
             endGame(false);
-            showScreen(startScreen);
+            showScreen(screens.start);
         };
         
         // --- Lógica do Jogo ---
@@ -777,7 +815,7 @@
         }
         
         function startGame() {
-            showScreen(gameScreen);
+            showScreen(screens.game);
             isPaused = false;
             topBar.classList.remove('hidden');
             pauseOverlay.classList.add('hidden');
@@ -1207,7 +1245,7 @@
 
             if (showGameOverScreen) {
                 finalScoreDisplay.textContent = `Seu Score: ${score}`;
-                showScreen(gameOverScreen);
+                showScreen(screens.gameOver);
             }
         }
         
@@ -1259,89 +1297,94 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            addSafeListener(startButton, startGame);
-            addSafeListener(restartButton, startGame);
-            addSafeListener(homeButton, () => showScreen(startScreen));
-            
-            addSafeListener(leaderboardButton, () => {
-                previousScreen = startScreen;
-                getLeaderboard();
-                showScreen(leaderboardScreen);
-            });
-            addSafeListener(leaderboardBackButton, () => showScreen(startScreen));
-            
-            addSafeListener(optionsButton, showOptionsHandler);
-            addSafeListener(tipsButton, showTipsHandler);
-            addSafeListener(shopButton, showShopHandler);
-
-            addSafeListener(tipsBackButton, () => showScreen(previousScreen));
-            addSafeListener(shopBackButton, () => showScreen(startScreen));
-            
-            addSafeListener(pauseButton, togglePause);
-            addSafeListener(resumeButton, togglePause);
-            addSafeListener(pauseHomeButton, pauseHomeHandler);
-            addSafeListener(pauseOptionsButton, handlePauseOptions);
-            
-            addSafeListener(notificationBell, showNotificationHandler);
-            addSafeListener(notificationBackButton, hideNotificationHandler);
-            addSafeListener(collectRewardButton, collectReward);
-            
-            addSafeListener(backButton, () => {
-                showScreen(previousScreen);
-                if (previousScreen === gameScreen) {
-                    pauseOverlay.classList.remove('hidden');
-                }
-            });
-
-            shopItemsContainer.addEventListener('click', async (e) => {
-                const target = e.target.closest('[data-item-id]');
-                if(!target || target.disabled) return;
+            // Event listener único para todos os botões, usando delegação de eventos
+            document.body.addEventListener('click', async (e) => {
+                const target = e.target.closest('button');
+                if (!target) return;
                 
-                const itemId = target.dataset.itemId;
-                const itemPrice = parseInt(target.dataset.price);
+                const id = target.id;
+                
+                // Botões do Menu Principal
+                if (id === 'login-button') signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
+                if (id === 'logout-button') signOut(auth).catch(error => console.error("Erro no logout:", error));
+                if (id === 'start-button') startGame();
+                if (id === 'leaderboard-button') { previousScreen = screens.start; getLeaderboard(); showScreen(screens.leaderboard); }
+                if (id === 'options-button') showOptionsHandler();
+                if (id === 'tips-button') showTipsHandler();
+                if (id === 'shop-button') showShopHandler();
 
-                if(userData.totalCoins >= itemPrice) {
-                    userData.totalCoins -= itemPrice;
-                    userData.purchasedBgs.push(itemId);
-                    
-                    const user = auth.currentUser;
-                    if(user) {
-                         await updateDoc(doc(db, "users", user.uid), {
-                            totalCoins: userData.totalCoins,
-                            purchasedBgs: userData.purchasedBgs
-                        });
-                    } else {
-                        localStorage.setItem('ssnake_coins', userData.totalCoins);
-                        localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
+                // Botões de Voltar
+                if (id === 'leaderboard-back-button' || id === 'shop-back-button') showScreen(screens.start);
+                if (id === 'tips-back-button' || id === 'notification-back-button') showScreen(previousScreen);
+                if (id === 'back-button') { showScreen(previousScreen); if (previousScreen === screens.game) pauseOverlay.classList.remove('hidden'); }
+
+                // Botões do Jogo
+                if (id === 'restart-button') startGame();
+                if (id === 'home-button') showScreen(screens.start);
+                if (id === 'pause-button' || id === 'resume-button') togglePause();
+                if (id === 'pause-home-button') pauseHomeHandler();
+                if (id === 'pause-options-button') handlePauseOptions();
+
+                // Notificações e Loja
+                if (id === 'notification-bell') showNotificationHandler();
+                if (id === 'collect-reward-button') await collectReward(e);
+
+                // Lógica da Loja e Opções
+                if (target.closest('#shop-items-container')) {
+                    const itemId = target.dataset.itemId;
+                    if (itemId) {
+                        const itemPrice = parseInt(target.dataset.price);
+                        if (userData.totalCoins >= itemPrice) {
+                            userData.totalCoins -= itemPrice;
+                            userData.purchasedBgs.push(itemId);
+                            
+                            const user = auth.currentUser;
+                            if (user) {
+                                await updateDoc(doc(db, "users", user.uid), {
+                                    totalCoins: userData.totalCoins,
+                                    purchasedBgs: userData.purchasedBgs
+                                });
+                            } else {
+                                localStorage.setItem('ssnake_coins', userData.totalCoins);
+                                localStorage.setItem('ssnake_bgs', JSON.stringify(userData.purchasedBgs));
+                            }
+                            
+                            coinCountSpan.textContent = userData.totalCoins;
+                            renderShopItems();
+                        } else {
+                            target.classList.add('shake');
+                            setTimeout(() => target.classList.remove('shake'), 300);
+                        }
                     }
-                    
-                    coinCountSpan.textContent = userData.totalCoins;
-                    renderShopItems();
-                    target.textContent = "Comprado";
-                    target.disabled = true;
-                } else {
-                    target.classList.add('shake');
-                    setTimeout(() => target.classList.remove('shake'), 300);
                 }
+
+                if(target.closest('#background-selection-container')) {
+                    const bgId = target.dataset.bgId;
+                    if (bgId) {
+                        userData.selectedBg = bgId;
+                        applyBackground();
+                        renderBackgroundSelection();
+                        
+                        const user = auth.currentUser;
+                        if(user) {
+                            await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
+                        } else {
+                            localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
+                        }
+                    }
+                }
+
+                if (target.closest('#options-screen [data-control]')) {
+                    gameSettings.controlMode = target.dataset.control;
+                    updateOptionButtons();
+                }
+                 if (target.closest('#options-screen [data-ratio]')) {
+                    gameSettings.aspectRatio = target.dataset.ratio;
+                    updateOptionButtons();
+                }
+
             });
 
-            backgroundSelectionContainer.addEventListener('click', async (e) => {
-                 const target = e.target.closest('[data-bg-id]');
-                 if(!target) return;
-                 
-                 userData.selectedBg = target.dataset.bgId;
-                 applyBackground();
-                 renderBackgroundSelection();
-                 
-                 const user = auth.currentUser;
-                 if(user) {
-                     await updateDoc(doc(db, "users", user.uid), { selectedBg: userData.selectedBg });
-                 } else {
-                     localStorage.setItem('ssnake_selected_bg', userData.selectedBg);
-                 }
-            });
-
-            updateOptionButtons();
             loadLocalData();
             applyBackground();
         });
