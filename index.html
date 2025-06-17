@@ -51,7 +51,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image:
+            background-image: 
                 linear-gradient(to right, rgba(0, 255, 255, 0.2) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -59,6 +59,7 @@
             transform: perspective(300px) rotateX(60deg);
             z-index: -1;
         }
+
 
         .hidden {
             display: none !important;
@@ -99,7 +100,7 @@
             position: relative;
             padding: 20px;
         }
-
+        
         /* Telas */
         .screen {
             width: 100%;
@@ -110,7 +111,7 @@
             align-items: center;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
-            position: relative;
+            position: relative; 
         }
 
         h1, h2 {
@@ -140,7 +141,7 @@
         .user-profile span {
             font-size: 1rem;
         }
-        
+
         .menu-button {
             font-family: var(--font-family);
             background: linear-gradient(45deg, var(--accent-color), #b300b3);
@@ -155,22 +156,32 @@
             margin: 5px;
             box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), inset 0 0 5px rgba(255,255,255,0.3);
             text-transform: uppercase;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
-
+        
         .menu-button:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 0 25px var(--glow-color), inset 0 0 8px rgba(255,255,255,0.4);
         }
-
+        
         .menu-button.active {
             background: var(--food-color);
             color: var(--primary-color);
             box-shadow: 0 0 20px var(--cyan-glow);
         }
+
+        #login-button {
+            background: #fff;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+        }
+        #login-button:hover {
+            box-shadow: 0 0 25px #fff;
+        }
+        #login-button svg { width: 24px; height: 24px; }
+
 
         #options-screen, #leaderboard-screen { justify-content: space-between; }
         #options-screen h2, #leaderboard-screen h2 {
@@ -180,7 +191,7 @@
         }
         .option-group { margin-bottom: 15px; }
         .option-group h3 { font-size: 1rem; margin-bottom: 10px; color: var(--text-color); font-weight: 400; }
-
+        
         .credits-text { font-size: 1rem; color: var(--text-color); margin-bottom: 10px; }
         .credits-link {
             font-family: var(--font-family); display: inline-block; color: var(--apple-color-light); text-decoration: none;
@@ -188,14 +199,13 @@
             text-transform: uppercase; font-size: 0.9rem;
         }
         .credits-link:hover { background-color: var(--apple-color-light); color: var(--primary-color); box-shadow: 0 0 20px var(--food-glow); }
-
+        
         #score-list {
             list-style: none;
             width: 100%;
             max-height: 60vh;
             overflow-y: auto;
             text-align: left;
-            padding-right: 10px;
         }
         #score-list li {
             display: flex;
@@ -205,10 +215,10 @@
             border-bottom: 1px solid rgba(255,0,255,0.2);
         }
         #score-list li:nth-child(odd) { background-color: rgba(0,0,0,0.3); }
-        #score-list .rank { font-weight: 900; width: 40px; flex-shrink: 0; }
-        #score-list .name { flex-grow: 1; word-break: break-all; padding: 0 10px; }
+        #score-list .rank { font-weight: 900; width: 40px; }
+        #score-list .name { flex-grow: 1; }
         #score-list .score { font-weight: 900; color: var(--food-color); }
-
+        
         #game-screen { justify-content: flex-start; }
         #top-bar {
             width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
@@ -237,14 +247,14 @@
         }
         #pause-button:hover { background: var(--text-color); color: var(--primary-color); border-color: var(--primary-color); }
         #pause-button svg { width: 50%; height: 50%; fill: currentColor; }
-
+        
         #pause-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(13, 2, 28, 0.7);
             color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 20px; z-index: 20;
         }
         #pause-overlay h2 { font-size: 2.5rem; color: var(--text-color); margin-bottom: 20px; }
-
+        
         canvas {
             background-color: rgba(13, 2, 28, 0.8); border-radius: 12px;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
@@ -262,7 +272,7 @@
         <!-- Tela Inicial -->
         <div id="start-screen" class="screen">
             <h1>Ssnake!!</h1>
-             <div id="user-profile" class="user-profile hidden">
+            <div id="user-profile" class="user-profile hidden">
                 <img id="user-photo" src="" alt="Foto do Usuário">
                 <span id="user-name"></span>
             </div>
@@ -270,7 +280,7 @@
             <button id="leaderboard-button" class="menu-button">Placar</button>
             <button id="options-button" class="menu-button">Opções</button>
             <button id="login-button" class="menu-button">
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
                 <span>Login com Google</span>
             </button>
             <button id="logout-button" class="menu-button hidden">Sair</button>
@@ -302,12 +312,12 @@
         <!-- Tela do Placar -->
         <div id="leaderboard-screen" class="screen hidden">
              <div>
-                 <h2>Placar</h2>
-                 <ol id="score-list"><li>Carregando...</li></ol>
+                <h2>Placar</h2>
+                <ol id="score-list"><li>Carregando...</li></ol>
              </div>
              <button id="leaderboard-back-button" class="menu-button">Voltar</button>
         </div>
-
+        
         <!-- Tela de Jogo -->
         <div id="game-screen" class="screen hidden">
             <div id="top-bar" class="hidden">
@@ -328,553 +338,513 @@
                 <button id="pause-home-button" class="menu-button">Tela Inicial</button>
             </div>
         </div>
-
+        
         <!-- Tela de Game Over -->
         <div id="game-over-screen" class="screen hidden">
-              <h2>Game Over</h2>
-              <p id="final-score">Seu Score: 0</p>
-              <button id="restart-button" class="menu-button">Reiniciar</button>
-              <button id="home-button" class="menu-button">Tela Inicial</button>
+             <h2>Game Over</h2>
+             <p id="final-score">Seu Score: 0</p>
+             <button id="restart-button" class="menu-button">Reiniciar</button>
+             <button id="home-button" class="menu-button">Tela Inicial</button>
         </div>
     </div>
 
     <!-- SDKs do Firebase -->
     <script type="module">
-        // Importa as funções necessárias dos módulos do Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, where, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
-        // Adiciona um listener para garantir que o script rode após o carregamento da página
-        window.onload = function () {
-            // --- Variáveis Globais de Firebase ---
-            let app, auth, db, provider;
+        // --- Configuração do Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhcu3_fdWIJbPAiVqUpe_AwJgZiC-XoB8",
+            authDomain: "sssnake-e464c.firebaseapp.com",
+            projectId: "sssnake-e464c",
+            storageBucket: "sssnake-e464c.appspot.com",
+            messagingSenderId: "838444316745",
+            appId: "1:838444316745:web:eeb1d3d1b94373a5952798",
+            measurementId: "G-1WBVCSF0FX"
+        };
+        
+        // --- Inicialização do Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
-            // --- Elementos do DOM ---
-            const startScreen = document.getElementById('start-screen');
-            const optionsScreen = document.getElementById('options-screen');
-            const gameScreen = document.getElementById('game-screen');
-            const gameOverScreen = document.getElementById('game-over-screen');
-            const leaderboardScreen = document.getElementById('leaderboard-screen');
+        // --- Elementos do DOM ---
+        const startScreen = document.getElementById('start-screen');
+        const optionsScreen = document.getElementById('options-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const leaderboardScreen = document.getElementById('leaderboard-screen');
+        
+        const startButton = document.getElementById('start-button');
+        const optionsButton = document.getElementById('options-button');
+        const backButton = document.getElementById('back-button');
+        const restartButton = document.getElementById('restart-button');
+        const homeButton = document.getElementById('home-button');
+        const loginButton = document.getElementById('login-button');
+        const logoutButton = document.getElementById('logout-button');
+        const leaderboardButton = document.getElementById('leaderboard-button');
+        const leaderboardBackButton = document.getElementById('leaderboard-back-button');
+        
+        const userProfile = document.getElementById('user-profile');
+        const userPhoto = document.getElementById('user-photo');
+        const userName = document.getElementById('user-name');
+        
+        const topBar = document.getElementById('top-bar');
+        const pauseButton = document.getElementById('pause-button');
+        const pauseIcon = document.getElementById('pause-icon');
+        const playIcon = document.getElementById('play-icon');
+        const pauseOverlay = document.getElementById('pause-overlay');
+        const resumeButton = document.getElementById('resume-button');
+        const pauseOptionsButton = document.getElementById('pause-options-button');
+        const pauseHomeButton = document.getElementById('pause-home-button');
+        
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score-display');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const scoreList = document.getElementById('score-list');
+        const coinCountSpan = document.getElementById('coin-count');
 
-            const startButton = document.getElementById('start-button');
-            const optionsButton = document.getElementById('options-button');
-            const backButton = document.getElementById('back-button');
-            const restartButton = document.getElementById('restart-button');
-            const homeButton = document.getElementById('home-button');
-            const leaderboardButton = document.getElementById('leaderboard-button');
-            const leaderboardBackButton = document.getElementById('leaderboard-back-button');
-            const loginButton = document.getElementById('login-button');
-            const logoutButton = document.getElementById('logout-button');
+        // --- Configurações do Jogo ---
+        const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'mobile' : 'notebook' };
+        let gridSize = 15;
+        let snake, food, score, coins, direction, gameInterval;
+        let isPaused = false;
+        let previousScreen = startScreen;
+        let touchStartX = 0, touchStartY = 0;
+        const preventDefaultHandler = (e) => e.preventDefault();
+        let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
 
-            const userProfile = document.getElementById('user-profile');
-            const userPhoto = document.getElementById('user-photo');
-            const userName = document.getElementById('user-name');
+        // --- Autenticação e Sincronização de Dados ---
+        loginButton.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
+        });
 
-            const topBar = document.getElementById('top-bar');
-            const pauseButton = document.getElementById('pause-button');
-            const pauseIcon = document.getElementById('pause-icon');
-            const playIcon = document.getElementById('play-icon');
-            const pauseOverlay = document.getElementById('pause-overlay');
-            const resumeButton = document.getElementById('resume-button');
-            const pauseOptionsButton = document.getElementById('pause-options-button');
-            const pauseHomeButton = document.getElementById('pause-home-button');
-
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('score-display');
-            const finalScoreDisplay = document.getElementById('final-score');
-            const scoreList = document.getElementById('score-list');
-            const coinCountSpan = document.getElementById('coin-count');
-
-            // --- Configurações do Jogo ---
-            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-            let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'notebook' : 'notebook' };
-            let gridSize = 20;
-            let snake, food, score, coins, direction, gameInterval;
-            let isPaused = false;
-            let previousScreen = startScreen;
-            let touchStartX = 0, touchStartY = 0;
-            const preventDefaultHandler = (e) => e.preventDefault();
-            let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
-
-            // --- Inicialização do Firebase ---
-            function initializeFirebase() {
-                try {
-                    // Tenta obter as configurações do ambiente, senão usa um objeto vazio
-                    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-
-                    if (!firebaseConfig.apiKey) {
-                        console.error("Configuração do Firebase não encontrada. O placar online ficará desabilitado.");
-                        // Desabilita funcionalidades online se não houver config
-                        loginButton.classList.add('hidden');
-                        leaderboardButton.classList.add('hidden');
-                        return;
-                    }
-
-                    app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-                    provider = new GoogleAuthProvider();
-
-                    // Listener do estado de autenticação
-                    onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            // Usuário está logado
-                            userProfile.classList.remove('hidden');
-                            userName.textContent = user.displayName;
-                            userPhoto.src = user.photoURL;
-                            loginButton.classList.add('hidden');
-                            logoutButton.classList.remove('hidden');
-                            await syncUserData(user);
-                        } else {
-                            // Usuário não está logado
-                            userProfile.classList.add('hidden');
-                            loginButton.classList.remove('hidden');
-                            logoutButton.classList.add('hidden');
-                        }
-                    });
-
-                } catch (error) {
-                    console.error("Erro ao inicializar o Firebase:", error);
-                }
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).catch(error => console.error("Erro no logout:", error));
+        });
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userProfile.classList.remove('hidden');
+                userName.textContent = user.displayName;
+                userPhoto.src = user.photoURL;
+                loginButton.classList.add('hidden');
+                logoutButton.classList.remove('hidden');
+                await syncUserData(user);
+            } else {
+                userProfile.classList.add('hidden');
+                loginButton.classList.remove('hidden');
+                logoutButton.classList.add('hidden');
             }
-            
-            // --- Autenticação ---
-            loginButton.addEventListener('click', () => {
-                if(!auth || !provider) return;
-                signInWithPopup(auth, provider).catch(error => console.error("Erro no login:", error));
-            });
+        });
+        
+        async function syncUserData(user) {
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+            let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
 
-            logoutButton.addEventListener('click', () => {
-                if(!auth) return;
-                signOut(auth).catch(error => console.error("Erro no logout:", error));
-            });
-
-            // --- Gerenciamento de Dados do Usuário ---
-            async function syncUserData(user) {
-                if (!db || !user) return;
-                
-                const userRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userRef);
-                let localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
-
-                if (userDoc.exists()) {
-                    const cloudData = userDoc.data();
-                    const cloudCoins = cloudData.totalCoins || 0;
-                    coins = cloudCoins + localCoins;
-                    await updateDoc(userRef, { totalCoins: coins });
-                } else {
-                    coins = localCoins;
-                    await setDoc(userRef, {
-                        name: user.displayName,
-                        photoURL: user.photoURL,
-                        highScore: 0,
-                        totalCoins: coins,
-                        createdAt: serverTimestamp()
-                    });
-                }
-                localStorage.setItem('ssnake_coins', '0'); // Zera moedas locais após sincronizar
-                coinCountSpan.textContent = coins;
+            if (userDoc.exists()) {
+                const cloudData = userDoc.data();
+                const cloudCoins = cloudData.totalCoins || 0;
+                coins = cloudCoins + localCoins;
+                await updateDoc(userRef, { totalCoins: coins });
+            } else {
+                coins = localCoins;
+                await setDoc(userRef, {
+                    name: user.displayName,
+                    photoURL: user.photoURL,
+                    highScore: 0,
+                    totalCoins: coins,
+                    createdAt: serverTimestamp()
+                });
             }
+            localStorage.setItem('ssnake_coins', coins);
+            coinCountSpan.textContent = coins;
+        }
 
-            // --- Placar (Leaderboard) ---
-            async function getLeaderboard() {
-                if (!db) {
-                     scoreList.innerHTML = '<li>Placar online indisponível.</li>';
+        // --- Placar (Leaderboard) ---
+        async function getLeaderboard() {
+            scoreList.innerHTML = '<li>Carregando...</li>';
+            try {
+                const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
+                const querySnapshot = await getDocs(q);
+                scoreList.innerHTML = '';
+                if(querySnapshot.empty) {
+                     scoreList.innerHTML = '<li>Nenhuma pontuação registrada.</li>';
                      return;
                 }
-                scoreList.innerHTML = '<li>Carregando...</li>';
-                try {
-                    const usersCollection = collection(db, "users");
-                    const querySnapshot = await getDocs(usersCollection);
-
-                    if (querySnapshot.empty) {
-                        scoreList.innerHTML = '<li>Nenhuma pontuação registrada.</li>';
-                        return;
-                    }
-                    
-                    const scores = [];
-                    querySnapshot.forEach((doc) => {
-                        scores.push(doc.data());
-                    });
-                    
-                    scores.sort((a, b) => (b.highScore || 0) - (a.highScore || 0));
-                    
-                    scoreList.innerHTML = '';
-                    scores.slice(0, 10).forEach((data, index) => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<span class="rank">${index + 1}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore || 0}</span>`;
-                        scoreList.appendChild(li);
-                    });
-
-                } catch (error) {
-                    console.error("Erro ao buscar placar:", error);
-                    scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>';
-                }
+                let rank = 1;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore}</span>`;
+                    scoreList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Erro ao buscar placar:", error);
+                scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>';
             }
+        }
+        
+        leaderboardButton.addEventListener('click', () => {
+            previousScreen = startScreen;
+            getLeaderboard();
+            showScreen(leaderboardScreen);
+        });
+        leaderboardBackButton.addEventListener('click', () => showScreen(startScreen));
+        
+        // --- Lógica de Navegação ---
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            screen.classList.remove('hidden');
+        }
+        
+        function updateOptionButtons() {
+            document.querySelectorAll('[data-control]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-control="${gameSettings.controlMode}"]`).classList.add('active');
+            document.querySelectorAll('[data-ratio]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
+        }
+        
+        optionsButton.addEventListener('click', () => {
+            previousScreen = startScreen;
+            updateOptionButtons();
+            showScreen(optionsScreen);
+        });
 
-            leaderboardButton.addEventListener('click', getLeaderboard);
-            leaderboardButton.addEventListener('click', () => {
-                previousScreen = startScreen;
-                getLeaderboard();
-                showScreen(leaderboardScreen);
-            });
-            leaderboardBackButton.addEventListener('click', () => showScreen(startScreen));
-            
-            // --- Lógica de Navegação ---
-            function showScreen(screen) {
-                document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-                screen.classList.remove('hidden');
+        const handlePauseOptions = () => {
+            previousScreen = gameScreen;
+            updateOptionButtons();
+            showScreen(optionsScreen);
+        }
+        pauseOptionsButton.addEventListener('click', handlePauseOptions);
+        pauseOptionsButton.addEventListener('touchstart', (e) => { e.preventDefault(); handlePauseOptions(); });
+
+        backButton.addEventListener('click', () => {
+            showScreen(previousScreen);
+            if (previousScreen === gameScreen) {
+                pauseOverlay.classList.remove('hidden');
             }
+        });
+        
+        // --- Lógica do Jogo ---
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+        homeButton.addEventListener('click', () => showScreen(startScreen));
+        
+        const pauseHomeHandler = () => {
+            endGame(false);
+            showScreen(startScreen);
+        };
+        pauseHomeButton.addEventListener('click', pauseHomeHandler);
+        pauseHomeButton.addEventListener('touchstart', (e) => { e.preventDefault(); pauseHomeHandler(); });
+        
+        pauseButton.addEventListener('click', togglePause);
+        pauseButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
+        
+        resumeButton.addEventListener('click', togglePause);
+        resumeButton.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
 
-            function updateOptionButtons() {
-                document.querySelectorAll('[data-control]').forEach(btn => btn.classList.remove('active'));
-                document.querySelector(`[data-control="${gameSettings.controlMode}"]`).classList.add('active');
-                document.querySelectorAll('[data-ratio]').forEach(btn => btn.classList.remove('active'));
-                document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
-            }
-
-            optionsButton.addEventListener('click', () => {
-                previousScreen = startScreen;
+        optionsScreen.addEventListener('click', (e) => {
+            const controlButton = e.target.closest('[data-control]');
+            if(controlButton) {
+                gameSettings.controlMode = controlButton.dataset.control;
                 updateOptionButtons();
-                showScreen(optionsScreen);
-            });
-            
-            pauseOptionsButton.addEventListener('click', () => {
-                 previousScreen = gameScreen;
-                 updateOptionButtons();
-                 showScreen(optionsScreen);
-            });
-            
-            backButton.addEventListener('click', () => {
-                showScreen(previousScreen);
-                if (previousScreen === gameScreen) {
-                    pauseOverlay.classList.remove('hidden');
-                }
-            });
-
-            // --- Lógica do Jogo ---
-            startButton.addEventListener('click', startGame);
-            restartButton.addEventListener('click', startGame);
-            homeButton.addEventListener('click', () => showScreen(startScreen));
-
-            pauseHomeButton.addEventListener('click', () => {
-                endGame(false);
-                showScreen(startScreen);
-            });
-            
-            pauseButton.addEventListener('click', togglePause);
-            resumeButton.addEventListener('click', togglePause);
-
-            optionsScreen.addEventListener('click', (e) => {
-                const controlButton = e.target.closest('[data-control]');
-                if(controlButton) {
-                    gameSettings.controlMode = controlButton.dataset.control;
-                    updateOptionButtons();
-                }
-                const ratioButton = e.target.closest('[data-ratio]');
-                if(ratioButton) {
-                    gameSettings.aspectRatio = ratioButton.dataset.ratio;
-                    updateOptionButtons();
-                }
-            });
-
-            function setupCanvas() {
-                const topBarHeight = topBar.offsetHeight || 60;
-                const containerWidth = gameScreen.clientWidth;
-                const containerHeight = gameScreen.clientHeight - topBarHeight;
-                let canvasWidth, canvasHeight;
-
-                if (gameSettings.aspectRatio === 'notebook') {
-                    const canvasSize = Math.min(containerWidth, containerHeight);
-                    canvasWidth = Math.floor(canvasSize / gridSize) * gridSize;
-                    canvasHeight = canvasWidth;
-                } else { // mobile
-                    let tempWidth = Math.floor(containerWidth / gridSize) * gridSize;
-                    let tempHeight = Math.floor((tempWidth * 16 / 9) / gridSize) * gridSize;
-                    if(tempHeight > containerHeight) {
-                        tempHeight = Math.floor(containerHeight / gridSize) * gridSize;
-                        tempWidth = Math.floor((tempHeight * 9 / 16) / gridSize) * gridSize;
-                    }
-                    canvasWidth = tempWidth;
-                    canvasHeight = tempHeight;
-                }
-                canvas.width = canvasWidth;
-                canvas.height = canvasHeight;
-                topBar.style.width = `${canvasWidth}px`;
             }
+            const ratioButton = e.target.closest('[data-ratio]');
+            if(ratioButton) {
+                gameSettings.aspectRatio = ratioButton.dataset.ratio;
+                updateOptionButtons();
+            }
+        });
 
-            function startGame() {
-                showScreen(gameScreen);
-                isPaused = false;
-                topBar.classList.remove('hidden');
-                pauseOverlay.classList.add('hidden');
-                pauseIcon.classList.remove('hidden');
-                playIcon.classList.add('hidden');
-                setupCanvas();
-                snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
-                score = 0;
-                coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
-                const user = auth.currentUser;
-                if(user) {
-                     // Se o usuário estiver logado, busca as moedas da nuvem.
-                     getDoc(doc(db, "users", user.uid)).then(userDoc => {
-                         if(userDoc.exists()) {
-                            coins = userDoc.data().totalCoins || 0;
-                            coinCountSpan.textContent = coins;
-                         }
-                     });
-                }
-                direction = { x: 0, y: 0 };
-                scoreDisplay.textContent = 'Score: 0';
+        function setupCanvas() {
+            const topBarHeight = topBar.offsetHeight || 60;
+            const containerWidth = gameScreen.clientWidth;
+            const containerHeight = gameScreen.clientHeight - topBarHeight;
+            let canvasWidth, canvasHeight;
+            if (gameSettings.aspectRatio === 'notebook') {
+                const canvasSize = Math.min(containerWidth, containerHeight);
+                canvasWidth = Math.floor(canvasSize / gridSize) * gridSize;
+                canvasHeight = canvasWidth;
+            } else {
+                const baseSize = Math.min(containerWidth, containerHeight);
+                canvasWidth = Math.floor(baseSize / gridSize) * gridSize;
+                canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize;
+            }
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            topBar.style.width = `${canvasWidth}px`;
+        }
+        
+        function startGame() {
+            showScreen(gameScreen);
+            isPaused = false;
+            topBar.classList.remove('hidden');
+            pauseOverlay.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+            playIcon.classList.add('hidden');
+            setupCanvas();
+            snake = [{ x: Math.floor((canvas.width / gridSize) / 2), y: Math.floor((canvas.height / gridSize) / 2) }];
+            score = 0;
+            coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            direction = { x: 0, y: 0 };
+            scoreDisplay.textContent = 'Score: 0';
+            coinCountSpan.textContent = coins;
+            placeFood();
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(gameLoop, 140);
+            document.addEventListener('keydown', handleKeyInput);
+            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
+            canvas.addEventListener('touchend', handleTouchEnd);
+        }
+        
+        function togglePause() {
+            if (!gameInterval && !isPaused) return; 
+            isPaused = !isPaused;
+            pauseOverlay.classList.toggle('hidden');
+            pauseIcon.classList.toggle('hidden');
+            playIcon.classList.toggle('hidden');
+            if (isPaused) clearInterval(gameInterval);
+            else gameInterval = setInterval(gameLoop, 140);
+        }
+
+        function gameLoop() { update(); draw(); }
+        
+        function update() {
+            if (direction.x === 0 && direction.y === 0) return;
+            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+            snake.unshift(head);
+            tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                coins++;
+                scoreDisplay.textContent = `Score: ${score}`;
                 coinCountSpan.textContent = coins;
                 placeFood();
-                if (gameInterval) clearInterval(gameInterval);
-                gameInterval = setInterval(gameLoop, 140);
-                document.addEventListener('keydown', handleKeyInput);
-                canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-                canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
-                canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+            } else {
+                snake.pop();
+            }
+            if (checkCollision()) endGame();
+        }
+        
+        function draw() {
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            drawApple();
+            drawSnake();
+        }
+
+        function drawSnake() {
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+            ctx.save();
+            ctx.shadowColor = accentColor;
+            ctx.shadowBlur = 10;
+            
+            if (snake.length > 1) {
+                 ctx.strokeStyle = accentColor;
+                 ctx.lineWidth = gridSize * 0.9;
+                 ctx.lineCap = 'round';
+                 ctx.lineJoin = 'round';
+                 ctx.beginPath();
+                 ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
+                 for (let i = 1; i < snake.length; i++) {
+                     ctx.lineTo(snake[i].x * gridSize + gridSize / 2, snake[i].y * gridSize + gridSize / 2);
+                 }
+                 ctx.stroke();
             }
 
-            function togglePause() {
-                if (!gameInterval && !isPaused) return;
-                isPaused = !isPaused;
-                pauseOverlay.classList.toggle('hidden');
-                pauseIcon.classList.toggle('hidden');
-                playIcon.classList.toggle('hidden');
-                if (isPaused) {
-                    clearInterval(gameInterval);
+            const head = snake[0];
+            const headX = head.x * gridSize + gridSize / 2;
+            const headY = head.y * gridSize + gridSize / 2;
+            
+            ctx.beginPath();
+            ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2);
+            ctx.fillStyle = accentColor;
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+            
+            const eyeRadius = gridSize * 0.15;
+            const pupilRadius = gridSize * 0.08;
+            let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
+
+            const eyeDist = gridSize * 0.25;
+            
+            if (direction.y === -1) { 
+                eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5;
+                pupilOffsetY = -gridSize * 0.04;
+            } else if (direction.y === 1) {
+                eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5;
+                pupilOffsetY = gridSize * 0.04;
+            } else if (direction.x === -1) {
+                eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist;
+                pupilOffsetX = -gridSize * 0.04;
+            } else {
+                eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist;
+                pupilOffsetX = gridSize * 0.04;
+            }
+            
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
+
+            ctx.fillStyle = '#1a0c2e';
+            ctx.beginPath(); ctx.arc(eye1X + pupilOffsetX, eye1Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(eye2X + pupilOffsetX, eye2Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
+
+            if (tongueState.counter < tongueState.flickerDuration && (direction.x !== 0 || direction.y !== 0)) {
+                ctx.strokeStyle = '#ff3366'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+                const tongueLength = gridSize * 0.8;
+                const tongueEndX = headX + direction.x * tongueLength;
+                const tongueEndY = headY + direction.y * tongueLength;
+                ctx.beginPath(); ctx.moveTo(headX, headY); ctx.lineTo(tongueEndX, tongueEndY);
+                const forkLength = gridSize * 0.3;
+                if (direction.x !== 0) {
+                    ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY - forkLength);
+                    ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY + forkLength);
                 } else {
-                    gameInterval = setInterval(gameLoop, 140);
+                    ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - forkLength, tongueEndY - direction.y * forkLength * 0.5);
+                    ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX + forkLength, tongueEndY - direction.y * forkLength * 0.5);
                 }
-            }
-
-            function gameLoop() { update(); draw(); }
-
-            function update() {
-                if (direction.x === 0 && direction.y === 0) return;
-                const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
-                snake.unshift(head);
-                tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
-                if (head.x === food.x && head.y === food.y) {
-                    score++;
-                    coins++;
-                    scoreDisplay.textContent = `Score: ${score}`;
-                    coinCountSpan.textContent = coins;
-                    placeFood();
-                } else {
-                    snake.pop();
-                }
-                if (checkCollision()) endGame();
-            }
-
-            function draw() {
-                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                drawApple();
-                drawSnake();
-            }
-
-            function drawSnake() {
-                const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
-                ctx.save();
-                ctx.shadowColor = accentColor;
-                ctx.shadowBlur = 10;
-
-                if (snake.length > 1) {
-                     ctx.strokeStyle = accentColor;
-                     ctx.lineWidth = gridSize * 0.9;
-                     ctx.lineCap = 'round';
-                     ctx.lineJoin = 'round';
-                     ctx.beginPath();
-                     ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
-                     for (let i = 1; i < snake.length; i++) {
-                         ctx.lineTo(snake[i].x * gridSize + gridSize / 2, snake[i].y * gridSize + gridSize / 2);
-                     }
-                     ctx.stroke();
-                }
-
-                const head = snake[0];
-                const headX = head.x * gridSize + gridSize / 2;
-                const headY = head.y * gridSize + gridSize / 2;
-
-                ctx.beginPath();
-                ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2);
-                ctx.fillStyle = accentColor;
-                ctx.fill();
-
-                ctx.shadowBlur = 0;
-
-                const eyeRadius = gridSize * 0.15;
-                const pupilRadius = gridSize * 0.08;
-                let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
-                const eyeDist = gridSize * 0.25;
-                const pupilDist = gridSize * 0.04;
-
-                if (direction.y === -1) { // Up
-                    eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5;
-                    pupilOffsetY = -pupilDist;
-                } else if (direction.y === 1) { // Down
-                    eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5;
-                    pupilOffsetY = pupilDist;
-                } else if (direction.x === -1) { // Left
-                    eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist;
-                    pupilOffsetX = -pupilDist;
-                } else { // Right or not moving
-                    eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist;
-                    pupilOffsetX = pupilDist;
-                }
-
-                ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
-
-                ctx.fillStyle = '#1a0c2e';
-                ctx.beginPath(); ctx.arc(eye1X + pupilOffsetX, eye1Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(eye2X + pupilOffsetX, eye2Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
-
-                if (tongueState.counter < tongueState.flickerDuration && (direction.x !== 0 || direction.y !== 0)) {
-                    ctx.strokeStyle = '#ff3366'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-                    const tongueLength = gridSize * 0.8;
-                    const tongueEndX = headX + direction.x * tongueLength;
-                    const tongueEndY = headY + direction.y * tongueLength;
-                    ctx.beginPath(); ctx.moveTo(headX, headY); ctx.lineTo(tongueEndX, tongueEndY);
-                    const forkLength = gridSize * 0.3;
-                    if (direction.x !== 0) {
-                        ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY - forkLength);
-                        ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY + forkLength);
-                    } else {
-                        ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - forkLength, tongueEndY - direction.y * forkLength * 0.5);
-                        ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX + forkLength, tongueEndY - direction.y * forkLength * 0.5);
-                    }
-                    ctx.stroke();
-                }
-                ctx.restore();
-            }
-
-            function drawApple() {
-                const appleColorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
-                const appleColorDark = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-dark').trim();
-                const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
-                const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
-                const foodGlow = getComputedStyle(document.documentElement).getPropertyValue('--food-glow').trim();
-                const appleX = food.x * gridSize + gridSize / 2;
-                const appleY = food.y * gridSize + gridSize / 2;
-                const appleRadius = (gridSize / 2) * 0.95;
-                ctx.save();
-                ctx.shadowColor = foodGlow; ctx.shadowBlur = 15;
-                ctx.beginPath(); ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
-                const gradient = ctx.createRadialGradient(appleX - appleRadius * 0.2, appleY - appleRadius * 0.2, 0, appleX, appleY, appleRadius * 1.2);
-                gradient.addColorStop(0, appleColorLight); gradient.addColorStop(1, appleColorDark);
-                ctx.fillStyle = gradient; ctx.fill();
-                ctx.beginPath(); ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.fill();
-                ctx.beginPath(); ctx.moveTo(appleX, appleY - appleRadius * 0.7);
-                ctx.strokeStyle = appleStemColor; ctx.lineWidth = 2;
-                ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4);
                 ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
-                ctx.fillStyle = appleLeafColor;
-                ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8);
-                ctx.fill();
-                ctx.restore();
             }
 
-            function placeFood() {
-                food = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
-                if (snake.some(segment => segment.x === food.x && segment.y === food.y)) placeFood();
+            ctx.restore();
+        }
+
+        function drawApple() {
+            const appleColorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
+            const appleColorDark = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-dark').trim();
+            const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
+            const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
+            const foodGlow = getComputedStyle(document.documentElement).getPropertyValue('--food-glow').trim();
+            const appleX = food.x * gridSize + gridSize / 2;
+            const appleY = food.y * gridSize + gridSize / 2;
+            const appleRadius = (gridSize / 2) * 0.95; 
+            ctx.save();
+            ctx.shadowColor = foodGlow; ctx.shadowBlur = 15;
+            ctx.beginPath(); ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(appleX - appleRadius * 0.2, appleY - appleRadius * 0.2, 0, appleX, appleY, appleRadius * 1.2);
+            gradient.addColorStop(0, appleColorLight); gradient.addColorStop(1, appleColorDark);
+            ctx.fillStyle = gradient; ctx.fill();
+            ctx.beginPath(); ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.fill();
+            ctx.beginPath(); ctx.moveTo(appleX, appleY - appleRadius * 0.7);
+            ctx.strokeStyle = appleStemColor; ctx.lineWidth = 2;
+            ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4);
+            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
+            ctx.fillStyle = appleLeafColor;
+            ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function placeFood() {
+            food = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
+            if (snake.some(segment => segment.x === food.x && segment.y === food.y)) placeFood();
+        }
+        
+        function setDirection(newDirection) {
+            if (isPaused) return;
+            const goingUp = direction.y === -1, goingDown = direction.y === 1, goingRight = direction.x === 1, goingLeft = direction.x === -1;
+            if (newDirection === 'left' && !goingRight) direction = { x: -1, y: 0 };
+            if (newDirection === 'up' && !goingDown) direction = { x: 0, y: -1 };
+            if (newDirection === 'right' && !goingLeft) direction = { x: 1, y: 0 };
+            if (newDirection === 'down' && !goingUp) direction = { x: 0, y: 1 };
+        }
+
+        function handleKeyInput(event) {
+            const keyPressed = event.key.toLowerCase();
+            if (keyPressed === 'p') { togglePause(); return; }
+            if (gameSettings.controlMode !== 'keyboard' || isPaused) return;
+            if (['arrowleft', 'a'].includes(keyPressed)) setDirection('left');
+            if (['arrowup', 'w'].includes(keyPressed)) setDirection('up');
+            if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
+            if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
+        }
+        
+        function handleTouchStart(event) {
+            if (gameSettings.controlMode !== 'touch') return;
+            event.preventDefault();
+            touchStartX = event.touches[0].clientX; touchStartY = event.touches[0].clientY;
+        }
+
+        function handleTouchEnd(event) {
+            if (gameSettings.controlMode !== 'touch' || touchStartX === 0) return;
+            const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
+            } else {
+                if (Math.abs(diffY) > 30) setDirection(diffY > 0 ? 'down' : 'up');
             }
-
-            function setDirection(newDirection) {
-                if (isPaused) return;
-                const goingUp = direction.y === -1, goingDown = direction.y === 1, goingRight = direction.x === 1, goingLeft = direction.x === -1;
-                if (newDirection === 'left' && !goingRight) direction = { x: -1, y: 0 };
-                if (newDirection === 'up' && !goingDown) direction = { x: 0, y: -1 };
-                if (newDirection === 'right' && !goingLeft) direction = { x: 1, y: 0 };
-                if (newDirection === 'down' && !goingUp) direction = { x: 0, y: 1 };
+            touchStartX = 0; touchStartY = 0;
+        }
+        
+        function checkCollision() {
+            const head = snake[0];
+            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) return true;
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) return true;
             }
+            return false;
+        }
+        
+        async function endGame(showGameOverScreen = true) {
+            clearInterval(gameInterval);
+            gameInterval = null;
+            topBar.classList.add('hidden');
+            document.removeEventListener('keydown', handleKeyInput);
+            canvas.removeEventListener('touchstart', handleTouchStart);
+            canvas.removeEventListener('touchmove', preventDefaultHandler);
+            canvas.removeEventListener('touchend', handleTouchEnd);
+            
+            localStorage.setItem('ssnake_coins', coins);
 
-            function handleKeyInput(event) {
-                const keyPressed = event.key.toLowerCase();
-                if (keyPressed === 'p') { togglePause(); return; }
-                if (gameSettings.controlMode !== 'keyboard' || isPaused) return;
-                if (['arrowleft', 'a'].includes(keyPressed)) setDirection('left');
-                if (['arrowup', 'w'].includes(keyPressed)) setDirection('up');
-                if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
-                if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
-            }
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userRef);
 
-            function handleTouchStart(event) {
-                if (gameSettings.controlMode !== 'touch') return;
-                event.preventDefault();
-                touchStartX = event.touches[0].clientX; touchStartY = event.touches[0].clientY;
-            }
-
-            function handleTouchEnd(event) {
-                if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused) return;
-                event.preventDefault();
-                const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
-                const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
-                } else {
-                    if (Math.abs(diffY) > 30) setDirection(diffY > 0 ? 'down' : 'up');
-                }
-                touchStartX = 0; touchStartY = 0;
-            }
-
-            function checkCollision() {
-                const head = snake[0];
-                if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) return true;
-                for (let i = 1; i < snake.length; i++) {
-                    if (head.x === snake[i].x && head.y === snake[i].y) return true;
-                }
-                return false;
-            }
-
-            async function endGame(showGameOverScreen = true) {
-                clearInterval(gameInterval);
-                gameInterval = null;
-                topBar.classList.add('hidden');
-                document.removeEventListener('keydown', handleKeyInput);
-                canvas.removeEventListener('touchstart', handleTouchStart);
-                canvas.removeEventListener('touchmove', preventDefaultHandler);
-                canvas.removeEventListener('touchend', handleTouchEnd);
-                
-                const user = auth.currentUser;
-                if (user) {
-                    try {
-                        const userRef = doc(db, "users", user.uid);
-                        const userDoc = await getDoc(userRef);
-
-                        if (userDoc.exists()) {
-                            const existingData = userDoc.data();
-                            const updateData = { totalCoins: coins };
-                            if (score > (existingData.highScore || 0)) {
-                                updateData.highScore = score;
-                            }
-                            await updateDoc(userRef, updateData);
+                    if (userDoc.exists()) {
+                        const existingData = userDoc.data();
+                        const updateData = { totalCoins: coins };
+                        if (score > (existingData.highScore || 0)) {
+                            updateData.highScore = score;
                         }
-                    } catch (error) {
-                        console.error("Erro ao salvar dados do usuário: ", error);
+                        await updateDoc(userRef, updateData);
+                    } else {
+                         await setDoc(userRef, {
+                            name: user.displayName,
+                            photoURL: user.photoURL,
+                            highScore: score,
+                            totalCoins: coins,
+                            createdAt: serverTimestamp()
+                        });
                     }
-                } else {
-                     localStorage.setItem('ssnake_coins', coins);
-                }
-
-                if (showGameOverScreen) {
-                    finalScoreDisplay.textContent = `Seu Score: ${score}`;
-                    showScreen(gameOverScreen);
+                } catch (error) {
+                    console.error("Erro ao salvar dados do usuário: ", error);
                 }
             }
 
-            // --- Inicialização da Aplicação ---
-            initializeFirebase();
-            updateOptionButtons();
-        };
+            if (showGameOverScreen) {
+                finalScoreDisplay.textContent = `Seu Score: ${score}`;
+                showScreen(gameOverScreen);
+            }
+        }
+        
+        updateOptionButtons();
     </script>
 </body>
 </html>
+
 
