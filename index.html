@@ -606,7 +606,7 @@
                 userData.totalCoins = (userData.totalCoins || 0) + localCoins;
                 await updateDoc(userRef, { totalCoins: userData.totalCoins });
             } else {
-                userData = { // Reset user data object for new user
+                userData = {
                     name: user.displayName,
                     photoURL: user.photoURL,
                     highScore: 0,
@@ -647,13 +647,16 @@
             }
         }
         
-        notificationBell.addEventListener('click', () => {
-            previousScreen = startScreen;
-            showScreen(notificationScreen);
-            notificationDot.classList.add('hidden');
-        });
+        const showNotificationHandler = () => {
+             previousScreen = startScreen;
+             showScreen(notificationScreen);
+             notificationDot.classList.add('hidden');
+        }
+        notificationBell.addEventListener('click', showNotificationHandler);
+        notificationBell.addEventListener('touchstart', (e) => { e.preventDefault(); showNotificationHandler()});
 
         notificationBackButton.addEventListener('click', () => showScreen(startScreen));
+        notificationBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(startScreen)});
         
         collectRewardButton.addEventListener('click', async () => {
             const user = auth.currentUser;
@@ -716,19 +719,24 @@
             document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
         }
         
-        optionsButton.addEventListener('click', () => {
+        const showOptionsHandler = () => {
             previousScreen = startScreen;
             updateOptionButtons();
             renderBackgroundSelection();
             showScreen(optionsScreen);
-        });
+        };
+        optionsButton.addEventListener('click', showOptionsHandler);
+        optionsButton.addEventListener('touchstart', (e) => {e.preventDefault(); showOptionsHandler()});
         
-        tipsButton.addEventListener('click', () => {
+        const showTipsHandler = () => {
              previousScreen = startScreen;
              showScreen(tipsScreen);
-        });
+        };
+        tipsButton.addEventListener('click', showTipsHandler);
+        tipsButton.addEventListener('touchstart', (e) => { e.preventDefault(); showTipsHandler(); });
+        
         tipsBackButton.addEventListener('click', () => showScreen(previousScreen));
-
+        tipsBackButton.addEventListener('touchstart', (e) => { e.preventDefault(); showScreen(previousScreen); });
 
         const handlePauseOptions = () => {
             previousScreen = gameScreen;
@@ -813,9 +821,14 @@
             const dpr = window.devicePixelRatio || 1;
             snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
             score = 0;
+            if(!auth.currentUser) {
+                coins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
+            } else {
+                coins = userData.totalCoins;
+            }
             direction = { x: 0, y: 0 };
             scoreDisplay.textContent = 'Score: 0';
-            coinCountSpan.textContent = userData.totalCoins;
+            coinCountSpan.textContent = coins;
             placeFood();
             
             bonusApples = [];
@@ -858,12 +871,12 @@
         
         function update() {
             if (direction.x === 0 && direction.y === 0) return;
+            const dpr = window.devicePixelRatio || 1;
             let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+            const gridWidth = canvas.width / dpr / gridSize;
+            const gridHeight = canvas.height / dpr / gridSize;
 
             if (powerUps.wrap.active) {
-                const dpr = window.devicePixelRatio || 1;
-                const gridWidth = canvas.width / dpr / gridSize;
-                const gridHeight = canvas.height / dpr / gridSize;
                 if (head.x < 0) head.x = gridWidth - 1;
                 if (head.x >= gridWidth) head.x = 0;
                 if (head.y < 0) head.y = gridHeight - 1;
@@ -1232,8 +1245,12 @@
             }
         }
         
+        function applyBackground() {
+            document.body.className = `background-${userData.selectedBg}`;
+        }
+        
         updateOptionButtons();
-        loadLocalData(); // Carrega dados locais na inicialização
+        loadLocalData();
         applyBackground();
     </script>
 </body>
