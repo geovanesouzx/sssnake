@@ -263,11 +263,11 @@
         .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; }
         
         .credits-link {
-            font-family: var(--font-family); display: inline-block; color: var(--apple-color-light); text-decoration: none;
-            border: 1px solid var(--apple-color-light); padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease-out;
+            font-family: var(--font-family); display: inline-block; color: var(--cyan-glow); text-decoration: none;
+            border: 1px solid var(--cyan-glow); padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease-out;
             text-transform: uppercase; font-size: 0.9rem;
         }
-        .credits-link:hover { background-color: var(--apple-color-light); color: var(--primary-color); box-shadow: 0 0 20px var(--food-glow); }
+        .credits-link:hover { background-color: var(--cyan-glow); color: var(--primary-color); box-shadow: 0 0 20px var(--cyan-glow); }
         
         #score-list { list-style: none; width: 100%; }
         #score-list li {
@@ -1071,6 +1071,19 @@
             addSafeListener(buttons.tipsBack, () => showScreen(screens.start));
             addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
             addSafeListener(buttons.submitUsername, handleUsernameSubmit);
+            
+            screens.options.addEventListener('click', (e) => {
+                const controlButton = e.target.closest('[data-control]');
+                if(controlButton) {
+                    gameSettings.controlMode = controlButton.dataset.control;
+                    updateOptionButtons();
+                }
+                const ratioButton = e.target.closest('[data-ratio]');
+                if(ratioButton) {
+                    gameSettings.aspectRatio = ratioButton.dataset.ratio;
+                    updateOptionButtons();
+                }
+            });
 
             shopTabs.addEventListener('click', (e) => { const tab = e.target.closest('.shop-tab'); if (tab) renderShop(tab.dataset.tab); });
             shopItemsContainer.addEventListener('click', (e) => {
