@@ -641,7 +641,7 @@
         // Game-specific stats for current game session, NOT user data
         let scoreAchievedWithoutImmortality = 0;
         let maxSnakeLengthInCurrentGame = 1;
-        let immortalityUsedInCurrentGame = false;
+        let immortalityUsedInCurrentGame = false; // Corrected typo here
         let snakeScale = 1; // Used for drawing the shrinking apple effect
 
 
@@ -1144,7 +1144,7 @@
                 userData.gameStats.goldenApples++; 
             } else if (type === 'green') { 
                 powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; 
-                immortaliltyUsedInCurrentGame = true; // Mark that immortality was used in this game
+                immortalityUsedInCurrentGame = true; // Corrected typo here
                 userData.gameStats.greenApples++; 
             } else if (type === 'blue') { 
                 powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; 
