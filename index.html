@@ -27,6 +27,10 @@
             --green-apple-glow: rgba(46, 204, 113, 0.8);
             --blue-apple-glow: rgba(52, 152, 219, 0.8);
             --purple-apple-glow: rgba(155, 89, 182, 0.8);
+            /* New Apple Glows */
+            --double-luck-apple-glow: rgba(255, 0, 255, 0.8); /* Vibrant glow for Double Luck */
+            --shrinking-apple-glow: rgba(0, 255, 0, 0.8); /* Green glow for Shrinking */
+
 
             --difficulty-easy: #2ecc71; /* Green */
             --difficulty-medium: #3498db; /* Blue */
@@ -334,11 +338,27 @@
         #score-display { font-size: 1.5rem; font-weight: 700; color: var(--text-color); text-shadow: 0 0 5px var(--cyan-glow); margin-bottom: 5px; }
         #coin-display { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 700; color: gold; text-shadow: 0 0 8px rgba(255,215,0,0.7); }
 
-        #powerup-timer-display { display: flex; flex-direction: column; gap: 5px; align-items: center; }
+        /* Modified to be a row and wrap */
+        #powerup-timer-display { 
+            display: flex; 
+            flex-direction: row; /* Changed to row */
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 5px; 
+            align-items: center; 
+            justify-content: flex-end; /* Align to end for better flow with stats */
+            /* Removed max-width to allow it to expand as needed */
+            text-align: right; /* Align text within items to the right */
+        }
         .timer-item {
-            background-color: rgba(0,0,0,0.4); color: var(--text-color); padding: 2px 8px; border-radius: 6px;
-            font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.2);
+            background-color: rgba(0,0,0,0.4); 
+            color: var(--text-color); 
+            padding: 2px 8px; 
+            border-radius: 6px;
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            border: 1px solid rgba(255,255,255,0.2);
             text-shadow: 0 0 5px var(--cyan-glow);
+            white-space: nowrap; /* Prevent text wrapping within an item */
         }
 
         #pause-button {
@@ -437,6 +457,9 @@
                     <p class="tip-text">- Maçã Dourada: Permite atravessar as paredes por 30 segundos.</p>
                     <p class="tip-text">- Maçã Verde: Te deixa imortal a colisões com seu corpo por 30 segundos.</p>
                     <p class="tip-text">- Maçã Azul: Cria um campo magnético por 45 segundos que atrai maçãs próximas.</p>
+                    <!-- NEW TIPS FOR NEW APPLES -->
+                    <p class="tip-text">- Maçã Dupla-Sorte (Arco-Íris): Duplica pontos e moedas das próximas 5 maçãs ou por 15s.</p>
+                    <p class="tip-text">- Maçã Encolhedora (Preta): Reduz o tamanho e a velocidade da cobra por 10 segundos.</p>
                 </div>
                 <div class="option-group">
                     <h3>Dica Extra</h3>
@@ -604,12 +627,22 @@
         const preventDefaultHandler = (e) => e.preventDefault();
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
         let bonusApples = [];
-        let powerUps = { wrap: { active: false, endTime: 0, duration: 30000 }, immortal: { active: false, endTime: 0, duration: 30000 }, magnet: { active: false, endTime: 0, duration: 45000 } };
+        let baseGameInterval = 140; // Base interval for game loop
+        let currentGameInterval = baseGameInterval; // Current interval, changes with shrinking power-up
+
+        let powerUps = { 
+            wrap: { active: false, endTime: 0, duration: 30000 }, 
+            immortal: { active: false, endTime: 0, duration: 30000 }, 
+            magnet: { active: false, endTime: 0, duration: 45000 },
+            doubleScore: { active: false, endTime: 0, duration: 15000, applesRemaining: 5 }, // New: Double Luck Apple
+            shrinking: { active: false, endTime: 0, duration: 10000 } // New: Shrinking Apple
+        };
         
         // Game-specific stats for current game session, NOT user data
-        let currentScoreWithoutImmortality = 0;
-        let currentMaxSnakeLengthInGame = 1;
-        let immortalityActivatedThisGame = false;
+        let scoreAchievedWithoutImmortality = 0;
+        let maxSnakeLengthInCurrentGame = 1;
+        let immortalityUsedInCurrentGame = false;
+        let snakeScale = 1; // Used for drawing the shrinking apple effect
 
 
         const snakeColors = { 
@@ -671,6 +704,8 @@
                 greenApples: 0,
                 blueApples: 0,
                 purpleApples: 0,
+                doubleLuckApples: 0, 
+                shrinkingApples: 0, 
                 gamesPlayed: 0,
                 maxScoreNoSelfCollision: 0,
                 maxSnakeLength: 0
@@ -692,6 +727,10 @@
             { id: 'ach_easy_green_1', name: 'Defensor Verde (Fácil)', desc: 'Coma 1 maçã verde.', difficulty: 'Fácil', type: 'greenApples', target: 1, reward: { coins: 25 } },
             { id: 'ach_easy_blue_1', name: 'Ímã Azul (Fácil)', desc: 'Coma 1 maçã azul.', difficulty: 'Fácil', type: 'blueApples', target: 1, reward: { coins: 25 } },
             { id: 'ach_easy_purple_1', name: 'Sorte Roxa (Fácil)', desc: 'Coma 1 maçã roxa.', difficulty: 'Fácil', type: 'purpleApples', target: 1, reward: { coins: 25 } },
+            // New easy apples achievements
+            { id: 'ach_easy_doubleluck_1', name: 'Dose Dupla (Fácil)', desc: 'Coma 1 maçã Dupla-Sorte.', difficulty: 'Fácil', type: 'doubleLuckApples', target: 1, reward: { coins: 30 } },
+            { id: 'ach_easy_shrinking_1', name: 'Pequena Cobra (Fácil)', desc: 'Coma 1 maçã Encolhedora.', difficulty: 'Fácil', type: 'shrinkingApples', target: 1, reward: { coins: 30 } },
+
 
             // --- Média (12 conquistas) ---
             { id: 'ach_medium_score_100', name: 'Crescendo', desc: 'Alcance 100 pontos.', difficulty: 'Média', type: 'score', target: 100, reward: { coins: 100 } },
@@ -706,6 +745,9 @@
             { id: 'ach_medium_purple_5', name: 'Chuva de Moedas', desc: 'Coma 5 maçãs roxas.', difficulty: 'Média', type: 'purpleApples', target: 5, reward: { coins: 75 } },
             { id: 'ach_medium_no_collide_200', name: 'Mãos Limpas (Média)', desc: 'Alcance 200 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Média', type: 'noSelfCollisionScore', target: 200, reward: { coins: 100 } },
             { id: 'ach_medium_coins_500', name: 'Bolsos Cheios (Média)', desc: 'Acumule 500 moedas totais.', difficulty: 'Média', type: 'totalCoins', target: 500, reward: { coins: 100, item: { type: 'snakeColors', id: 'blue' } } },
+            // New medium apples achievements
+            { id: 'ach_medium_doubleluck_5', name: 'Sorte em Cascata (Média)', desc: 'Coma 5 maçãs Dupla-Sorte.', difficulty: 'Média', type: 'doubleLuckApples', target: 5, reward: { coins: 80 } },
+            { id: 'ach_medium_shrinking_5', name: 'Pequeno Gênio (Média)', desc: 'Coma 5 maçãs Encolhedora.', difficulty: 'Média', type: 'shrinkingApples', target: 5, reward: { coins: 80 } },
 
             // --- Difícil (12 conquistas) ---
             { id: 'ach_hard_score_500', name: 'Desafio Notável', desc: 'Alcance 500 pontos.', difficulty: 'Difícil', type: 'score', target: 500, reward: { coins: 300 } },
@@ -720,6 +762,10 @@
             { id: 'ach_hard_purple_10', name: 'Riqueza Roxa', desc: 'Coma 10 maçãs roxas.', difficulty: 'Difícil', type: 'purpleApples', target: 10, reward: { coins: 200 } },
             { id: 'ach_hard_no_collide_500', name: 'Intocável', desc: 'Alcance 500 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Difícil', type: 'noSelfCollisionScore', target: 500, reward: { coins: 300, item: { type: 'backgrounds', id: 'matrix' } } },
             { id: 'ach_hard_coins_1500', name: 'Fortuna da Cobra', desc: 'Acumule 1500 moedas totais.', difficulty: 'Difícil', type: 'totalCoins', target: 1500, reward: { coins: 250, item: { type: 'snakeColors', id: 'green' } } },
+            // New hard apples achievements
+            { id: 'ach_hard_doubleluck_10', name: 'Jackpot de Sorte (Difícil)', desc: 'Coma 10 maçãs Dupla-Sorte.', difficulty: 'Difícil', type: 'doubleLuckApples', target: 10, reward: { coins: 200 } },
+            { id: 'ach_hard_shrinking_10', name: 'Pequena e Mortal (Difícil)', desc: 'Coma 10 maçãs Encolhedora.', difficulty: 'Difícil', type: 'shrinkingApples', target: 10, reward: { coins: 200 } },
+
 
             // --- Épico (12 conquistas) ---
             { id: 'ach_epic_score_1000', name: 'Lenda Viva', desc: 'Alcance 1000 pontos.', difficulty: 'Épico', type: 'score', target: 1000, reward: { coins: 750 } },
@@ -734,6 +780,9 @@
             { id: 'ach_epic_purple_15', name: 'Tesouro Roxo', desc: 'Coma 15 maçãs roxas.', difficulty: 'Épico', type: 'purpleApples', target: 15, reward: { coins: 500 } },
             { id: 'ach_epic_coins_5000', name: 'Milionário da Cobra', desc: 'Acumule 5000 moedas totais.', difficulty: 'Épico', type: 'totalCoins', target: 5000, reward: { coins: 1000, item: { type: 'snakeColors', id: 'gold' } } },
             { id: 'ach_epic_longest_snake_50', name: 'Cobra Gigante', desc: 'Alcance 50 de comprimento na cobra.', difficulty: 'Épico', type: 'snakeLength', target: 50, reward: { coins: 750 } },
+            // New epic apples achievements
+            { id: 'ach_epic_doubleluck_15', name: 'Pote de Ouro (Épico)', desc: 'Coma 15 maçãs Dupla-Sorte.', difficulty: 'Épico', type: 'doubleLuckApples', target: 15, reward: { coins: 500 } },
+            { id: 'ach_epic_shrinking_15', name: 'Formiga Atômica (Épico)', desc: 'Coma 15 maçãs Encolhedora.', difficulty: 'Épico', type: 'shrinkingApples', target: 15, reward: { coins: 500 } },
 
             // --- Extremo (12 conquistas) ---
             { id: 'ach_extreme_score_2000', name: 'Deus da Cobra', desc: 'Alcance 2000 pontos.', difficulty: 'Extremo', type: 'score', target: 2000, reward: { coins: 1500 } },
@@ -747,7 +796,10 @@
             { id: 'ach_extreme_blue_20', name: 'Buraco Negro Magnético', desc: 'Coma 20 maçãs azuis.', difficulty: 'Extremo', type: 'blueApples', target: 20, reward: { coins: 1000 } },
             { id: 'ach_extreme_purple_20', name: 'Ouro Roxo', desc: 'Coma 20 maçãs roxas.', difficulty: 'Extremo', type: 'purpleApples', target: 20, reward: { coins: 1000 } },
             { id: 'ach_extreme_no_collide_1000', name: 'Fantom', desc: 'Alcance 1000 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Extremo', type: 'noSelfCollisionScore', target: 1000, reward: { coins: 1500, item: { type: 'backgrounds', id: 'aurora' } } },
-            { id: 'ach_extreme_coins_10000', name: 'Imperador da Riqueza', desc: 'Acumule 10000 moedas totais.', difficulty: 'Extremo', type: 'totalCoins', target: 10000, reward: { coins: 2000, item: { type: 'snakeColors', id: 'white' } } }
+            { id: 'ach_extreme_coins_10000', name: 'Imperador da Riqueza', desc: 'Acumule 10000 moedas totais.', difficulty: 'Extremo', type: 'totalCoins', target: 10000, reward: { coins: 2000, item: { type: 'snakeColors', id: 'white' } } },
+            // New extreme apples achievements
+            { id: 'ach_extreme_doubleluck_20', name: 'Duplamente Lendário (Extremo)', desc: 'Coma 20 maçãs Dupla-Sorte.', difficulty: 'Extremo', type: 'doubleLuckApples', target: 20, reward: { coins: 1000 } },
+            { id: 'ach_extreme_shrinking_20', name: 'Micronavegador (Extremo)', desc: 'Coma 20 maçãs Encolhedora.', difficulty: 'Extremo', type: 'shrinkingApples', target: 20, reward: { coins: 1000 } },
         ];
 
         // Helper to group achievements by difficulty for rendering
@@ -924,34 +976,51 @@
 
         function drawAppleShape(appleX, appleY, type) {
             let colorLight, colorDark, glow;
+            let stemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
+            let leafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
+
             switch(type) {
                 case 'golden': glow = 'var(--golden-apple-glow)'; colorLight = '#FFD700'; colorDark = '#FDB813'; break;
                 case 'green': glow = 'var(--green-apple-glow)'; colorLight = '#2ecc71'; colorDark = '#27ae60'; break;
                 case 'blue': glow = 'var(--blue-apple-glow)'; colorLight = '#3498db'; colorDark = '#2980b9'; break;
                 case 'purple': glow = 'var(--purple-apple-glow)'; colorLight = '#9b59b6'; colorDark = '#8e44ad'; break;
-                default:
+                case 'doubleLuck': // Double Luck Apple
+                    glow = 'var(--double-luck-apple-glow)'; 
+                    colorLight = '#FF6EC7'; // Vibrant pink/magenta
+                    colorDark = '#9D00FF'; // Vibrant purple
+                    break;
+                case 'shrinking': // Shrinking Apple
+                    glow = 'var(--shrinking-apple-glow)'; 
+                    colorLight = '#333333'; // Dark grey
+                    colorDark = '#000000'; // Black
+                    break;
+                default: // Default red apple
                     glow = 'var(--food-glow)'; 
                     colorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
                     colorDark = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-dark').trim();
             }
             const appleRadius = (gridSize / 2) * 0.95; 
-            const appleStemColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-stem-color').trim();
-            const appleLeafColor = getComputedStyle(document.documentElement).getPropertyValue('--apple-leaf-color').trim();
+            
             ctx.save();
             ctx.shadowColor = glow; ctx.shadowBlur = 15;
             ctx.beginPath();
             ctx.arc(appleX, appleY, appleRadius, 0, Math.PI * 2);
             const gradient = ctx.createRadialGradient(appleX - appleRadius * 0.2, appleY - appleRadius * 0.2, 0, appleX, appleY, appleRadius * 1.2);
             gradient.addColorStop(0, colorLight); gradient.addColorStop(1, colorDark); ctx.fillStyle = gradient; ctx.fill();
+            
+            // Highlight/shine effect
             ctx.beginPath();
             ctx.arc(appleX - appleRadius * 0.4, appleY - appleRadius * 0.4, appleRadius * 0.25, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.fill();
+
+            // Always draw stem and leaf for all apple types
             ctx.beginPath(); ctx.moveTo(appleX, appleY - appleRadius * 0.7);
-            ctx.strokeStyle = appleStemColor; ctx.lineWidth = 2;
+            ctx.strokeStyle = stemColor; ctx.lineWidth = 2;
             ctx.quadraticCurveTo(appleX + 1, appleY - appleRadius * 1.5, appleX + 3, appleY - appleRadius * 1.4); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(appleX + 3, appleY - appleRadius * 1.4);
-            ctx.fillStyle = appleLeafColor;
+            ctx.fillStyle = leafColor;
             ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8); ctx.fill();
+            
             ctx.restore();
         }
 
@@ -972,9 +1041,13 @@
             ctx.save(); 
             ctx.shadowColor = snakeColor; 
             ctx.shadowBlur = 10;
+            
+            // Adjust drawing size based on shrinking power-up
+            const currentSnakeSize = gridSize * snakeScale;
+
             if (snake.length > 1) {
                  ctx.strokeStyle = snakeColor; 
-                 ctx.lineWidth = gridSize * 0.9; 
+                 ctx.lineWidth = currentSnakeSize * 0.9; 
                  ctx.lineCap = 'round'; 
                  ctx.lineJoin = 'round';
                  ctx.beginPath(); 
@@ -983,8 +1056,6 @@
                      const segment = snake[i]; 
                      const prevSegment = snake[i-1];
                      if(Math.abs(segment.x - prevSegment.x) > 1 || Math.abs(segment.y - prevSegment.y) > 1) {
-                         // This is for wrap-around, or if snake teleports.
-                         // For normal movement, this should not happen.
                          ctx.stroke(); 
                          ctx.beginPath(); 
                          ctx.moveTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
@@ -996,18 +1067,18 @@
             const head = snake[0]; 
             const headX = head.x * gridSize + gridSize / 2; 
             const headY = head.y * gridSize + gridSize / 2;
-            ctx.beginPath(); ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2); ctx.fillStyle = snakeColor; ctx.fill();
+            ctx.beginPath(); ctx.arc(headX, headY, (currentSnakeSize / 2) * 0.9, 0, Math.PI * 2); ctx.fillStyle = snakeColor; ctx.fill();
             ctx.shadowBlur = 0;
 
             // Draw eyes
-            const eyeRadius = gridSize * 0.15; 
-            const pupilRadius = gridSize * 0.08;
+            const eyeRadius = currentSnakeSize * 0.15; 
+            const pupilRadius = currentSnakeSize * 0.08;
             let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
-            const eyeDist = gridSize * 0.25;
-            if (direction.y === -1) { eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5; pupilOffsetY = -gridSize * 0.04;
-            } else if (direction.y === 1) { eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5; pupilOffsetY = gridSize * 0.04;
-            } else if (direction.x === -1) { eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist; pupilOffsetX = -gridSize * 0.04;
-            } else { eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist; pupilOffsetX = gridSize * 0.04; }
+            const eyeDist = currentSnakeSize * 0.25;
+            if (direction.y === -1) { eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5; pupilOffsetY = -currentSnakeSize * 0.04;
+            } else if (direction.y === 1) { eye1X = headX - eyeDist; eye1Y = headY + eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY + eyeDist * 0.5; pupilOffsetY = currentSnakeSize * 0.04;
+            } else if (direction.x === -1) { eye1X = headX - eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX - eyeDist * 0.5; eye2Y = headY + eyeDist; pupilOffsetX = -currentSnakeSize * 0.04;
+            } else { eye1X = headX + eyeDist * 0.5; eye1Y = headY - eyeDist; eye2X = headX + eyeDist * 0.5; eye2Y = headY + eyeDist; pupilOffsetX = currentSnakeSize * 0.04; }
             ctx.fillStyle = '#fff';
             ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
@@ -1018,9 +1089,9 @@
             // Draw tongue
             if (tongueState.counter < tongueState.flickerDuration && (direction.x !== 0 || direction.y !== 0)) {
                 ctx.strokeStyle = '#ff3366'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-                const tongueLength = gridSize * 0.8; const tongueEndX = headX + direction.x * tongueLength; const tongueEndY = headY + direction.y * tongueLength;
+                const tongueLength = currentSnakeSize * 0.8; const tongueEndX = headX + direction.x * tongueLength; const tongueEndY = headY + direction.y * tongueLength;
                 ctx.beginPath(); ctx.moveTo(headX, headY); ctx.lineTo(tongueEndX, tongueEndY);
-                const forkLength = gridSize * 0.3;
+                const forkLength = currentSnakeSize * 0.3;
                 if (direction.x !== 0) {
                     ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY - forkLength);
                     ctx.moveTo(tongueEndX, tongueEndY); ctx.lineTo(tongueEndX - direction.x * forkLength * 0.5, tongueEndY + forkLength);
@@ -1042,26 +1113,28 @@
         }
 
         function spawnBonusApple() {
-            if (Math.random() > 0.5) { 
-                const rand = Math.random(); 
-                let type;
-                if (rand < 0.25) type = 'purple';
-                else if (rand < 0.50) type = 'blue';
-                else if (rand < 0.75) type = 'golden';
-                else type = 'green';
-                const dpr = window.devicePixelRatio || 1; 
-                const gridWidth = canvas.width / dpr / gridSize; 
-                const gridHeight = canvas.height / dpr / gridSize;
-                let bonusX, bonusY;
-                do { bonusX = Math.floor(Math.random() * gridWidth); bonusY = Math.floor(Math.random() * gridHeight);
-                } while (snake.some(s => s.x === bonusX && s.y === bonusY) || (food.x === bonusX && food.y === bonusY) || bonusApples.some(a => a.x === bonusX && a.y === bonusY));
-                const newApple = { x: bonusX, y: bonusY, type }; 
-                bonusApples.push(newApple);
-                setTimeout(() => { 
-                    const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y); 
-                    if (index !== -1) bonusApples.splice(index, 1); 
-                }, 7000);
-            }
+            // Updated probability for bonus apples
+            const rand = Math.random(); 
+            let type;
+            if (rand < 0.25) type = 'purple'; // 25%
+            else if (rand < 0.50) type = 'blue'; // 25%
+            else if (rand < 0.75) type = 'golden'; // 25%
+            else if (rand < 0.875) type = 'green'; // 12.5%
+            else if (rand < 0.9375) type = 'doubleLuck'; // 6.25%
+            else type = 'shrinking'; // 6.25%
+
+            const dpr = window.devicePixelRatio || 1; 
+            const gridWidth = canvas.width / dpr / gridSize; 
+            const gridHeight = canvas.height / dpr / gridSize;
+            let bonusX, bonusY;
+            do { bonusX = Math.floor(Math.random() * gridWidth); bonusY = Math.floor(Math.random() * gridHeight);
+            } while (snake.some(s => s.x === bonusX && s.y === bonusY) || (food.x === bonusX && food.y === bonusY) || bonusApples.some(a => a.x === bonusX && a.y === bonusY));
+            const newApple = { x: bonusX, y: bonusY, type }; 
+            bonusApples.push(newApple);
+            setTimeout(() => { 
+                const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y); 
+                if (index !== -1) bonusApples.splice(index, 1); 
+            }, 7000); // Apples disappear after 7 seconds
         }
 
         function activateBonus(type) {
@@ -1071,42 +1144,75 @@
                 userData.gameStats.goldenApples++; 
             } else if (type === 'green') { 
                 powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; 
-                immortalityActivatedThisGame = true; // Mark that immortality was used in this game
+                immortaliltyUsedInCurrentGame = true; // Mark that immortality was used in this game
                 userData.gameStats.greenApples++; 
             } else if (type === 'blue') { 
                 powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; 
                 userData.gameStats.blueApples++; 
             } else if (type === 'purple') { 
-                const extraCoins = Math.floor(Math.random() * 11) + 10; 
+                let extraCoins = Math.floor(Math.random() * 11) + 10; 
+                if (powerUps.doubleScore.active) extraCoins *= 2; // Double if double score is active
                 coins += extraCoins; 
                 coinCountSpan.textContent = coins; 
                 userData.gameStats.purpleApples++; 
+            } else if (type === 'doubleLuck') { // New: Double Luck Apple
+                powerUps.doubleScore.active = true;
+                powerUps.doubleScore.endTime = now + powerUps.doubleScore.duration;
+                powerUps.doubleScore.applesRemaining = 5; // Reset apples remaining
+                userData.gameStats.doubleLuckApples++;
+            } else if (type === 'shrinking') { // New: Shrinking Apple
+                powerUps.shrinking.active = true;
+                powerUps.shrinking.endTime = now + powerUps.shrinking.duration;
+                snakeScale = 0.5; // Make snake half size visually
+                currentGameInterval = baseGameInterval * 2; // Slow down snake (e.g., half speed)
+                clearInterval(gameInterval); // Clear old interval
+                gameInterval = setInterval(gameLoop, currentGameInterval); // Set new interval
+                userData.gameStats.shrinkingApples++;
             }
             checkAchievements(); 
         }
 
         function checkPowerupEnd() {
             const now = Date.now();
+
             if (powerUps.wrap.active && now > powerUps.wrap.endTime) powerUps.wrap.active = false;
             if (powerUps.immortal.active && now > powerUps.immortal.endTime) powerUps.immortal.active = false;
             if (powerUps.magnet.active && now > powerUps.magnet.endTime) powerUps.magnet.active = false;
+            
+            // Handle Double Luck Apple end
+            if (powerUps.doubleScore.active && (now > powerUps.doubleScore.endTime || powerUps.doubleScore.applesRemaining <= 0)) {
+                powerUps.doubleScore.active = false;
+            }
+
+            // Handle Shrinking Apple end
+            if (powerUps.shrinking.active && now > powerUps.shrinking.endTime) {
+                powerUps.shrinking.active = false;
+                snakeScale = 1; // Restore snake size
+                currentGameInterval = baseGameInterval; // Restore snake speed
+                clearInterval(gameInterval); // Clear old interval
+                gameInterval = setInterval(gameLoop, currentGameInterval); // Set new interval
+            }
         }
 
         function updatePowerupTimers() {
             let activeTimers = []; 
             const now = Date.now();
-            if (powerUps.wrap.active) { 
-                const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000); 
-                if (remaining > 0) activeTimers.push(`Portal: ${remaining}s`); 
+            if (powerUps.wrap.active) { const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Portal: ${remaining}s`); }
+            if (powerUps.immortal.active) { const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`); }
+            if (powerUps.magnet.active) { const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`); }
+            
+            // New Power-up timers
+            if (powerUps.doubleScore.active) { 
+                const remainingTime = Math.ceil((powerUps.doubleScore.endTime - now) / 1000);
+                if (remainingTime > 0) {
+                     activeTimers.push(`Sorte Dupla: ${powerUps.doubleScore.applesRemaining} maçãs ou ${remainingTime}s`); 
+                }
             }
-            if (powerUps.immortal.active) { 
-                const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000); 
-                if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`); 
+            if (powerUps.shrinking.active) { 
+                const remaining = Math.ceil((powerUps.shrinking.endTime - now) / 1000); 
+                if (remaining > 0) activeTimers.push(`Encolhida: ${remaining}s`); 
             }
-            if (powerUps.magnet.active) { 
-                const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000); 
-                if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`); 
-            }
+
             if (activeTimers.length > 0) { 
                 powerupTimerDisplay.innerHTML = activeTimers.map(t => `<div class="timer-item">${t}</div>`).join(''); 
                 powerupTimerDisplay.classList.remove('hidden');
@@ -1116,7 +1222,7 @@
         }
 
         function setDirection(newDirection) {
-            if (isPaused) return;
+            if (isPaused) return; 
             const goingUp = direction.y === -1, goingDown = direction.y === 1, goingRight = direction.x === 1, goingLeft = direction.x === -1;
             if (newDirection === 'left' && !goingRight) direction = { x: -1, y: 0 };
             if (newDirection === 'up' && !goingDown) direction = { x: 0, y: -1 };
@@ -1127,7 +1233,7 @@
         function handleKeyInput(event) {
             const keyPressed = event.key.toLowerCase(); 
             if (keyPressed === 'p') { togglePause(); return; }
-            if (gameSettings.controlMode !== 'keyboard' || isPaused) return;
+            if (gameSettings.controlMode !== 'keyboard' || isPaused) return; 
             if (['arrowleft', 'a'].includes(keyPressed)) setDirection('left');
             if (['arrowup', 'w'].includes(keyPressed)) setDirection('up');
             if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
@@ -1135,14 +1241,14 @@
         }
 
         function handleTouchStart(event) {
-            if (gameSettings.controlMode !== 'touch' || isPaused || buttons.pause.contains(event.target)) return;
+            if (gameSettings.controlMode !== 'touch' || isPaused || buttons.pause.contains(event.target)) return; 
             event.preventDefault(); 
             touchStartX = event.touches[0].clientX; 
             touchStartY = event.touches[0].clientY;
         }
 
         function handleTouchEnd(event) {
-            if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused || buttons.pause.contains(event.target)) return;
+            if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused || buttons.pause.contains(event.target)) return; 
             const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
             const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
             if (Math.abs(diffX) > Math.abs(diffY)) { 
@@ -1162,6 +1268,7 @@
             if (!powerUps.wrap.active && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) return true;
             
             // Only check self-collision if immortality is NOT active
+            // Shrinking apple does not grant collision immunity in this version, only visual/speed.
             if (!powerUps.immortal.active) { 
                 for (let i = 1; i < snake.length; i++) { 
                     if (head.x === snake[i].x && head.y === snake[i].y) return true; 
@@ -1177,14 +1284,21 @@
                 if(powerUps.wrap.active) powerUps.wrap.endTime = now + powerUps.wrap.duration;
                 if(powerUps.immortal.active) powerUps.immortal.endTime = now + powerUps.immortal.duration;
                 if(powerUps.magnet.active) powerUps.magnet.endTime = now + powerUps.magnet.duration;
-                gameInterval = setInterval(gameLoop, 140);
+                if(powerUps.doubleScore.active) powerUps.doubleScore.endTime = now + powerUps.doubleScore.duration;
+                if(powerUps.shrinking.active) powerUps.shrinking.endTime = now + powerUps.shrinking.duration;
+
+                // Restart game loop with current interval
+                gameInterval = setInterval(gameLoop, currentGameInterval);
+
             } else {
                 clearInterval(gameInterval);
-                const now = Date.now();
+                const now = Date.now(); 
                 // Store remaining durations
                 if(powerUps.wrap.active) powerUps.wrap.duration = powerUps.wrap.endTime - now;
                 if(powerUps.immortal.active) powerUps.immortal.duration = powerUps.immortal.endTime - now;
                 if(powerUps.magnet.active) powerUps.magnet.duration = powerUps.magnet.endTime - now;
+                if(powerUps.doubleScore.active) powerUps.doubleScore.duration = powerUps.doubleScore.endTime - now;
+                if(powerUps.shrinking.active) powerUps.shrinking.duration = powerUps.shrinking.endTime - now;
             }
             isPaused = !isPaused;
             pauseOverlay.classList.toggle('hidden'); 
@@ -1227,6 +1341,12 @@
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
 
+            const defaultGameStats = { // Define default stats to ensure all keys exist
+                applesEaten: 0, goldenApples: 0, greenApples: 0, blueApples: 0, purpleApples: 0,
+                doubleLuckApples: 0, shrinkingApples: 0, 
+                gamesPlayed: 0, maxScoreNoSelfCollision: 0, maxSnakeLength: 0
+            };
+
             const defaultData = {
                 name: user.displayName, 
                 photoURL: user.photoURL, 
@@ -1239,21 +1359,14 @@
                 collectedRewards: [], 
                 usernameIsSet: false,
                 achievements: {}, 
-                gameStats: { 
-                    applesEaten: 0,
-                    goldenApples: 0,
-                    greenApples: 0,
-                    blueApples: 0,
-                    purpleApples: 0,
-                    gamesPlayed: 0,
-                    maxScoreNoSelfCollision: 0,
-                    maxSnakeLength: 0
-                }
+                gameStats: defaultGameStats // Initialize with all default stats
             };
 
             let cloudData;
             if (userDoc.exists()) {
                 cloudData = { ...defaultData, ...userDoc.data() };
+                // Ensure cloudData.gameStats also has all default keys
+                cloudData.gameStats = { ...defaultGameStats, ...cloudData.gameStats };
             } else {
                 cloudData = defaultData;
             }
@@ -1268,7 +1381,7 @@
 
             // Merge game stats (sum up where appropriate, take max for others)
             for (const key in localGameStats) {
-                if (['applesEaten', 'goldenApples', 'greenApples', 'blueApples', 'purpleApples', 'gamesPlayed'].includes(key)) {
+                if (['applesEaten', 'goldenApples', 'greenApples', 'blueApples', 'purpleApples', 'doubleLuckApples', 'shrinkingApples', 'gamesPlayed'].includes(key)) { 
                     cloudData.gameStats[key] = (cloudData.gameStats[key] || 0) + (localGameStats[key] || 0);
                 } else if (['maxScoreNoSelfCollision', 'maxSnakeLength'].includes(key)) {
                     cloudData.gameStats[key] = Math.max((cloudData.gameStats[key] || 0), (localGameStats[key] || 0));
@@ -1287,7 +1400,7 @@
                         cloudData.achievements[achId].progress || 0,
                         localAchievements[achId].progress || 0
                     );
-                    cloudData.achievements[achId].completed = (cloudData.achievements[achId].completed || false) || (localAchievements[achId].completed || false);
+                    cloudData.achievements[achId].completed = (cloudData.achievements[achId].completed || false) || (localAchievements[achId].completed || false); 
                     cloudData.achievements[achId].collected = (cloudData.achievements[achId].collected || false) || (localAchievements[achId].collected || false);
                 }
             }
@@ -1296,7 +1409,7 @@
             cloudData.collectedRewards = [...new Set([...(cloudData.collectedRewards || []), ...(localCollectedRewards || [])])];
 
 
-            // Initialize achievement states if they don't exist in cloudData
+            // Initialize achievement states if they don't exist in cloudData 
             achievementsData.forEach(ach => {
                 if (!cloudData.achievements[ach.id]) {
                     cloudData.achievements[ach.id] = { progress: 0, completed: false, collected: false };
@@ -1333,6 +1446,7 @@
             // Ensure gameStats has all properties, initializing if missing
             const defaultGameStats = {
                 applesEaten: 0, goldenApples: 0, greenApples: 0, blueApples: 0, purpleApples: 0,
+                doubleLuckApples: 0, shrinkingApples: 0, 
                 gamesPlayed: 0, maxScoreNoSelfCollision: 0, maxSnakeLength: 0
             };
             userData.gameStats = { ...defaultGameStats, ...userData.gameStats };
@@ -1408,15 +1522,19 @@
                         case 'purpleApples':
                             currentProgress = userData.gameStats.purpleApples;
                             break;
+                        case 'doubleLuckApples': 
+                            currentProgress = userData.gameStats.doubleLuckApples;
+                            break;
+                        case 'shrinkingApples': 
+                            currentProgress = userData.gameStats.shrinkingApples;
+                            break;
                         case 'gamesPlayed':
                             currentProgress = userData.gameStats.gamesPlayed;
                             break;
                         case 'noSelfCollisionScore':
-                            // This depends on the specific game session logic
                             currentProgress = userData.gameStats.maxScoreNoSelfCollision; 
                             break;
                         case 'snakeLength':
-                            // This depends on the specific game session logic
                             currentProgress = userData.gameStats.maxSnakeLength; 
                             break;
                         case 'totalCoins':
@@ -1510,19 +1628,27 @@
             direction = { x: 1, y: 0 }; // Cobra começa se movendo para a direita
 
             // Reset game-specific temporary stats
-            currentScoreWithoutImmortality = 0;
-            currentMaxSnakeLengthInGame = 1;
-            immortalityActivatedThisGame = false;
+            scoreAchievedWithoutImmortality = 0;
+            maxSnakeLengthInCurrentGame = 1;
+            immortalityUsedInCurrentGame = false;
+            snakeScale = 1; // Reset snake scale
+            currentGameInterval = baseGameInterval; // Reset game speed
 
-            scoreDisplay.textContent = 'Score: 0'; 
+            // Reset all power-up states
+            Object.keys(powerUps).forEach(key => { 
+                powerUps[key].active = false; 
+                powerUps[key].endTime = 0; 
+            });
+            powerUps.doubleScore.applesRemaining = 5; // Reset for double score
+
+            scoreDisplay.textContent = `Score: ${score}`; // Display initial score
             coinCountSpan.textContent = coins;
             placeFood();
             bonusApples = [];
-            Object.keys(powerUps).forEach(key => { powerUps[key].active = false; powerUps[key].endTime = 0; });
             powerupTimerDisplay.classList.add('hidden');
 
             if (gameInterval) clearInterval(gameInterval);
-            gameInterval = setInterval(gameLoop, 140);
+            gameInterval = setInterval(gameLoop, currentGameInterval);
             document.addEventListener('keydown', handleKeyInput);
             screens.game.addEventListener('touchstart', handleTouchStart, { passive: false });
             screens.game.addEventListener('touchmove', preventDefaultHandler, { passive: false });
@@ -1530,58 +1656,87 @@
         }
 
         function gameLoop() { 
+            // checkPowerupEnd() is called first within update() now.
             if(isPaused) return; 
+            
             update(); 
             draw(); 
         }
 
         function update() { 
-            if (direction.x === 0 && direction.y === 0) return; // This will now only return if direction is explicitly (0,0)
+            checkPowerupEnd(); // Moved here to be called at the beginning of each update cycle
+
+            // Calculate next head position first
+            let nextHeadX = snake[0].x + direction.x;
+            let nextHeadY = snake[0].y + direction.y;
+
             const dpr = window.devicePixelRatio || 1; 
             const gridWidth = canvas.width / dpr / gridSize; 
             const gridHeight = canvas.height / dpr / gridSize;
-            let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
-            
+
+            // Apply wrap-around if active
             if (powerUps.wrap.active) {
-                if (head.x < 0) head.x = gridWidth - 1; 
-                else if (head.x >= gridWidth) head.x = 0;
-                if (head.y < 0) head.y = gridHeight - 1; 
-                else if (head.y >= gridHeight) head.y = 0;
+                if (nextHeadX < 0) nextHeadX = gridWidth - 1; else if (nextHeadX >= gridWidth) nextHeadX = 0;
+                if (nextHeadY < 0) nextHeadY = gridHeight - 1; else if (nextHeadY >= gridHeight) nextHeadY = 0;
             }
 
+            let newHead = { x: nextHeadX, y: nextHeadY };
+
+            // Apply magnet effect BEFORE moving the snake to its new position
             if (powerUps.magnet.active) {
-                const magnetRange = 4;
-                const moveApple = (apple) => {
+                const magnetRange = 4; 
+                const applyMagnetToApple = (apple) => {
                     if (!apple) return;
-                    let dx = head.x - apple.x, dy = head.y - apple.y;
-                    if (Math.abs(dx) < magnetRange && Math.abs(dy) < magnetRange) {
-                        let nextX = apple.x, nextY = apple.y;
-                        if (Math.abs(dx) > Math.abs(dy)) { nextX += Math.sign(dx); } else { nextY += Math.sign(dy); }
-                        const isOccupied = snake.some(segment => segment.x === nextX && segment.y === nextY);
-                        if (!isOccupied) { apple.x = nextX; apple.y = nextY; }
+                    // Directly move the apple to the new head position if it's within magnet range
+                    // This ensures "eat on touch" behavior
+                    let distanceX = newHead.x - apple.x;
+                    let distanceY = newHead.y - apple.y;
+
+                    // If the apple is within 1 unit of the new head position (adjacent or on top)
+                    if (Math.abs(distanceX) <= 1 && Math.abs(distanceY) <= 1) {
+                         apple.x = newHead.x;
+                         apple.y = newHead.y;
+                    } else if (Math.abs(distanceX) + Math.abs(distanceY) <= magnetRange) {
+                        // Move apple one step closer towards the new head position
+                        if (distanceX !== 0) apple.x += Math.sign(distanceX);
+                        if (distanceY !== 0) apple.y += Math.sign(distanceY);
                     }
                 };
-                moveApple(food); 
-                bonusApples.forEach(moveApple);
+                applyMagnetToApple(food); 
+                bonusApples.forEach(applyMagnetToApple); 
             }
+            
+            // Now, actually move the snake to the new head position
+            snake.unshift(newHead);
+            tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
             
             let ateSomething = false;
 
-            // Check bonus apples first
+            // Check bonus apples first for eating at the NEW head position
             for (let i = bonusApples.length - 1; i >= 0; i--) {
                 const apple = bonusApples[i];
-                if (head.x === apple.x && head.y === apple.y) {
+                // Check if the NEW head (snake[0]) is on the apple
+                if (snake[0].x === apple.x && snake[0].y === apple.y) {
                     ateSomething = true;
                     activateBonus(apple.type);
                     bonusApples.splice(i, 1);
                 }
             }
 
-            // Check normal apple
-            if (head.x === food.x && head.y === food.y) {
+            // Check normal apple for eating at the NEW head position
+            // Only check if nothing was eaten yet from bonus apples to prevent eating two apples in one step
+            if (!ateSomething && snake[0].x === food.x && snake[0].y === food.y) {
                 ateSomething = true;
-                score++;
-                coins++;
+                let scoreIncrease = 1;
+                let coinIncrease = 1;
+                if (powerUps.doubleScore.active) {
+                    scoreIncrease *= 2;
+                    coinIncrease *= 2;
+                    powerUps.doubleScore.applesRemaining--;
+                }
+                score += scoreIncrease;
+                coins += coinIncrease;
+                
                 scoreDisplay.textContent = `Score: ${score}`;
                 coinCountSpan.textContent = coins;
                 userData.gameStats.applesEaten++; 
@@ -1589,25 +1744,25 @@
                 spawnBonusApple();
             }
 
-            snake.unshift(head);
-            tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
-            
             if (!ateSomething) {
-                snake.pop();
+                snake.pop(); // Remove tail only if no apple was eaten
             }
 
             // Update current game's max snake length
-            currentMaxSnakeLengthInGame = Math.max(currentMaxSnakeLengthInGame, snake.length);
+            maxSnakeLengthInCurrentGame = Math.max(maxSnakeLengthInCurrentGame, snake.length);
 
             // Update current game's score if immortality was not active
-            if (!immortalityActivatedThisGame) { 
-                currentScoreWithoutImmortality = Math.max(currentScoreWithoutImmortality, score);
+            // This is done before the checkCollision, ensuring score is tracked even if collision happens this frame
+            if (!powerUps.immortal.active) { 
+                scoreAchievedWithoutImmortality = Math.max(scoreAchievedWithoutImmortality, score);
+            } else {
+                 immortalityUsedInCurrentGame = true; // Flag if immortality was active at any point
             }
+
 
             if (checkCollision()) { 
                 endGame(); 
             }
-            checkPowerupEnd();
             checkAchievements(); 
         }
 
@@ -1636,11 +1791,11 @@
             userData.gameStats.gamesPlayed++; 
 
             // Update global gameStats with current game's highest values
-            userData.gameStats.maxSnakeLength = Math.max(userData.gameStats.maxSnakeLength, currentMaxSnakeLengthInGame);
+            userData.gameStats.maxSnakeLength = Math.max(userData.gameStats.maxSnakeLength, maxSnakeLengthInCurrentGame);
             
             // Only update maxScoreNoSelfCollision if immortality was NOT used in this game
-            if (!immortalityActivatedThisGame) { 
-                userData.gameStats.maxScoreNoSelfCollision = Math.max(userData.gameStats.maxScoreNoSelfCollision, score);
+            if (!immortalityUsedInCurrentGame) { 
+                userData.gameStats.maxScoreNoSelfCollision = Math.max(userData.gameStats.maxScoreNoSelfCollision, scoreAchievedWithoutImmortality);
             }
             
             await saveUserData();
