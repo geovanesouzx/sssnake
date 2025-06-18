@@ -408,7 +408,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, doc, updateDoc, setDoc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
         // Configuração Firebase Corrigida
         const firebaseConfig = {
@@ -533,12 +533,61 @@
             purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: []
         };
         
-        // --- Declaração de Funções (o resto do código permanece o mesmo) ---
-        async function checkNotifications(user) { if (!user) return; buttons.notificationBell.classList.remove('hidden'); }
+        // --- Declaração de Funções ---
+        
+        // --- Funções de Notificação ---
+        async function checkNotifications(user) {
+            if (!user) return;
+            buttons.notificationBell.classList.remove('hidden');
+            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+            const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id));
+            if (unreadNotifs.length > 0) {
+                notificationDot.classList.remove('hidden');
+            } else {
+                notificationDot.classList.add('hidden');
+            }
+        }
+
         async function renderNotifications() {
             notificationList.innerHTML = '<h2>Notificações</h2>';
-            notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui. Jogue para ganhar mais S$!</p>';
+            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>';
+            } else {
+                querySnapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const notifEl = document.createElement('div');
+                    notifEl.className = 'option-group';
+                    notifEl.innerHTML = `<h3>${data.title}</h3><p class="notification-text">${data.message}</p>`;
+                    notificationList.appendChild(notifEl);
+                });
+            }
         }
+
+        /**
+         * Adiciona uma nova notificação à base de dados para todos os jogadores.
+         * Esta é uma função administrativa e deve ser chamada manualmente quando necessário.
+         * Para usar: Abra a consola do navegador (F12) e escreva sendUpdateNotification()
+         */
+        window.sendUpdateNotification = async function() {
+            try {
+                const notificationsCol = collection(db, 'notifications');
+                await addDoc(notificationsCol, {
+                    title: "🐍 Grande Atualização no Ssnake!! 🐍",
+                    message: "Olá, jogadores! Preparamos uma atualização recheada de novidades e melhorias para tornar a vossa experiência ainda mais incrível. Confiram o que mudou: <br><br>✨ **Novidades na Loja!**<br>Apresentamos a nova Loja! Agora, podem usar os S$ que ganham nas partidas para desbloquear itens cosméticos exclusivos. Adicionámos **8 novos planos de fundo** animados e **6 novas cores** vibrantes para a cobra. Deixem o vosso Ssnake com um estilo único! <br><br>🍎 **Nova Maçã Azul Magnética!**<br>Uma nova maçã misteriosa apareceu no jogo! A **Maçã Azul** ativa um poder de íman por 45 segundos, puxando todas as outras maçãs no ecrã diretamente para si. Usem-na para criar combos e pontuações épicas! <br><br>⚙️ **Melhorias e Correções:**<br><ul><li>**Login com Google Corrigido:** A sincronização com a sua conta Google está mais robusta do que nunca. O vosso progresso está seguro!</li><li>**Correções de Bugs:** Resolvemos o problema que impedia a cobra de comer a maçã em algumas situações e o bug da Maçã Dourada que não permitia atravessar as paredes.</li><li>**Botões a Funcionar:** Os botões de sair da conta e o menu de pausa foram totalmente corrigidos.</li><li>**Interface Melhorada:** A seleção de itens agora é feita diretamente na loja para uma navegação mais simples e intuitiva.</li></ul><br>Corram para o jogo para descobrir todas as novidades, juntar moedas e personalizar a vossa cobra!<br><br>Bom jogo!",
+                    timestamp: serverTimestamp()
+                });
+                console.log("Notificação enviada com sucesso!");
+            } catch (error) {
+                console.error("Erro ao enviar notificação:", error);
+            }
+        }
+
+
+        // --- Função do Placar ---
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
@@ -960,6 +1009,10 @@
             }
         }
         document.addEventListener('DOMContentLoaded', () => {
+            addSafeListener(buttons.login, () => {
+                signInWithPopup(auth, provider).catch(error => { console.error("Erro detalhado no login:", error); });
+            });
+            addSafeListener(buttons.logout, () => { signOut(auth).catch(error => console.error("Erro no logout:", error)); });
             addSafeListener(buttons.start, startGame);
             addSafeListener(buttons.shop, showShopHandler);
             addSafeListener(buttons.leaderboard, () => { getLeaderboard(); showScreen(screens.leaderboard); });
@@ -972,17 +1025,11 @@
             addSafeListener(buttons.pauseOptions, handlePauseOptions);
             addSafeListener(buttons.pauseHome, pauseHomeHandler);
             addSafeListener(buttons.notificationBell, showNotificationHandler);
-            addSafeListener(buttons.logout, () => { signOut(auth).catch(error => console.error("Erro no logout:", error)); });
             addSafeListener(buttons.back, () => { if(previousScreen === screens.game) { showScreen(screens.game); pauseOverlay.classList.remove('hidden'); } else { showScreen(screens.start); } });
             addSafeListener(buttons.shopBack, () => showScreen(screens.start));
             addSafeListener(buttons.leaderboardBack, () => showScreen(screens.start));
             addSafeListener(buttons.tipsBack, () => showScreen(screens.start));
             addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
-            addSafeListener(buttons.login, () => {
-                signInWithPopup(auth, provider).catch(error => {
-                    console.error("Erro detalhado no login:", error);
-                });
-            });
             shopTabs.addEventListener('click', (e) => { const tab = e.target.closest('.shop-tab'); if (tab) renderShop(tab.dataset.tab); });
             shopItemsContainer.addEventListener('click', (e) => {
                 const buyButton = e.target.closest('[data-item-id]');
