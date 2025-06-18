@@ -26,6 +26,7 @@
             --golden-apple-glow: rgba(255, 215, 0, 0.8);
             --green-apple-glow: rgba(46, 204, 113, 0.8);
             --blue-apple-glow: rgba(52, 152, 219, 0.8);
+            --purple-apple-glow: rgba(155, 89, 182, 0.8);
         }
 
         * {
@@ -48,7 +49,7 @@
             transition: all 0.5s ease;
         }
 
-        /* Fundos Padrão e Novos */
+        /* Fundos */
         .background-default::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -244,7 +245,7 @@
             justify-content: space-between;
         }
         
-        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2, #shop-screen h2 {
+        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2, #shop-screen h2, #username-screen h2 {
             font-size: 2.5rem; color: var(--accent-color); margin-bottom: 20px; flex-shrink: 0;
         }
 
@@ -289,6 +290,21 @@
         .shop-item .menu-button { padding: 10px 25px; font-size: 0.9rem; width: auto; }
         .shop-item-details { display: flex; align-items: center; gap: 15px; }
         .color-preview { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--text-color); }
+
+        #username-input {
+            font-family: var(--font-family);
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--accent-color);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            width: 80%;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+        #username-error { color: #ff3366; height: 20px; }
 
         #game-screen { justify-content: flex-start; }
         #top-bar {
@@ -397,6 +413,7 @@
                 </div>
                  <div class="option-group">
                     <h3>Maçãs Bônus</h3>
+                    <p class="tip-text">- Maçã Roxa: Dá entre 10 e 20 moedas.</p>
                     <p class="tip-text">- Maçã Dourada: Permite atravessar as paredes por 30 segundos.</p>
                     <p class="tip-text">- Maçã Verde: Te deixa imortal a colisões com seu corpo por 30 segundos.</p>
                     <p class="tip-text">- Maçã Azul: Cria um campo magnético por 45 segundos que atrai maçãs próximas.</p>
@@ -449,12 +466,20 @@
              <button id="restart-button" class="menu-button">Reiniciar</button>
              <button id="home-button" class="menu-button">Tela Inicial</button>
         </div>
+
+        <div id="username-screen" class="screen hidden">
+            <h2>Escolha o seu nome de usuário</h2>
+            <p class="tip-text" style="width: 80%; max-width: 300px;">Este nome será exibido no placar. Escolha com sabedoria, não poderá ser alterado!</p>
+            <input type="text" id="username-input" placeholder="Digite seu nome..." maxlength="15">
+            <p id="username-error" class="hidden" style="color: #ff3366; height: 20px;"></p>
+            <button id="submit-username-button" class="menu-button">Confirmar</button>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, doc, updateDoc, setDoc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, serverTimestamp, doc, updateDoc, setDoc, getDoc, addDoc, writeBatch, where } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
         // Configuração Firebase Corrigida
         const firebaseConfig = {
@@ -474,8 +499,8 @@
         const provider = new GoogleAuthProvider();
 
         // --- Elementos do DOM (permanecem os mesmos) ---
-        const screens = { start: document.getElementById('start-screen'), options: document.getElementById('options-screen'), shop: document.getElementById('shop-screen'), game: document.getElementById('game-screen'), gameOver: document.getElementById('game-over-screen'), leaderboard: document.getElementById('leaderboard-screen'), tips: document.getElementById('tips-screen'), notifications: document.getElementById('notification-screen'), };
-        const buttons = { start: document.getElementById('start-button'), shop: document.getElementById('shop-button'), shopBack: document.getElementById('shop-back-button'), options: document.getElementById('options-button'), back: document.getElementById('back-button'), restart: document.getElementById('restart-button'), home: document.getElementById('home-button'), login: document.getElementById('login-button'), logout: document.getElementById('logout-button'), leaderboard: document.getElementById('leaderboard-button'), leaderboardBack: document.getElementById('leaderboard-back-button'), tips: document.getElementById('tips-button'), tipsBack: document.getElementById('tips-back-button'), notificationBell: document.getElementById('notification-bell'), notificationBack: document.getElementById('notification-back-button'), pause: document.getElementById('pause-button'), resume: document.getElementById('resume-button'), pauseOptions: document.getElementById('pause-options-button'), pauseHome: document.getElementById('pause-home-button') };
+        const screens = { start: document.getElementById('start-screen'), options: document.getElementById('options-screen'), shop: document.getElementById('shop-screen'), game: document.getElementById('game-screen'), gameOver: document.getElementById('game-over-screen'), leaderboard: document.getElementById('leaderboard-screen'), tips: document.getElementById('tips-screen'), notifications: document.getElementById('notification-screen'), username: document.getElementById('username-screen') };
+        const buttons = { start: document.getElementById('start-button'), shop: document.getElementById('shop-button'), shopBack: document.getElementById('shop-back-button'), options: document.getElementById('options-button'), back: document.getElementById('back-button'), restart: document.getElementById('restart-button'), home: document.getElementById('home-button'), login: document.getElementById('login-button'), logout: document.getElementById('logout-button'), leaderboard: document.getElementById('leaderboard-button'), leaderboardBack: document.getElementById('leaderboard-back-button'), tips: document.getElementById('tips-button'), tipsBack: document.getElementById('tips-back-button'), notificationBell: document.getElementById('notification-bell'), notificationBack: document.getElementById('notification-back-button'), pause: document.getElementById('pause-button'), resume: document.getElementById('resume-button'), pauseOptions: document.getElementById('pause-options-button'), pauseHome: document.getElementById('pause-home-button'), submitUsername: document.getElementById('submit-username-button') };
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
         const userName = document.getElementById('user-name');
@@ -494,6 +519,8 @@
         const notificationList = document.getElementById('notification-list');
         const shopItemsContainer = document.getElementById('shop-items-container');
         const shopTabs = document.querySelector('.shop-tabs');
+        const usernameInput = document.getElementById('username-input');
+        const usernameError = document.getElementById('username-error');
         
         // --- Configurações do Jogo e Dados (com novos itens) ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -512,7 +539,7 @@
             backgrounds: [ { id: 'sunset', name: 'Pôr do Sol', price: 50 }, { id: 'matrix', name: 'Chuva Digital', price: 750 }, { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 }, { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 }, { id: 'hexagons', name: 'Colmeia Digital', price: 2500 }, { id: 'stars', name: 'Espaço Sideral', price: 3000 }, { id: 'aurora', name: 'Aurora Boreal', price: 4000 }, { id: 'tunnel', name: 'Túnel Hipnótico', price: 4500 }, { id: 'circuit', name: 'Circuito Digital', price: 5000 }, { id: 'forcefield', name: 'Campo de Força', price: 5500 }, { id: 'liquid', name: 'Lava Lamp', price: 6000 } ],
             snakeColors: [ { id: 'blue', name: 'Azul Neon', price: 100 }, { id: 'green', name: 'Verde Cyber', price: 800 }, { id: 'orange', name: 'Laranja Elétrico', price: 1500 }, { id: 'gold', name: 'Cobra de Ouro', price: 5000 }, { id: 'white', name: 'Cobra Fantasma', price: 7500 }, { id: 'toxic', name: 'Cobra Tóxica', price: 10000 }, { id: 'hotpink', name: 'Rosa Choque', price: 12000 }, { id: 'cosmic', name: 'Violeta Cósmico', price: 15000 }, { id: 'magma', name: 'Vermelho Magma', price: 18000 }, { id: 'sky', name: 'Azul Celeste', price: 20000 }, { id: 'lime', name: 'Lima-Limão', price: 25000 } ]
         };
-        let userData = { highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default', purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [] };
+        let userData = { name: '', highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default', purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [], usernameIsSet: false };
         
         // --- Declaração de Funções ---
         async function checkNotifications(user) { if (!user) return; buttons.notificationBell.classList.remove('hidden'); const q = query(collection(db, "notifications"), orderBy("timestamp", "desc")); const querySnapshot = await getDocs(q); const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id)); if (unreadNotifs.length > 0) { notificationDot.classList.remove('hidden'); } else { notificationDot.classList.add('hidden'); } }
@@ -574,7 +601,7 @@
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const li = document.createElement('li');
-                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.highScore || 0}</span>`;
+                    li.innerHTML = `<span class="rank">${rank++}.</span> <span class="name">${data.name || 'Jogador Anónimo'}</span> <span class="score">${data.highScore || 0}</span>`;
                     scoreList.appendChild(li);
                 });
             } catch (error) { console.error("Erro ao buscar placar:", error); scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>'; }
@@ -585,6 +612,7 @@
                 case 'golden': glow = 'var(--golden-apple-glow)'; colorLight = '#FFD700'; colorDark = '#FDB813'; break;
                 case 'green': glow = 'var(--green-apple-glow)'; colorLight = '#2ecc71'; colorDark = '#27ae60'; break;
                 case 'blue': glow = 'var(--blue-apple-glow)'; colorLight = '#3498db'; colorDark = '#2980b9'; break;
+                case 'purple': glow = 'var(--purple-apple-glow)'; colorLight = '#9b59b6'; colorDark = '#8e44ad'; break;
                 default:
                     glow = 'var(--food-glow)'; 
                     colorLight = getComputedStyle(document.documentElement).getPropertyValue('--apple-color-light').trim();
@@ -666,8 +694,9 @@
         function spawnBonusApple() {
             if (Math.random() > 0.5) { 
                 const rand = Math.random(); let type;
-                if (rand < 0.20) type = 'blue';
-                else if (rand < 0.60) type = 'golden';
+                if (rand < 0.25) type = 'purple';
+                else if (rand < 0.50) type = 'blue';
+                else if (rand < 0.75) type = 'golden';
                 else type = 'green';
                 const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
                 let bonusX, bonusY;
@@ -682,6 +711,7 @@
             if (type === 'golden') { powerUps.wrap.active = true; powerUps.wrap.endTime = now + powerUps.wrap.duration; } 
             else if (type === 'green') { powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; } 
             else if (type === 'blue') { powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; }
+            else if (type === 'purple') { const extraCoins = Math.floor(Math.random() * 11) + 10; coins += extraCoins; coinCountSpan.textContent = coins; }
         }
         function checkPowerupEnd() {
             const now = Date.now();
@@ -751,9 +781,14 @@
         }
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                userProfile.classList.remove('hidden'); userName.textContent = user.displayName; userPhoto.src = user.photoURL;
+                userProfile.classList.remove('hidden'); userPhoto.src = user.photoURL;
                 buttons.login.classList.add('hidden'); buttons.logout.classList.remove('hidden');
                 await loadUserData(user);
+                if (!userData.usernameIsSet) {
+                    showScreen(screens.username);
+                } else {
+                    userName.textContent = userData.name;
+                }
             } else {
                 userProfile.classList.add('hidden'); buttons.login.classList.remove('hidden'); buttons.logout.classList.add('hidden'); buttons.notificationBell.classList.add('hidden');
                 loadLocalData();
@@ -773,6 +808,7 @@
                 name: user.displayName, photoURL: user.photoURL, highScore: 0, totalCoins: 0,
                 purchasedBgs: ['default'], selectedBg: 'default',
                 purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [],
+                usernameIsSet: false,
             };
 
             let cloudData;
@@ -811,10 +847,10 @@
                 highScore: userData.highScore, totalCoins: userData.totalCoins,
                 purchasedBgs: userData.purchasedBgs, selectedBg: userData.selectedBg,
                 purchasedSnakeColors: userData.purchasedSnakeColors, selectedSnakeColor: userData.selectedSnakeColor,
-                collectedRewards: userData.collectedRewards,
+                collectedRewards: userData.collectedRewards, name: userData.name, usernameIsSet: userData.usernameIsSet,
             };
             if (user) {
-                try { await updateDoc(doc(db, "users", user.uid), dataToSave); } catch(e) { console.error("Error saving user data:", e); }
+                try { await setDoc(doc(db, "users", user.uid), dataToSave, { merge: true }); } catch(e) { console.error("Error saving user data:", e); }
             } else {
                 localStorage.setItem('ssnake_coins', dataToSave.totalCoins);
                 localStorage.setItem('ssnake_bgs', JSON.stringify(dataToSave.purchasedBgs));
@@ -984,6 +1020,34 @@
                 if(button) { button.classList.add('shake'); setTimeout(() => button.classList.remove('shake'), 300); }
             }
         }
+        async function handleUsernameSubmit() {
+            const newUsername = usernameInput.value.trim();
+            usernameError.textContent = '';
+            usernameError.classList.add('hidden');
+            
+            if (newUsername.length < 3 || newUsername.length > 15) {
+                usernameError.textContent = 'O nome deve ter entre 3 e 15 caracteres.';
+                usernameError.classList.remove('hidden');
+                return;
+            }
+
+            const q = query(collection(db, "users"), where("name", "==", newUsername));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                usernameError.textContent = 'Este nome de usuário já existe.';
+                usernameError.classList.remove('hidden');
+            } else {
+                const user = auth.currentUser;
+                if (user) {
+                    userData.name = newUsername;
+                    userData.usernameIsSet = true;
+                    await saveUserData();
+                    userName.textContent = newUsername;
+                    showScreen(screens.start);
+                }
+            }
+        }
         document.addEventListener('DOMContentLoaded', () => {
             addSafeListener(buttons.login, () => {
                 signInWithPopup(auth, provider).catch(error => { console.error("Erro detalhado no login:", error); });
@@ -1006,6 +1070,8 @@
             addSafeListener(buttons.leaderboardBack, () => showScreen(screens.start));
             addSafeListener(buttons.tipsBack, () => showScreen(screens.start));
             addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
+            addSafeListener(buttons.submitUsername, handleUsernameSubmit);
+
             shopTabs.addEventListener('click', (e) => { const tab = e.target.closest('.shop-tab'); if (tab) renderShop(tab.dataset.tab); });
             shopItemsContainer.addEventListener('click', (e) => {
                 const buyButton = e.target.closest('[data-item-id]');
