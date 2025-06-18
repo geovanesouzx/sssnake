@@ -48,7 +48,7 @@
             transition: all 0.5s ease;
         }
 
-        /* Fundos Padrão e Novos */
+        /* Fundos */
         .background-default::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -110,6 +110,47 @@
             animation: moveStars 50s linear infinite; z-index: -1;
         }
 
+        .background-aurora::before {
+            content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(-45deg, #00ff99, #00ccff, #9933ff, #ff33cc);
+            background-size: 400% 400%; animation: aurora 15s ease infinite; z-index: -1;
+        }
+
+        .background-tunnel::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            background-image: radial-gradient(circle, var(--secondary-color) 2px, transparent 2px);
+            background-size: 25px 25px;
+            animation: zoomTunnel 10s linear infinite;
+            z-index: -1;
+        }
+
+        .background-circuit::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #01040a;
+            background-image: linear-gradient(var(--accent-color) 1px, transparent 1px), linear-gradient(90deg, var(--accent-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: moveCircuit 3s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .background-forcefield::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 70%, var(--accent-color) 100%);
+            animation: forceField 5s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .background-liquid::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #2a1a4a, #ff00ff, #00ffff);
+            background-size: 200% 200%;
+            animation: liquidFlow 10s ease infinite;
+            z-index: -1;
+        }
+
+
         .hidden { display: none !important; }
 
         /* Animações */
@@ -124,6 +165,11 @@
         @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
         @keyframes ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes zoomTunnel { from { background-size: 25px 25px; opacity: 1; } to { background-size: 200px 200px; opacity: 0; } }
+        @keyframes moveCircuit { from { background-position: 0 0; } to { background-position: 80px 80px; } }
+        @keyframes forceField { 0%, 100% { transform: scale(1); opacity: 0.2; } 50% { transform: scale(1.1); opacity: 0.4; } }
+        @keyframes liquidFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .shake { animation: shake 0.3s ease; }
 
         /* Estrutura e UI */
@@ -461,90 +507,42 @@
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
         let bonusApples = [];
         let powerUps = { wrap: { active: false, endTime: 0, duration: 30000 }, immortal: { active: false, endTime: 0, duration: 30000 }, magnet: { active: false, endTime: 0, duration: 45000 } };
-        const snakeColors = { default: { name: 'Magenta Padrão', color: '#ff00ff' }, blue: { name: 'Azul Neon', color: '#3498db' }, green: { name: 'Verde Cyber', color: '#00ff00' }, orange: { name: 'Laranja Elétrico', color: '#ff8c00' }, gold: { name: 'Dourado', color: '#ffd700'}, white: { name: 'Branco Espectral', color: '#ffffff' }, toxic: { name: 'Verde Tóxico', color: '#7fff00' } };
+        const snakeColors = { default: { name: 'Magenta Padrão', color: '#ff00ff' }, blue: { name: 'Azul Neon', color: '#3498db' }, green: { name: 'Verde Cyber', color: '#00ff00' }, orange: { name: 'Laranja Elétrico', color: '#ff8c00' }, gold: { name: 'Dourado', color: '#ffd700'}, white: { name: 'Branco Espectral', color: '#ffffff' }, toxic: { name: 'Verde Tóxico', color: '#7fff00' }, hotpink: { name: 'Rosa Choque', color: '#FF69B4' }, cosmic: { name: 'Violeta Cósmico', color: '#8A2BE2' }, magma: { name: 'Vermelho Magma', color: '#FF4500' }, sky: { name: 'Azul Celeste', color: '#00BFFF' }, lime: { name: 'Lima-Limão', color: '#ADFF2F' } };
         const shopItems = {
-            backgrounds: [ { id: 'sunset', name: 'Pôr do Sol', price: 50 }, { id: 'matrix', name: 'Chuva Digital', price: 750 }, { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 }, { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 }, { id: 'hexagons', name: 'Colmeia Digital', price: 2500 }, { id: 'stars', name: 'Espaço Sideral', price: 3000 } ],
-            snakeColors: [ { id: 'blue', name: 'Azul Neon', price: 100 }, { id: 'green', name: 'Verde Cyber', price: 800 }, { id: 'orange', name: 'Laranja Elétrico', price: 1500 }, { id: 'gold', name: 'Cobra de Ouro', price: 5000 }, { id: 'white', name: 'Cobra Fantasma', price: 7500 }, { id: 'toxic', name: 'Cobra Tóxica', price: 10000 } ]
+            backgrounds: [ { id: 'sunset', name: 'Pôr do Sol', price: 50 }, { id: 'matrix', name: 'Chuva Digital', price: 750 }, { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 }, { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 }, { id: 'hexagons', name: 'Colmeia Digital', price: 2500 }, { id: 'stars', name: 'Espaço Sideral', price: 3000 }, { id: 'aurora', name: 'Aurora Boreal', price: 4000 }, { id: 'tunnel', name: 'Túnel Hipnótico', price: 4500 }, { id: 'circuit', name: 'Circuito Digital', price: 5000 }, { id: 'forcefield', name: 'Campo de Força', price: 5500 }, { id: 'liquid', name: 'Lava Lamp', price: 6000 } ],
+            snakeColors: [ { id: 'blue', name: 'Azul Neon', price: 100 }, { id: 'green', name: 'Verde Cyber', price: 800 }, { id: 'orange', name: 'Laranja Elétrico', price: 1500 }, { id: 'gold', name: 'Cobra de Ouro', price: 5000 }, { id: 'white', name: 'Cobra Fantasma', price: 7500 }, { id: 'toxic', name: 'Cobra Tóxica', price: 10000 }, { id: 'hotpink', name: 'Rosa Choque', price: 12000 }, { id: 'cosmic', name: 'Violeta Cósmico', price: 15000 }, { id: 'magma', name: 'Vermelho Magma', price: 18000 }, { id: 'sky', name: 'Azul Celeste', price: 20000 }, { id: 'lime', name: 'Lima-Limão', price: 25000 } ]
         };
         let userData = { highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default', purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [] };
         
         // --- Declaração de Funções ---
-        async function checkNotifications(user) {
-            if (!user) return;
-            buttons.notificationBell.classList.remove('hidden');
-            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
-            const querySnapshot = await getDocs(q);
-            const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id));
-            if (unreadNotifs.length > 0) {
-                notificationDot.classList.remove('hidden');
-            } else {
-                notificationDot.classList.add('hidden');
-            }
-        }
+        async function checkNotifications(user) { if (!user) return; buttons.notificationBell.classList.remove('hidden'); const q = query(collection(db, "notifications"), orderBy("timestamp", "desc")); const querySnapshot = await getDocs(q); const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id)); if (unreadNotifs.length > 0) { notificationDot.classList.remove('hidden'); } else { notificationDot.classList.add('hidden'); } }
         async function renderNotifications() {
             notificationList.innerHTML = '<h2>Notificações</h2>';
             const user = auth.currentUser;
-            if(!user) {
-                notificationList.innerHTML += '<p class="notification-text">Faça login para ver as suas notificações.</p>';
-                return;
-            }
-
+            if(!user) { notificationList.innerHTML += '<p class="notification-text">Faça login para ver as suas notificações.</p>'; return; }
             const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
             const querySnapshot = await getDocs(q);
-            
-            if (querySnapshot.empty) {
-                notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>';
-            } else {
+            if (querySnapshot.empty) { notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>'; } 
+            else {
                 querySnapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const notifEl = document.createElement('div');
-                    notifEl.className = 'option-group notification-item';
-                    let buttonHtml = '';
-                    const isCollected = userData.collectedRewards.includes(docSnap.id);
-
-                    if (data.reward && data.reward > 0) {
-                        buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar S$ ${data.reward}`}</button>`;
-                    }
-
-                    notifEl.innerHTML = `<h3>${data.title}</h3><p class="notification-text">${data.message}</p>${buttonHtml}`;
+                    const data = docSnap.data(); const notifEl = document.createElement('div'); notifEl.className = 'option-group notification-item';
+                    let buttonHtml = ''; const isCollected = userData.collectedRewards.includes(docSnap.id);
+                    if (data.reward && data.reward > 0) { buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar S$ ${data.reward}`}</button>`; }
+                    notifEl.innerHTML = `<h3>${data.title}</h3><div class="notification-text">${data.message}</div>${buttonHtml}`;
                     notificationList.appendChild(notifEl);
                 });
             }
         }
         async function collectReward(target) {
-            const user = auth.currentUser;
-            if (!user || target.disabled) return;
-
-            const rewardId = target.dataset.rewardId;
-            const rewardAmount = parseInt(target.dataset.rewardAmount);
-
+            const user = auth.currentUser; if (!user || target.disabled) return;
+            const rewardId = target.dataset.rewardId; const rewardAmount = parseInt(target.dataset.rewardAmount);
             if (userData.collectedRewards.includes(rewardId)) return;
-            
-            target.disabled = true;
-            target.textContent = "Coletado!";
-            
-            userData.totalCoins += rewardAmount;
-            userData.collectedRewards.push(rewardId);
-            coins = userData.totalCoins;
-            if(coinCountSpan) coinCountSpan.textContent = coins;
-
-            await saveUserData();
-            checkNotifications(user);
+            target.disabled = true; target.textContent = "Coletado!";
+            userData.totalCoins += rewardAmount; userData.collectedRewards.push(rewardId);
+            coins = userData.totalCoins; if(coinCountSpan) coinCountSpan.textContent = coins;
+            await saveUserData(); await checkNotifications(user);
         }
-        window.sendUpdateNotification = async function() {
-            try {
-                const notificationsCol = collection(db, 'notifications');
-                await addDoc(notificationsCol, {
-                    title: "🐍 Recompensa de Boas-vindas! 🐍",
-                    message: "Obrigado por jogar! Aqui está uma pequena recompensa (S$ 200) para o ajudar a começar na nossa loja de itens.",
-                    reward: 200, 
-                    timestamp: serverTimestamp()
-                });
-                console.log("Notificação com recompensa enviada com sucesso!");
-            } catch (error) {
-                console.error("Erro ao enviar notificação:", error);
-            }
-        }
+        window.sendUpdateNotification = async function() { try { const notificationsCol = collection(db, 'notifications'); await addDoc(notificationsCol, { title: "🐍 Recompensa de Boas-vindas! 🐍", message: "Obrigado por jogar! Aqui está uma pequena recompensa (S$ 200) para o ajudar a começar na nossa loja de itens.", reward: 200, timestamp: serverTimestamp() }); console.log("Notificação com recompensa enviada com sucesso!"); } catch (error) { console.error("Erro ao enviar notificação:", error); } }
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
@@ -696,11 +694,11 @@
             if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
         }
         function handleTouchStart(event) {
-            if (gameSettings.controlMode !== 'touch' || isPaused) return;
+            if (gameSettings.controlMode !== 'touch' || isPaused || buttons.pause.contains(event.target)) return;
             event.preventDefault(); touchStartX = event.touches[0].clientX; touchStartY = event.touches[0].clientY;
         }
         function handleTouchEnd(event) {
-            if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused) return;
+            if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused || buttons.pause.contains(event.target)) return;
             const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
             const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
             if (Math.abs(diffX) > Math.abs(diffY)) { if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
@@ -793,6 +791,7 @@
                 highScore: userData.highScore, totalCoins: userData.totalCoins,
                 purchasedBgs: userData.purchasedBgs, selectedBg: userData.selectedBg,
                 purchasedSnakeColors: userData.purchasedSnakeColors, selectedSnakeColor: userData.selectedSnakeColor,
+                collectedRewards: userData.collectedRewards,
             };
             if (user) {
                 try { await updateDoc(doc(db, "users", user.uid), dataToSave); } catch(e) { console.error("Error saving user data:", e); }
@@ -846,9 +845,9 @@
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
             document.addEventListener('keydown', handleKeyInput);
-            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-            canvas.addEventListener('touchmove', preventDefaultHandler, { passive: false });
-            canvas.addEventListener('touchend', handleTouchEnd);
+            screens.game.addEventListener('touchstart', handleTouchStart, { passive: false });
+            screens.game.addEventListener('touchmove', preventDefaultHandler, { passive: false });
+            screens.game.addEventListener('touchend', handleTouchEnd);
         }
         function gameLoop() { if(isPaused) return; update(); draw(); }
         function update() {
@@ -902,9 +901,9 @@
         async function endGame(showGameOverScreen = true) {
             clearInterval(gameInterval); gameInterval = null;
             document.removeEventListener('keydown', handleKeyInput);
-            canvas.removeEventListener('touchstart', handleTouchStart);
-            canvas.removeEventListener('touchmove', preventDefaultHandler);
-            canvas.removeEventListener('touchend', handleTouchEnd);
+            screens.game.removeEventListener('touchstart', handleTouchStart);
+            screens.game.removeEventListener('touchmove', preventDefaultHandler);
+            screens.game.removeEventListener('touchend', handleTouchEnd);
             
             userData.totalCoins = coins;
             if(score > userData.highScore) { userData.highScore = score; }
