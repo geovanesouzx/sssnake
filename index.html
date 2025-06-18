@@ -263,11 +263,11 @@
         .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; }
         
         .credits-link {
-            font-family: var(--font-family); display: inline-block; color: var(--cyan-glow); text-decoration: none;
-            border: 1px solid var(--cyan-glow); padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease-out;
+            font-family: var(--font-family); display: inline-block; color: var(--food-color); text-decoration: none;
+            border: 1px solid var(--food-color); padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease-out;
             text-transform: uppercase; font-size: 0.9rem;
         }
-        .credits-link:hover { background-color: var(--cyan-glow); color: var(--primary-color); box-shadow: 0 0 20px var(--cyan-glow); }
+        .credits-link:hover { background-color: var(--food-color); color: var(--primary-color); box-shadow: 0 0 20px var(--cyan-glow); }
         
         #score-list { list-style: none; width: 100%; }
         #score-list li {
@@ -919,10 +919,11 @@
             if (powerUps.magnet.active) {
                 const magnetRange = 4;
                 const moveApple = (apple) => {
+                    if (!apple) return;
                     let dx = head.x - apple.x, dy = head.y - apple.y;
                     if (Math.abs(dx) < magnetRange && Math.abs(dy) < magnetRange) {
                         let nextX = apple.x, nextY = apple.y;
-                        if (Math.abs(dx) > Math.abs(dy)) nextX += Math.sign(dx); else nextY += Math.sign(dy);
+                        if (Math.abs(dx) > Math.abs(dy)) { nextX += Math.sign(dx); } else { nextY += Math.sign(dy); }
                         const isOccupied = snake.some(segment => segment.x === nextX && segment.y === nextY);
                         if (!isOccupied) { apple.x = nextX; apple.y = nextY; }
                     }
@@ -930,23 +931,40 @@
                 moveApple(food); bonusApples.forEach(moveApple);
             }
             
+            let ateSomething = false;
+
+            // Check bonus apples first
+            for (let i = bonusApples.length - 1; i >= 0; i--) {
+                const apple = bonusApples[i];
+                if (head.x === apple.x && head.y === apple.y) {
+                    ateSomething = true;
+                    activateBonus(apple.type);
+                    bonusApples.splice(i, 1);
+                }
+            }
+
+            // Check normal apple
+            if (head.x === food.x && head.y === food.y) {
+                ateSomething = true;
+                score++;
+                coins++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                coinCountSpan.textContent = coins;
+                placeFood();
+                spawnBonusApple();
+            }
+
             snake.unshift(head);
             tongueState.counter = (tongueState.counter + 1) % tongueState.flickerInterval;
             
-            let ateApple = false;
-            if (head.x === food.x && head.y === food.y) {
-                ateApple = true; score++; coins++;
-                scoreDisplay.textContent = `Score: ${score}`; coinCountSpan.textContent = coins;
-                placeFood(); spawnBonusApple();
+            if (!ateSomething) {
+                snake.pop();
             }
-            
-            bonusApples.forEach((apple, index) => {
-                if (head.x === apple.x && head.y === apple.y) {
-                    ateApple = true; activateBonus(apple.type); bonusApples.splice(index, 1);
-                }
-            });
-            if (!ateApple) { snake.pop(); }
-            if (checkCollision()) { endGame(); } checkPowerupEnd();
+
+            if (checkCollision()) { 
+                endGame(); 
+            }
+            checkPowerupEnd();
         }
         function draw() {
             const dpr = window.devicePixelRatio || 1;
