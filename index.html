@@ -28,8 +28,8 @@
             --blue-apple-glow: rgba(52, 152, 219, 0.8);
             --purple-apple-glow: rgba(155, 89, 182, 0.8);
             /* New Apple Glows */
-            --double-luck-apple-glow: rgba(255, 0, 255, 0.8); /* Vibrant glow for Double Luck */
-            --shrinking-apple-glow: rgba(0, 255, 0, 0.8); /* Green glow for Shrinking */
+            --double-luck-apple-glow: rgba(255, 215, 0, 0.8); /* Changed to golden glow */
+            --shrinking-apple-glow: rgba(0, 191, 255, 0.8); /* Changed to deep sky blue glow */
 
 
             --difficulty-easy: #2ecc71; /* Green */
@@ -37,6 +37,7 @@
             --difficulty-hard: #f1c40f; /* Yellow */
             --difficulty-epic: #9b59b6; /* Purple */
             --difficulty-extreme: #e74c3c; /* Red */
+            --difficulty-hardcore: #8b0000; /* Dark Red for Hardcore */
         }
 
         * {
@@ -160,6 +161,115 @@
             animation: liquidFlow 10s ease infinite;
             z-index: -1;
         }
+        /* NEW BACKGROUNDS STYLES */
+        .background-cosmic_dream::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%),
+                        radial-gradient(at top left, rgba(155, 89, 182, 0.3) 0%, transparent 50%),
+                        radial-gradient(at bottom right, rgba(52, 152, 219, 0.3) 0%, transparent 50%);
+            animation: nebulaFlow 25s linear infinite alternate;
+            z-index: -1;
+        }
+        .background-forest_glow::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1e3a2c 0%, #0a1612 100%);
+            animation: pulse 10s ease-in-out infinite alternate;
+            z-index: -1;
+            /* Simple glowing dots */
+            background-image: radial-gradient(circle, rgba(0, 255, 0, 0.2) 1px, transparent 1px),
+                              radial-gradient(circle, rgba(0, 255, 0, 0.2) 1px, transparent 1px);
+            background-size: 30px 30px, 45px 45px;
+            background-position: 0 0, 15px 15px;
+        }
+        .background-cyber_grid::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            background-image: linear-gradient(0deg, rgba(0,255,255,0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: moveGrid 5s linear infinite;
+            z-index: -1;
+        }
+        .background-lava_flow::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #FF4500, #FFD700, #FF6347);
+            background-size: 400% 400%;
+            animation: liquidFlow 12s ease infinite;
+            z-index: -1;
+        }
+        .background-starry_night::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+                              radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
+            background-size: 50px 50px, 100px 100px;
+            animation: moveStars 100s linear infinite;
+            z-index: -1;
+        }
+        .background-ocean_depths::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #001f3f, #0074d9, #001f3f);
+            animation: liquidFlow 15s ease infinite alternate;
+            z-index: -1;
+        }
+        .background-desert_dunes::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, #c0392b, #e74c3c, #f39c12);
+            animation: nebulaFlow 20s ease infinite alternate; /* Reusing for heat haze effect */
+            z-index: -1;
+        }
+        .background-retro_grid::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, #330033, #660066, #990099);
+            background-image: linear-gradient(to right, rgba(255, 0, 255, 0.2) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 0, 255, 0.2) 1px, transparent 1px);
+            background-size: 25px 25px;
+            animation: moveGrid 15s linear infinite;
+            z-index: -1;
+        }
+        /* New custom backgrounds */
+        .background-stardust_swirl::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #0A0A0A 0%, #1A0C2E 100%);
+            background-image: radial-gradient(circle at 10% 20%, rgba(100, 100, 255, 0.1) 0%, transparent 50%),
+                              radial-gradient(circle at 90% 80%, rgba(255, 100, 100, 0.1) 0%, transparent 50%);
+            animation: nebulaFlow 30s ease infinite alternate;
+            z-index: -1;
+        }
+        .background-mystic_glade::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0F2027 0%, #203A43 100%);
+            background-image: radial-gradient(circle, rgba(0, 150, 0, 0.1) 1px, transparent 1px),
+                              radial-gradient(circle, rgba(0, 200, 0, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px, 60px 60px;
+            animation: moveHex 40s linear infinite;
+            z-index: -1;
+        }
+        .background-neon_cityscape::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            background-image: linear-gradient(0deg, rgba(0,255,255,0.2) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,0,255,0.2) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: moveCircuit 10s linear infinite alternate;
+            z-index: -1;
+        }
+        .background-deep_sea_current::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, #000033, #001f3f, #004d99);
+            background-image: radial-gradient(circle, rgba(0, 150, 255, 0.1) 1px, transparent 1px),
+                              radial-gradient(circle, rgba(0, 100, 200, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: liquidFlow 20s ease infinite;
+            z-index: -1;
+        }
+        .background-solar_flame::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #FF6347, #FF4500, #FFD700);
+            background-size: 300% 300%;
+            animation: nebulaFlow 10s ease infinite alternate;
+            z-index: -1;
+        }
 
 
         .hidden { display: none !important; }
@@ -217,7 +327,7 @@
             position: absolute; top: 0; right: 0; border: 2px solid var(--primary-color);
         }
         
-        #notification-dot::after {
+#notification-dot::after {
             content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px;
             border-radius: 50%; border: 2px solid #ff3366; animation: ring 1.5s infinite;
         }
@@ -298,6 +408,7 @@
         .achievement-tab[data-tab="Difícil"].active { border-color: var(--difficulty-hard); }
         .achievement-tab[data-tab="Épico"].active { border-color: var(--difficulty-epic); }
         .achievement-tab[data-tab="Extremo"].active { border-color: var(--difficulty-extreme); }
+        .achievement-tab[data-tab="Hardcore"].active { border-color: var(--difficulty-hardcore); } /* Hardcore Tab Color */
 
 
         .shop-item, .achievement-item {
@@ -307,9 +418,30 @@
             margin-bottom: 10px;
         }
         .shop-item .menu-button, .achievement-item .menu-button { padding: 10px 25px; font-size: 0.9rem; width: auto; }
-        .shop-item-details, .achievement-item-details { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; flex-grow: 1; text-align: left; }
-        .shop-item-details h3, .achievement-item-details h3 { margin: 0; font-size: 1rem; }
-        .achievement-item-details p { font-size: 0.8rem; margin: 0; opacity: 0.8; }
+        .shop-item-details, .achievement-item-details { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start; 
+            gap: 5px; 
+            flex-grow: 1; 
+            flex-shrink: 1; /* Allow content to shrink */
+            min-width: 0; /* Ensures content can shrink below its intrinsic size */
+            text-align: left; 
+            margin-right: 10px; /* Space between text and button */
+        }
+        .shop-item-details h3, .achievement-item-details h3 { 
+            margin: 0; 
+            font-size: 1rem; 
+            white-space: normal; /* Allow text wrapping */
+            overflow-wrap: break-word; /* Break long words */
+        }
+        .shop-item-details p, .achievement-item-details p { 
+            font-size: 0.8rem; 
+            margin: 0; 
+            opacity: 0.8; 
+            white-space: normal; /* Allow text wrapping */
+            overflow-wrap: break-word; /* Break long words */
+        }
         .color-preview { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--text-color); flex-shrink: 0; }
         .achievement-progress { font-size: 0.8em; opacity: 0.7; }
         .achievement-item.completed { opacity: 0.7; }
@@ -402,7 +534,7 @@
             <button id="options-button" class="menu-button">Opções</button>
             <button id="tips-button" class="menu-button">Dicas</button>
             <button id="login-button" class="menu-button">
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-clip="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
                  <span>Login com Google</span>
             </button>
             <button id="logout-button" class="menu-button hidden">Sair</button>
@@ -458,8 +590,8 @@
                     <p class="tip-text">- Maçã Verde: Te deixa imortal a colisões com seu corpo por 30 segundos.</p>
                     <p class="tip-text">- Maçã Azul: Cria um campo magnético por 45 segundos que atrai maçãs próximas.</p>
                     <!-- NEW TIPS FOR NEW APPLES -->
-                    <p class="tip-text">- Maçã Dupla-Sorte (Arco-Íris): Duplica pontos e moedas das próximas 5 maçãs ou por 15s.</p>
-                    <p class="tip-text">- Maçã Encolhedora (Preta): Reduz o tamanho e a velocidade da cobra por 10 segundos.</p>
+                    <p class="tip-text">- Maçã Dupla-Sorte: Duplica pontos e moedas das próximas 5 maçãs ou por 15s.</p>
+                    <p class="tip-text">- Maçã Encolhedora: Reduz o tamanho e a velocidade da cobra por 10 segundos.</p>
                 </div>
                 <div class="option-group">
                     <h3>Dica Extra</h3>
@@ -491,6 +623,7 @@
                     <div class="achievement-tab" data-tab="Difícil">Difícil</div>
                     <div class="achievement-tab" data-tab="Épico">Épico</div>
                     <div class="achievement-tab" data-tab="Extremo">Extremo</div>
+                    <div class="achievement-tab" data-tab="Hardcore">Hardcore</div> {/* NEW HARDCORE TAB */}
                 </div>
                 <div id="achievements-list-container" style="flex-grow: 1; overflow-y: auto;"></div>
             </div>
@@ -634,14 +767,14 @@
             wrap: { active: false, endTime: 0, duration: 30000 }, 
             immortal: { active: false, endTime: 0, duration: 30000 }, 
             magnet: { active: false, endTime: 0, duration: 45000 },
-            doubleScore: { active: false, endTime: 0, duration: 15000, applesRemaining: 5 }, // New: Double Luck Apple
-            shrinking: { active: false, endTime: 0, duration: 10000 } // New: Shrinking Apple
+            doubleScore: { active: false, endTime: 0, duration: 15000, applesRemaining: 5 }, 
+            shrinking: { active: false, endTime: 0, duration: 10000 } 
         };
         
         // Game-specific stats for current game session, NOT user data
         let scoreAchievedWithoutImmortality = 0;
         let maxSnakeLengthInCurrentGame = 1;
-        let immortalityUsedInCurrentGame = false; // Corrected typo here
+        let immortalityUsedInCurrentGame = false; 
         let snakeScale = 1; // Used for drawing the shrinking apple effect
 
 
@@ -652,12 +785,23 @@
             orange: { name: 'Laranja Elétrico', color: '#ff8c00' }, 
             gold: { name: 'Dourado', color: '#ffd700'}, 
             white: { name: 'Branco Espectral', color: '#ffffff' }, 
-            toxic: { name: 'Verde Tóxico', color: '#7fff00' }, 
+            toxic: { name: 'Verde Tóxica', color: '#7fff00' }, 
             hotpink: { name: 'Rosa Choque', color: '#FF69B4' }, 
             cosmic: { name: 'Violeta Cósmico', color: '#8A2BE2' }, 
             magma: { name: 'Vermelho Magma', color: '#FF4500' }, 
             sky: { name: 'Azul Celeste', color: '#00BFFF' }, 
-            lime: { name: 'Lima-Limão', color: '#ADFF2F' } 
+            lime: { name: 'Lima-Limão', color: '#ADFF2F' },
+            // NEW SNAKE COLORS
+            crimson: { name: 'Vermelho Carmesim', color: '#DC143C' },
+            forest_green: { name: 'Verde Floresta', color: '#228B22' },
+            royal_blue: { name: 'Azul Royal', color: '#4169E1' },
+            silver: { name: 'Prata', color: '#C0C0C0' },
+            obsidian: { name: 'Obsidiana', color: '#290001' },
+            emerald: { name: 'Esmeralda', color: '#50C878' },
+            ruby: { name: 'Rubi', color: '#E0115F' },
+            sapphire: { name: 'Safira', color: '#0F52BA' },
+            platinum: { name: 'Platina', color: '#E5E4E2' },
+            void: { name: 'Vazio', color: '#0A0A0A' }
         };
         const shopItems = {
             backgrounds: [ 
@@ -671,7 +815,22 @@
                 { id: 'tunnel', name: 'Túnel Hipnótico', price: 4500 }, 
                 { id: 'circuit', name: 'Circuito Digital', price: 5000 }, 
                 { id: 'forcefield', name: 'Campo de Força', price: 5500 }, 
-                { id: 'liquid', name: 'Lava Lamp', price: 6000 } 
+                { id: 'liquid', name: 'Lava Lamp', price: 6000 },
+                // NEW BACKGROUNDS (5 added as per requirement + 3 extra for future expansions)
+                { id: 'cosmic_dream', name: 'Sonho Cósmico', price: 7000 },
+                { id: 'forest_glow', name: 'Resplendor Florestal', price: 7500 },
+                { id: 'cyber_grid', name: 'Grade Cibernética', price: 8000 },
+                { id: 'lava_flow', name: 'Fluxo de Lava', price: 8500 },
+                { id: 'starry_night', name: 'Noite Estrelada', price: 9000 },
+                { id: 'ocean_depths', name: 'Profundezas do Oceano', price: 9500 },
+                { id: 'desert_dunes', name: 'Dunas do Deserto', price: 10000 },
+                { id: 'retro_grid', name: 'Grade Retro', price: 10500 },
+                // Even newer custom backgrounds (from planning stage)
+                { id: 'stardust_swirl', name: 'Redemoinho Estelar', price: 11000 },
+                { id: 'mystic_glade', name: 'Clareira Mística', price: 11500 },
+                { id: 'neon_cityscape', name: 'Paisagem Urbana Neon', price: 12000 },
+                { id: 'deep_sea_current', name: 'Corrente Abissal', price: 12500 },
+                { id: 'solar_flame', name: 'Chama Solar', price: 13000 }
             ],
             snakeColors: [ 
                 { id: 'blue', name: 'Azul Neon', price: 100 }, 
@@ -684,7 +843,18 @@
                 { id: 'cosmic', name: 'Violeta Cósmico', price: 15000 }, 
                 { id: 'magma', name: 'Vermelho Magma', price: 18000 }, 
                 { id: 'sky', name: 'Azul Celeste', price: 20000 }, 
-                { id: 'lime', name: 'Lima-Limão', price: 25000 } 
+                { id: 'lime', name: 'Lima-Limão', price: 25000 },
+                // NEW SNAKE COLORS from list
+                { id: 'crimson', name: 'Carmesim', price: 28000 },
+                { id: 'forest_green', name: 'Verde Floresta', price: 30000 },
+                { id: 'royal_blue', name: 'Azul Royal', price: 32000 },
+                { id: 'silver', name: 'Prata', price: 35000 },
+                { id: 'obsidian', name: 'Obsidiana', price: 38000 },
+                { id: 'emerald', name: 'Esmeralda', price: 40000 },
+                { id: 'ruby', name: 'Rubi', price: 42000 },
+                { id: 'sapphire', name: 'Safira', price: 45000 },
+                { id: 'platinum', name: 'Platina', price: 48000 },
+                { id: 'void', name: 'Vazio', price: 50000 }
             ]
         };
         let userData = { 
@@ -712,9 +882,9 @@
             }
         };
 
-        // NEW: Achievement Data
+        // NEW: Achievement Data (175 total achievements now)
         const achievementsData = [
-            // --- Fácil (12 conquistas) ---
+            // --- Fácil (30 conquistas) ---
             { id: 'ach_easy_score_10', name: 'Primeiros Passos', desc: 'Alcance 10 pontos.', difficulty: 'Fácil', type: 'score', target: 10, reward: { coins: 20 } },
             { id: 'ach_easy_apples_5', name: 'Pequeno Lanche', desc: 'Coma 5 maçãs.', difficulty: 'Fácil', type: 'applesEaten', target: 5, reward: { coins: 20 } },
             { id: 'ach_easy_games_1', name: 'Início da Jornada', desc: 'Jogue 1 partida.', difficulty: 'Fácil', type: 'gamesPlayed', target: 1, reward: { coins: 10 } },
@@ -727,12 +897,29 @@
             { id: 'ach_easy_green_1', name: 'Defensor Verde (Fácil)', desc: 'Coma 1 maçã verde.', difficulty: 'Fácil', type: 'greenApples', target: 1, reward: { coins: 25 } },
             { id: 'ach_easy_blue_1', name: 'Ímã Azul (Fácil)', desc: 'Coma 1 maçã azul.', difficulty: 'Fácil', type: 'blueApples', target: 1, reward: { coins: 25 } },
             { id: 'ach_easy_purple_1', name: 'Sorte Roxa (Fácil)', desc: 'Coma 1 maçã roxa.', difficulty: 'Fácil', type: 'purpleApples', target: 1, reward: { coins: 25 } },
-            // New easy apples achievements
             { id: 'ach_easy_doubleluck_1', name: 'Dose Dupla (Fácil)', desc: 'Coma 1 maçã Dupla-Sorte.', difficulty: 'Fácil', type: 'doubleLuckApples', target: 1, reward: { coins: 30 } },
             { id: 'ach_easy_shrinking_1', name: 'Pequena Cobra (Fácil)', desc: 'Coma 1 maçã Encolhedora.', difficulty: 'Fácil', type: 'shrinkingApples', target: 1, reward: { coins: 30 } },
+            { id: 'ach_easy_score_75', name: 'Crescimento Constante', desc: 'Alcance 75 pontos.', difficulty: 'Fácil', type: 'score', target: 75, reward: { coins: 60 } },
+            { id: 'ach_easy_apples_40', name: 'Jantar Completo', desc: 'Coma 40 maçãs.', difficulty: 'Fácil', type: 'applesEaten', target: 40, reward: { coins: 50 } },
+            { id: 'ach_easy_games_7', name: 'Explorador Curioso', desc: 'Jogue 7 partidas.', difficulty: 'Fácil', type: 'gamesPlayed', target: 7, reward: { coins: 20 } },
+            { id: 'ach_easy_longest_snake_10', name: 'Cauda Curta', desc: 'Alcance 10 de comprimento na cobra.', difficulty: 'Fácil', type: 'snakeLength', target: 10, reward: { coins: 30 } },
+            { id: 'ach_easy_total_coins_50', name: 'Primeiros Trocos', desc: 'Acumule 50 moedas totais.', difficulty: 'Fácil', type: 'totalCoins', target: 50, reward: { coins: 30 } },
+            { id: 'ach_easy_no_collide_50', name: 'Sem Tocar (Fácil)', desc: 'Alcance 50 pontos sem colidir com seu corpo.', difficulty: 'Fácil', type: 'noSelfCollisionScore', target: 50, reward: { coins: 40 } },
+            { id: 'ach_easy_golden_2', name: 'Duplo Ouro (Fácil)', desc: 'Coma 2 maçãs douradas.', difficulty: 'Fácil', type: 'goldenApples', target: 2, reward: { coins: 35 } },
+            { id: 'ach_easy_green_2', name: 'Dupla Defesa (Fácil)', desc: 'Coma 2 maçãs verdes.', difficulty: 'Fácil', type: 'greenApples', target: 2, reward: { coins: 35 } },
+            { id: 'ach_easy_blue_2', name: 'Atração Dupla (Fácil)', desc: 'Coma 2 maçãs azuis.', difficulty: 'Fácil', type: 'blueApples', target: 2, reward: { coins: 35 } },
+            { id: 'ach_easy_purple_2', name: 'Recompensa Dupla (Fácil)', desc: 'Coma 2 maçãs roxas.', difficulty: 'Fácil', type: 'purpleApples', target: 2, reward: { coins: 35 } },
+            { id: 'ach_easy_doubleluck_2', name: 'A Sorte Sorri (Fácil)', desc: 'Coma 2 maçãs Dupla-Sorte.', difficulty: 'Fácil', type: 'doubleLuckApples', target: 2, reward: { coins: 40 } },
+            { id: 'ach_easy_shrinking_2', name: 'Mini Mestre (Fácil)', desc: 'Coma 2 maçãs Encolhedora.', difficulty: 'Fácil', type: 'shrinkingApples', target: 2, reward: { coins: 40 } },
+            // NEW EASY ACHIEVEMENTS (5)
+            { id: 'ach_easy_score_90', name: 'Um Pouco Mais', desc: 'Alcance 90 pontos.', difficulty: 'Fácil', type: 'score', target: 90, reward: { coins: 70 } },
+            { id: 'ach_easy_apples_50_total', name: 'Lanche Constante', desc: 'Coma 50 maçãs (total na vida).', difficulty: 'Fácil', type: 'applesEaten', target: 50, reward: { coins: 60 } },
+            { id: 'ach_easy_games_10_total', name: 'Primeira Dezena', desc: 'Jogue 10 partidas (total na vida).', difficulty: 'Fácil', type: 'gamesPlayed', target: 10, reward: { coins: 30 } },
+            { id: 'ach_easy_total_coins_100', name: 'Carteira Cheia', desc: 'Acumule 100 moedas totais.', difficulty: 'Fácil', type: 'totalCoins', target: 100, reward: { coins: 50 } },
+            { id: 'ach_easy_longest_snake_15', name: 'Cobra Crescidinha', desc: 'Alcance 15 de comprimento na cobra.', difficulty: 'Fácil', type: 'snakeLength', target: 15, reward: { coins: 50 } },
 
 
-            // --- Média (12 conquistas) ---
+            // --- Média (30 conquistas) ---
             { id: 'ach_medium_score_100', name: 'Crescendo', desc: 'Alcance 100 pontos.', difficulty: 'Média', type: 'score', target: 100, reward: { coins: 100 } },
             { id: 'ach_medium_apples_50', name: 'O Banquete Continua', desc: 'Coma 50 maçãs.', difficulty: 'Média', type: 'applesEaten', target: 50, reward: { coins: 75 } },
             { id: 'ach_medium_games_5', name: 'Viciado em Snake', desc: 'Jogue 5 partidas.', difficulty: 'Média', type: 'gamesPlayed', target: 5, reward: { coins: 50 } },
@@ -745,11 +932,29 @@
             { id: 'ach_medium_purple_5', name: 'Chuva de Moedas', desc: 'Coma 5 maçãs roxas.', difficulty: 'Média', type: 'purpleApples', target: 5, reward: { coins: 75 } },
             { id: 'ach_medium_no_collide_200', name: 'Mãos Limpas (Média)', desc: 'Alcance 200 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Média', type: 'noSelfCollisionScore', target: 200, reward: { coins: 100 } },
             { id: 'ach_medium_coins_500', name: 'Bolsos Cheios (Média)', desc: 'Acumule 500 moedas totais.', difficulty: 'Média', type: 'totalCoins', target: 500, reward: { coins: 100, item: { type: 'snakeColors', id: 'blue' } } },
-            // New medium apples achievements
             { id: 'ach_medium_doubleluck_5', name: 'Sorte em Cascata (Média)', desc: 'Coma 5 maçãs Dupla-Sorte.', difficulty: 'Média', type: 'doubleLuckApples', target: 5, reward: { coins: 80 } },
             { id: 'ach_medium_shrinking_5', name: 'Pequeno Gênio (Média)', desc: 'Coma 5 maçãs Encolhedora.', difficulty: 'Média', type: 'shrinkingApples', target: 5, reward: { coins: 80 } },
+            { id: 'ach_medium_score_300', name: 'Ponta Firme', desc: 'Alcance 300 pontos.', difficulty: 'Média', type: 'score', target: 300, reward: { coins: 180 } },
+            { id: 'ach_medium_apples_150', name: 'Delícia em Massa', desc: 'Coma 150 maçãs.', difficulty: 'Média', type: 'applesEaten', target: 150, reward: { coins: 150 } },
+            { id: 'ach_medium_games_15', name: 'Entusiasta do Jogo', desc: 'Jogue 15 partidas.', difficulty: 'Média', type: 'gamesPlayed', target: 15, reward: { coins: 100 } },
+            { id: 'ach_medium_longest_snake_20', name: 'Cobra Média', desc: 'Alcance 20 de comprimento na cobra.', difficulty: 'Média', type: 'snakeLength', target: 20, reward: { coins: 120 } },
+            { id: 'ach_medium_total_coins_750', name: 'Capitalista da Cobra', desc: 'Acumule 750 moedas totais.', difficulty: 'Média', type: 'totalCoins', target: 750, reward: { coins: 130 } },
+            { id: 'ach_medium_no_collide_300', name: 'Espírito Leve (Média)', desc: 'Alcance 300 pontos sem colidir com seu corpo.', difficulty: 'Média', type: 'noSelfCollisionScore', target: 300, reward: { coins: 160 } },
+            { id: 'ach_medium_golden_7', name: 'Sete de Ouro', desc: 'Coma 7 maçãs douradas.', difficulty: 'Média', type: 'goldenApples', target: 7, reward: { coins: 100 } },
+            { id: 'ach_medium_green_7', name: 'Escudo Protetor', desc: 'Coma 7 maçãs verdes.', difficulty: 'Média', type: 'greenApples', target: 7, reward: { coins: 100 } },
+            { id: 'ach_medium_blue_7', name: 'Atração Perfeita', desc: 'Coma 7 maçãs azuis.', difficulty: 'Média', type: 'blueApples', target: 7, reward: { coins: 100 } },
+            { id: 'ach_medium_purple_7', name: 'Chuva de Riqueza', desc: 'Coma 7 maçãs roxas.', difficulty: 'Média', type: 'purpleApples', target: 7, reward: { coins: 100 } },
+            { id: 'ach_medium_doubleluck_7', name: 'Super Sorte (Média)', desc: 'Coma 7 maçãs Dupla-Sorte.', difficulty: 'Média', type: 'doubleLuckApples', target: 7, reward: { coins: 110 } },
+            { id: 'ach_medium_shrinking_7', name: 'Cobra Compacta (Média)', desc: 'Coma 7 maçãs Encolhedora.', difficulty: 'Média', type: 'shrinkingApples', target: 7, reward: { coins: 110 } },
+            // NEW MEDIUM ACHIEVEMENTS (5)
+            { id: 'ach_medium_score_400', name: 'A Cobra Avança', desc: 'Alcance 400 pontos.', difficulty: 'Média', type: 'score', target: 400, reward: { coins: 220 } },
+            { id: 'ach_medium_apples_200_total', name: 'Devorador Moderado', desc: 'Coma 200 maçãs (total na vida).', difficulty: 'Média', type: 'applesEaten', target: 200, reward: { coins: 180 } },
+            { id: 'ach_medium_games_20_total', name: 'Duas Dezenas', desc: 'Jogue 20 partidas (total na vida).', difficulty: 'Média', type: 'gamesPlayed', target: 20, reward: { coins: 120 } },
+            { id: 'ach_medium_total_coins_1000', name: 'Milionário Iniciante', desc: 'Acumule 1000 moedas totais.', difficulty: 'Média', type: 'totalCoins', target: 1000, reward: { coins: 150 } },
+            { id: 'ach_medium_longest_snake_25', name: 'Cobra de Respeito', desc: 'Alcance 25 de comprimento na cobra.', difficulty: 'Média', type: 'snakeLength', target: 25, reward: { coins: 150 } },
 
-            // --- Difícil (12 conquistas) ---
+
+            // --- Difícil (30 conquistas) ---
             { id: 'ach_hard_score_500', name: 'Desafio Notável', desc: 'Alcance 500 pontos.', difficulty: 'Difícil', type: 'score', target: 500, reward: { coins: 300 } },
             { id: 'ach_hard_apples_250', name: 'Fome Insaciável', desc: 'Coma 250 maçãs.', difficulty: 'Difícil', type: 'applesEaten', target: 250, reward: { coins: 250 } },
             { id: 'ach_hard_games_20', name: 'O Vício é Real', desc: 'Jogue 20 partidas.', difficulty: 'Difícil', type: 'gamesPlayed', target: 20, reward: { coins: 150 } },
@@ -762,12 +967,29 @@
             { id: 'ach_hard_purple_10', name: 'Riqueza Roxa', desc: 'Coma 10 maçãs roxas.', difficulty: 'Difícil', type: 'purpleApples', target: 10, reward: { coins: 200 } },
             { id: 'ach_hard_no_collide_500', name: 'Intocável', desc: 'Alcance 500 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Difícil', type: 'noSelfCollisionScore', target: 500, reward: { coins: 300, item: { type: 'backgrounds', id: 'matrix' } } },
             { id: 'ach_hard_coins_1500', name: 'Fortuna da Cobra', desc: 'Acumule 1500 moedas totais.', difficulty: 'Difícil', type: 'totalCoins', target: 1500, reward: { coins: 250, item: { type: 'snakeColors', id: 'green' } } },
-            // New hard apples achievements
             { id: 'ach_hard_doubleluck_10', name: 'Jackpot de Sorte (Difícil)', desc: 'Coma 10 maçãs Dupla-Sorte.', difficulty: 'Difícil', type: 'doubleLuckApples', target: 10, reward: { coins: 200 } },
             { id: 'ach_hard_shrinking_10', name: 'Pequena e Mortal (Difícil)', desc: 'Coma 10 maçãs Encolhedora.', difficulty: 'Difícil', type: 'shrinkingApples', target: 10, reward: { coins: 200 } },
+            { id: 'ach_hard_score_1000', name: 'Limiar da Lenda', desc: 'Alcance 1000 pontos.', difficulty: 'Difícil', type: 'score', target: 1000, reward: { coins: 500, item: { type: 'backgrounds', id: 'nebula' } } },
+            { id: 'ach_hard_apples_500', name: 'Destruidor de Pomares', desc: 'Coma 500 maçãs.', difficulty: 'Difícil', type: 'applesEaten', target: 500, reward: { coins: 400 } },
+            { id: 'ach_hard_games_40', name: 'Profissional', desc: 'Jogue 40 partidas.', difficulty: 'Difícil', type: 'gamesPlayed', target: 40, reward: { coins: 250 } },
+            { id: 'ach_hard_longest_snake_30', name: 'Cobra Longa', desc: 'Alcance 30 de comprimento na cobra.', difficulty: 'Difícil', type: 'snakeLength', target: 30, reward: { coins: 280 } },
+            { id: 'ach_hard_total_coins_2500', name: 'Tesouro Brilhante', desc: 'Acumule 2500 moedas totais.', difficulty: 'Difícil', type: 'totalCoins', target: 2500, reward: { coins: 350, item: { type: 'snakeColors', id: 'orange' } } },
+            { id: 'ach_hard_no_collide_750', name: 'Fantasma de Tinta', desc: 'Alcance 750 pontos sem colidir com seu corpo.', difficulty: 'Difícil', type: 'noSelfCollisionScore', target: 750, reward: { coins: 450 } },
+            { id: 'ach_hard_golden_12', name: 'Portal Fiel', desc: 'Coma 12 maçãs douradas.', difficulty: 'Difícil', type: 'goldenApples', target: 12, reward: { coins: 250 } },
+            { id: 'ach_hard_green_12', name: 'Escudo Imparável', desc: 'Coma 12 maçãs verdes.', difficulty: 'Difícil', type: 'greenApples', target: 12, reward: { coins: 250 } },
+            { id: 'ach_hard_blue_12', name: 'Atração Universal', desc: 'Coma 12 maçãs azuis.', difficulty: 'Difícil', type: 'blueApples', target: 12, reward: { coins: 250 } },
+            { id: 'ach_hard_purple_12', name: 'Pura Recompensa', desc: 'Coma 12 maçãs roxas.', difficulty: 'Difícil', type: 'purpleApples', target: 12, reward: { coins: 250 } },
+            { id: 'ach_hard_doubleluck_12', name: 'Mega Sorte (Difícil)', desc: 'Coma 12 maçãs Dupla-Sorte.', difficulty: 'Difícil', type: 'doubleLuckApples', target: 12, reward: { coins: 270 } },
+            { id: 'ach_hard_shrinking_12', name: 'Mestre da Miniatura (Difícil)', desc: 'Coma 12 maçãs Encolhedora.', difficulty: 'Difícil', type: 'shrinkingApples', target: 12, reward: { coins: 270 } },
+            // NEW HARD ACHIEVEMENTS (5)
+            { id: 'ach_hard_score_1250', name: 'Grandes Alturas', desc: 'Alcance 1250 pontos.', difficulty: 'Difícil', type: 'score', target: 1250, reward: { coins: 600 } },
+            { id: 'ach_hard_apples_600_total', name: 'Banquetes Constantes', desc: 'Coma 600 maçãs (total na vida).', difficulty: 'Difícil', type: 'applesEaten', target: 600, reward: { coins: 500 } },
+            { id: 'ach_hard_games_50_total', name: 'Meio Centenário', desc: 'Jogue 50 partidas (total na vida).', difficulty: 'Difícil', type: 'gamesPlayed', target: 50, reward: { coins: 300 } },
+            { id: 'ach_hard_total_coins_3500', name: 'Cofre Crescente', desc: 'Acumule 3500 moedas totais.', difficulty: 'Difícil', type: 'totalCoins', target: 3500, reward: { coins: 400, item: { type: 'snakeColors', id: 'forest_green' } } },
+            { id: 'ach_hard_longest_snake_40', name: 'Cobra Impressionante', desc: 'Alcance 40 de comprimento na cobra.', difficulty: 'Difícil', type: 'snakeLength', target: 40, reward: { coins: 450 } },
 
 
-            // --- Épico (12 conquistas) ---
+            // --- Épico (30 conquistas) ---
             { id: 'ach_epic_score_1000', name: 'Lenda Viva', desc: 'Alcance 1000 pontos.', difficulty: 'Épico', type: 'score', target: 1000, reward: { coins: 750 } },
             { id: 'ach_epic_apples_500', name: 'Devorador Supremo', desc: 'Coma 500 maçãs.', difficulty: 'Épico', type: 'applesEaten', target: 500, reward: { coins: 600 } },
             { id: 'ach_epic_games_50', name: 'Maratonista', desc: 'Jogue 50 partidas.', difficulty: 'Épico', type: 'gamesPlayed', target: 50, reward: { coins: 400 } },
@@ -780,11 +1002,29 @@
             { id: 'ach_epic_purple_15', name: 'Tesouro Roxo', desc: 'Coma 15 maçãs roxas.', difficulty: 'Épico', type: 'purpleApples', target: 15, reward: { coins: 500 } },
             { id: 'ach_epic_coins_5000', name: 'Milionário da Cobra', desc: 'Acumule 5000 moedas totais.', difficulty: 'Épico', type: 'totalCoins', target: 5000, reward: { coins: 1000, item: { type: 'snakeColors', id: 'gold' } } },
             { id: 'ach_epic_longest_snake_50', name: 'Cobra Gigante', desc: 'Alcance 50 de comprimento na cobra.', difficulty: 'Épico', type: 'snakeLength', target: 50, reward: { coins: 750 } },
-            // New epic apples achievements
             { id: 'ach_epic_doubleluck_15', name: 'Pote de Ouro (Épico)', desc: 'Coma 15 maçãs Dupla-Sorte.', difficulty: 'Épico', type: 'doubleLuckApples', target: 15, reward: { coins: 500 } },
             { id: 'ach_epic_shrinking_15', name: 'Formiga Atômica (Épico)', desc: 'Coma 15 maçãs Encolhedora.', difficulty: 'Épico', type: 'shrinkingApples', target: 15, reward: { coins: 500 } },
+            { id: 'ach_epic_score_2000', name: 'Além do Horizonte', desc: 'Alcance 2000 pontos.', difficulty: 'Épico', type: 'score', target: 2000, reward: { coins: 1200, item: { type: 'backgrounds', id: 'cosmic_dream' } } },
+            { id: 'ach_epic_apples_1000', name: 'Colheita Infinita', desc: 'Coma 1000 maçãs.', difficulty: 'Épico', type: 'applesEaten', target: 1000, reward: { coins: 900 } },
+            { id: 'ach_epic_games_100', name: 'Comprometimento Total', desc: 'Jogue 100 partidas.', difficulty: 'Épico', type: 'gamesPlayed', target: 100, reward: { coins: 600 } },
+            { id: 'ach_epic_longest_snake_75', name: 'Monstro de Cauda', desc: 'Alcance 75 de comprimento na cobra.', difficulty: 'Épico', type: 'snakeLength', target: 75, reward: { coins: 850 } },
+            { id: 'ach_epic_total_coins_7500', name: 'Rei Midas', desc: 'Acumule 7500 moedas totais.', difficulty: 'Épico', type: 'totalCoins', target: 7500, reward: { coins: 1500, item: { type: 'snakeColors', id: 'crimson' } } },
+            { id: 'ach_epic_no_collide_1000', name: 'Assombração', desc: 'Alcance 1000 pontos sem colidir com seu corpo.', difficulty: 'Épico', type: 'noSelfCollisionScore', target: 1000, reward: { coins: 1000 } },
+            { id: 'ach_epic_golden_18', name: 'Ouro Puro', desc: 'Coma 18 maçãs douradas.', difficulty: 'Épico', type: 'goldenApples', target: 18, reward: { coins: 700 } },
+            { id: 'ach_epic_green_18', name: 'Barreira Absoluta', desc: 'Coma 18 maçãs verdes.', difficulty: 'Épico', type: 'greenApples', target: 18, reward: { coins: 700 } },
+            { id: 'ach_epic_blue_18', name: 'Atrator Cósmico', desc: 'Coma 18 maçãs azuis.', difficulty: 'Épico', type: 'blueApples', target: 18, reward: { coins: 700 } },
+            { id: 'ach_epic_purple_18', name: 'Safra Roxa', desc: 'Coma 18 maçãs roxas.', difficulty: 'Épico', type: 'purpleApples', target: 18, reward: { coins: 700 } },
+            { id: 'ach_epic_doubleluck_18', name: 'Infinitamente Sortudo (Épico)', desc: 'Coma 18 maçãs Dupla-Sorte.', difficulty: 'Épico', type: 'doubleLuckApples', target: 18, reward: { coins: 800 } },
+            { id: 'ach_epic_shrinking_18', name: 'Ágil como Um Átomo (Épico)', desc: 'Coma 18 maçãs Encolhedora.', difficulty: 'Épico', type: 'shrinkingApples', target: 18, reward: { coins: 800 } },
+            // NEW EPIC ACHIEVEMENTS (5)
+            { id: 'ach_epic_score_2500', name: 'Sem Limites', desc: 'Alcance 2500 pontos.', difficulty: 'Épico', type: 'score', target: 2500, reward: { coins: 1500, item: { type: 'backgrounds', id: 'cyber_grid' } } },
+            { id: 'ach_epic_apples_1250_total', name: 'Consumidor Compulsivo', desc: 'Coma 1250 maçãs (total na vida).', difficulty: 'Épico', type: 'applesEaten', target: 1250, reward: { coins: 1100 } },
+            { id: 'ach_epic_games_125_total', name: 'Quarto de Milênio', desc: 'Jogue 125 partidas (total na vida).', difficulty: 'Épico', type: 'gamesPlayed', target: 125, reward: { coins: 800 } },
+            { id: 'ach_epic_total_coins_8500', name: 'Bilionário da Cobra', desc: 'Acumule 8500 moedas totais.', difficulty: 'Épico', type: 'totalCoins', target: 8500, reward: { coins: 1800, item: { type: 'snakeColors', id: 'royal_blue' } } },
+            { id: 'ach_epic_longest_snake_85', name: 'Cobra Dragão', desc: 'Alcance 85 de comprimento na cobra.', difficulty: 'Épico', type: 'snakeLength', target: 85, reward: { coins: 1000 } },
 
-            // --- Extremo (12 conquistas) ---
+
+            // --- Extremo (30 conquistas) ---
             { id: 'ach_extreme_score_2000', name: 'Deus da Cobra', desc: 'Alcance 2000 pontos.', difficulty: 'Extremo', type: 'score', target: 2000, reward: { coins: 1500 } },
             { id: 'ach_extreme_apples_1000', name: 'Aniquilador de Maçãs', desc: 'Coma 1000 maçãs.', difficulty: 'Extremo', type: 'applesEaten', target: 1000, reward: { coins: 1200 } },
             { id: 'ach_extreme_games_100', name: 'Viciado Eterno', desc: 'Jogue 100 partidas.', difficulty: 'Extremo', type: 'gamesPlayed', target: 100, reward: { coins: 800 } },
@@ -797,9 +1037,61 @@
             { id: 'ach_extreme_purple_20', name: 'Ouro Roxo', desc: 'Coma 20 maçãs roxas.', difficulty: 'Extremo', type: 'purpleApples', target: 20, reward: { coins: 1000 } },
             { id: 'ach_extreme_no_collide_1000', name: 'Fantom', desc: 'Alcance 1000 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Extremo', type: 'noSelfCollisionScore', target: 1000, reward: { coins: 1500, item: { type: 'backgrounds', id: 'aurora' } } },
             { id: 'ach_extreme_coins_10000', name: 'Imperador da Riqueza', desc: 'Acumule 10000 moedas totais.', difficulty: 'Extremo', type: 'totalCoins', target: 10000, reward: { coins: 2000, item: { type: 'snakeColors', id: 'white' } } },
-            // New extreme apples achievements
             { id: 'ach_extreme_doubleluck_20', name: 'Duplamente Lendário (Extremo)', desc: 'Coma 20 maçãs Dupla-Sorte.', difficulty: 'Extremo', type: 'doubleLuckApples', target: 20, reward: { coins: 1000 } },
             { id: 'ach_extreme_shrinking_20', name: 'Micronavegador (Extremo)', desc: 'Coma 20 maçãs Encolhedora.', difficulty: 'Extremo', type: 'shrinkingApples', target: 20, reward: { coins: 1000 } },
+            { id: 'ach_extreme_score_4000', name: 'Consciência Suprema', desc: 'Alcance 4000 pontos.', difficulty: 'Extremo', type: 'score', target: 4000, reward: { coins: 3000, item: { type: 'backgrounds', id: 'starry_night' } } },
+            { id: 'ach_extreme_apples_2000', name: 'Exterminador de Frutas', desc: 'Coma 2000 maçãs.', difficulty: 'Extremo', type: 'applesEaten', target: 2000, reward: { coins: 2500 } },
+            { id: 'ach_extreme_games_200', name: 'O Grande Vencedor', desc: 'Jogue 200 partidas.', difficulty: 'Extremo', type: 'gamesPlayed', target: 200, reward: { coins: 1500 } },
+            { id: 'ach_extreme_longest_snake_100', name: 'Cobra Leviatã', desc: 'Alcance 100 de comprimento na cobra.', difficulty: 'Extremo', type: 'snakeLength', target: 100, reward: { coins: 1800, item: { type: 'snakeColors', id: 'obsidian' } } },
+            { id: 'ach_extreme_total_coins_15000', name: 'Magnata da Cobra', desc: 'Acumule 15000 moedas totais.', difficulty: 'Extremo', type: 'totalCoins', target: 15000, reward: { coins: 3000 } },
+            { id: 'ach_extreme_no_collide_1500', name: 'Eterea', desc: 'Alcance 1500 pontos sem colidir com seu corpo.', difficulty: 'Extremo', type: 'noSelfCollisionScore', target: 1500, reward: { coins: 2000 } },
+            { id: 'ach_extreme_golden_25', name: 'O Escolhido', desc: 'Coma 25 maçãs douradas.', difficulty: 'Extremo', type: 'goldenApples', target: 25, reward: { coins: 1200 } },
+            { id: 'ach_extreme_green_25', name: 'Bastion Verde', desc: 'Coma 25 maçãs verdes.', difficulty: 'Extremo', type: 'greenApples', target: 25, reward: { coins: 1200 } },
+            { id: 'ach_extreme_blue_25', name: 'Atração Celeste', desc: 'Coma 25 maçãs azuis.', difficulty: 'Extremo', type: 'blueApples', target: 25, reward: { coins: 1200 } },
+            { id: 'ach_extreme_purple_25', name: 'Colheita Abundante', desc: 'Coma 25 maçãs roxas.', difficulty: 'Extremo', type: 'purpleApples', target: 25, reward: { coins: 1200 } },
+            { id: 'ach_extreme_doubleluck_25', name: 'Sorte Divina (Extremo)', desc: 'Coma 25 maçãs Dupla-Sorte.', difficulty: 'Extremo', type: 'doubleLuckApples', target: 25, reward: { coins: 1300 } },
+            { id: 'ach_extreme_shrinking_25', name: 'O Micro-Rei (Extremo)', desc: 'Coma 25 maçãs Encolhedora.', difficulty: 'Extremo', type: 'shrinkingApples', target: 25, reward: { coins: 1300 } },
+            // NEW EXTREME ACHIEVEMENTS (5)
+            { id: 'ach_extreme_score_5000', name: 'Ponto de Singularidade', desc: 'Alcance 5000 pontos.', difficulty: 'Extremo', type: 'score', target: 5000, reward: { coins: 4000, item: { type: 'backgrounds', id: 'deep_sea_current' } } },
+            { id: 'ach_extreme_apples_2500_total', name: 'Apocalipse Frutífero', desc: 'Coma 2500 maçãs (total na vida).', difficulty: 'Extremo', type: 'applesEaten', target: 2500, reward: { coins: 3000 } },
+            { id: 'ach_extreme_games_250_total', name: 'Mestre da Persistência', desc: 'Jogue 250 partidas (total na vida).', difficulty: 'Extremo', type: 'gamesPlayed', target: 250, reward: { coins: 2000 } },
+            { id: 'ach_extreme_total_coins_18000', name: 'Fortuna Inesgotável', desc: 'Acumule 18000 moedas totais.', difficulty: 'Extremo', type: 'totalCoins', target: 18000, reward: { coins: 3500, item: { type: 'snakeColors', id: 'emerald' } } },
+            { id: 'ach_extreme_longest_snake_125', name: 'Anacônda Digital', desc: 'Alcance 125 de comprimento na cobra.', difficulty: 'Extremo', type: 'snakeLength', target: 125, reward: { coins: 2200 } },
+
+
+            // --- Hardcore (25 conquistas) ---
+            { id: 'ach_hardcore_score_5000', name: 'Entidade Digital', desc: 'Alcance 5000 pontos.', difficulty: 'Hardcore', type: 'score', target: 5000, reward: { coins: 5000, item: { type: 'backgrounds', id: 'cyber_grid' } } },
+            { id: 'ach_hardcore_apples_3000', name: 'O Fim das Maçãs', desc: 'Coma 3000 maçãs.', difficulty: 'Hardcore', type: 'applesEaten', target: 3000, reward: { coins: 4000 } },
+            { id: 'ach_hardcore_games_300', name: 'Lenda Imortal', desc: 'Jogue 300 partidas.', difficulty: 'Hardcore', type: 'gamesPlayed', target: 300, reward: { coins: 2500 } },
+            { id: 'ach_hardcore_score_7500', name: 'Divindade da Grade', desc: 'Alcance 7500 pontos.', difficulty: 'Hardcore', type: 'score', target: 7500, reward: { coins: 7500, item: { type: 'snakeColors', id: 'royal_blue' } } },
+            { id: 'ach_hardcore_apples_4000', name: 'Ameaça Frutífera', desc: 'Coma 4000 maçãs.', difficulty: 'Hardcore', type: 'applesEaten', target: 4000, reward: { coins: 6000 } },
+            { id: 'ach_hardcore_games_400', name: 'Sessões Infinitas', desc: 'Jogue 400 partidas.', difficulty: 'Hardcore', type: 'gamesPlayed', target: 400, reward: { coins: 3500 } },
+            { id: 'ach_hardcore_golden_30', name: 'Ponte para o Vazio', desc: 'Coma 30 maçãs douradas.', difficulty: 'Hardcore', type: 'goldenApples', target: 30, reward: { coins: 2000 } },
+            { id: 'ach_hardcore_green_30', name: 'Intocável Absoluto', desc: 'Coma 30 maçãs verdes.', difficulty: 'Hardcore', type: 'greenApples', target: 30, reward: { coins: 2000 } },
+            { id: 'ach_hardcore_blue_30', name: 'Singularidade Magnética', desc: 'Coma 30 maçãs azuis.', difficulty: 'Hardcore', type: 'blueApples', target: 30, reward: { coins: 2000 } },
+            { id: 'ach_hardcore_purple_30', name: 'Fortuna Eterna', desc: 'Coma 30 maçãs roxas.', difficulty: 'Hardcore', type: 'purpleApples', target: 30, reward: { coins: 2000 } },
+            { id: 'ach_hardcore_no_collide_2000', name: 'O Inexistente', desc: 'Alcance 2000 pontos sem colidir com seu corpo.', difficulty: 'Hardcore', type: 'noSelfCollisionScore', target: 2000, reward: { coins: 3000, item: { type: 'backgrounds', id: 'ocean_depths' } } },
+            { id: 'ach_hardcore_coins_20000', name: 'O Imperador da Riqueza', desc: 'Acumule 20000 moedas totais.', difficulty: 'Hardcore', type: 'totalCoins', target: 20000, reward: { coins: 4000, item: { type: 'snakeColors', id: 'silver' } } },
+            { id: 'ach_hardcore_doubleluck_30', name: 'Sorte do Universo', desc: 'Coma 30 maçãs Dupla-Sorte.', difficulty: 'Hardcore', type: 'doubleLuckApples', target: 30, reward: { coins: 2200 } },
+            { id: 'ach_hardcore_shrinking_30', name: 'Mestre Subatômico', desc: 'Coma 30 maçãs Encolhedora.', difficulty: 'Hardcore', type: 'shrinkingApples', target: 30, reward: { coins: 2200 } },
+            { id: 'ach_hardcore_score_10000', name: 'O Absoluto', desc: 'Alcance 10000 pontos.', difficulty: 'Hardcore', type: 'score', target: 10000, reward: { coins: 10000, item: { type: 'backgrounds', id: 'desert_dunes' } } },
+            { id: 'ach_hardcore_apples_5000', name: 'Dreno de Vitalidade', desc: 'Coma 5000 maçãs.', difficulty: 'Hardcore', type: 'applesEaten', target: 5000, reward: { coins: 8000 } },
+            { id: 'ach_hardcore_games_500', name: 'Viciado em Nível Divino', desc: 'Jogue 500 partidas.', difficulty: 'Hardcore', type: 'gamesPlayed', target: 500, reward: { coins: 5000 } },
+            { id: 'ach_hardcore_longest_snake_150', name: 'Cobra Cósmica', desc: 'Alcance 150 de comprimento na cobra.', difficulty: 'Hardcore', type: 'snakeLength', target: 150, reward: { coins: 2500, item: { type: 'snakeColors', id: 'deep_purple' } } },
+            { id: 'ach_hardcore_total_coins_30000', name: 'A Riqueza do Império', desc: 'Acumule 30000 moedas totais.', difficulty: 'Hardcore', type: 'totalCoins', target: 30000, reward: { coins: 6000 } },
+            { id: 'ach_hardcore_no_collide_3000', name: 'A Forma Perfeita', desc: 'Alcance 3000 pontos sem colidir com seu corpo.', difficulty: 'Hardcore', type: 'noSelfCollisionScore', target: 3000, reward: { coins: 4000, item: { type: 'backgrounds', id: 'retro_grid' } } },
+            { id: 'ach_hardcore_golden_40', name: 'Portador do Infinito', desc: 'Coma 40 maçãs douradas.', difficulty: 'Hardcore', type: 'goldenApples', target: 40, reward: { coins: 2500 } },
+            { id: 'ach_hardcore_green_40', name: 'O Escudo Final', desc: 'Coma 40 maçãs verdes.', difficulty: 'Hardcore', type: 'greenApples', target: 40, reward: { coins: 2500 } },
+            { id: 'ach_hardcore_blue_40', name: 'A Grande Atração', desc: 'Coma 40 maçãs azuis.', difficulty: 'Hardcore', type: 'blueApples', target: 40, reward: { coins: 2500 } },
+            { id: 'ach_hardcore_purple_40', name: 'A Colheita Final', desc: 'Coma 40 maçãs roxas.', difficulty: 'Hardcore', type: 'purpleApples', target: 40, reward: { coins: 2500 } },
+            { id: 'ach_hardcore_doubleluck_40', name: 'Onisciente da Sorte', desc: 'Coma 40 maçãs Dupla-Sorte.', difficulty: 'Hardcore', type: 'doubleLuckApples', target: 40, reward: { coins: 2700 } },
+            { id: 'ach_hardcore_shrinking_40', name: 'O Mestre da Vibração', desc: 'Coma 40 maçãs Encolhedora.', difficulty: 'Hardcore', type: 'shrinkingApples', target: 40, reward: { coins: 2700 } },
+            // NEW HARDCORE ACHIEVEMENTS (5)
+            { id: 'ach_hardcore_score_12500', name: 'Além da Compreensão', desc: 'Alcance 12500 pontos.', difficulty: 'Hardcore', type: 'score', target: 12500, reward: { coins: 12000, item: { type: 'backgrounds', id: 'solar_flame' } } },
+            { id: 'ach_hardcore_apples_6000_total', name: 'A Fome do Universo', desc: 'Coma 6000 maçãs (total na vida).', difficulty: 'Hardcore', type: 'applesEaten', target: 6000, reward: { coins: 10000 } },
+            { id: 'ach_hardcore_games_600_total', name: 'A Existência da Cobra', desc: 'Jogue 600 partidas (total na vida).', difficulty: 'Hardcore', type: 'gamesPlayed', target: 600, reward: { coins: 7000 } },
+            { id: 'ach_hardcore_total_coins_40000', name: 'Deus da Economia', desc: 'Acumule 40000 moedas totais.', difficulty: 'Hardcore', type: 'totalCoins', target: 40000, reward: { coins: 8000, item: { type: 'snakeColors', id: 'void' } } },
+            { id: 'ach_hardcore_longest_snake_200', name: 'A Cobra Infinita', desc: 'Alcance 200 de comprimento na cobra.', difficulty: 'Hardcore', type: 'snakeLength', target: 200, reward: { coins: 3000 } }
         ];
 
         // Helper to group achievements by difficulty for rendering
@@ -1144,7 +1436,7 @@
                 userData.gameStats.goldenApples++; 
             } else if (type === 'green') { 
                 powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; 
-                immortalityUsedInCurrentGame = true; // Corrected typo here
+                immortalityUsedInCurrentGame = true; 
                 userData.gameStats.greenApples++; 
             } else if (type === 'blue') { 
                 powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; 
@@ -1155,12 +1447,12 @@
                 coins += extraCoins; 
                 coinCountSpan.textContent = coins; 
                 userData.gameStats.purpleApples++; 
-            } else if (type === 'doubleLuck') { // New: Double Luck Apple
+            } else if (type === 'doubleLuck') { 
                 powerUps.doubleScore.active = true;
                 powerUps.doubleScore.endTime = now + powerUps.doubleScore.duration;
                 powerUps.doubleScore.applesRemaining = 5; // Reset apples remaining
                 userData.gameStats.doubleLuckApples++;
-            } else if (type === 'shrinking') { // New: Shrinking Apple
+            } else if (type === 'shrinking') { 
                 powerUps.shrinking.active = true;
                 powerUps.shrinking.endTime = now + powerUps.shrinking.duration;
                 snakeScale = 0.5; // Make snake half size visually
@@ -1505,10 +1797,10 @@
                     let currentProgress = 0;
                     switch (ach.type) {
                         case 'score':
-                            currentProgress = score; // Score from current game
+                            currentProgress = score; 
                             break;
                         case 'applesEaten':
-                            currentProgress = userData.gameStats.applesEaten; // Total apples eaten
+                            currentProgress = userData.gameStats.applesEaten; 
                             break;
                         case 'goldenApples':
                             currentProgress = userData.gameStats.goldenApples;
@@ -1538,7 +1830,7 @@
                             currentProgress = userData.gameStats.maxSnakeLength; 
                             break;
                         case 'totalCoins':
-                            currentProgress = userData.totalCoins; // Total coins accumulated
+                            currentProgress = userData.totalCoins; 
                             break;
                     }
                     
@@ -1714,7 +2006,7 @@
 
             // Check bonus apples first for eating at the NEW head position
             for (let i = bonusApples.length - 1; i >= 0; i--) {
-                const apple = bonusApples[i];
+                const apple = bonusApples[i]; // Corrected typo: bonusAppus to bonusApples
                 // Check if the NEW head (snake[0]) is on the apple
                 if (snake[0].x === apple.x && snake[0].y === apple.y) {
                     ateSomething = true;
