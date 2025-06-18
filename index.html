@@ -13,7 +13,7 @@
             --primary-color: #1a0c2e;
             --secondary-color: #2a1a4a;
             --accent-color: #ff00ff; /* Magenta */
-            --food-color: #00ffff;   /* Ciano */
+            --food-color: #00ffff;    /* Ciano */
             --apple-color-dark: #c0392b;
             --apple-color-light: #e74c3c;
             --apple-stem-color: #6D4C41;
@@ -27,6 +27,12 @@
             --green-apple-glow: rgba(46, 204, 113, 0.8);
             --blue-apple-glow: rgba(52, 152, 219, 0.8);
             --purple-apple-glow: rgba(155, 89, 182, 0.8);
+
+            --difficulty-easy: #2ecc71; /* Green */
+            --difficulty-medium: #3498db; /* Blue */
+            --difficulty-hard: #f1c40f; /* Yellow */
+            --difficulty-epic: #9b59b6; /* Purple */
+            --difficulty-extreme: #e74c3c; /* Red */
         }
 
         * {
@@ -241,24 +247,24 @@
         #login-button:hover { box-shadow: 0 0 25px #fff; }
         #login-button svg { width: 24px; height: 24px; }
 
-        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen, #shop-screen {
+        #options-screen, #leaderboard-screen, #tips-screen, #notification-screen, #shop-screen, #achievements-screen {
             justify-content: space-between;
         }
         
-        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2, #shop-screen h2, #username-screen h2 {
+        #options-screen h2, #leaderboard-screen h2, #tips-screen h2, #notification-screen h2, #shop-screen h2, #username-screen h2, #achievements-screen h2 {
             font-size: 2.5rem; color: var(--accent-color); margin-bottom: 20px; flex-shrink: 0;
         }
 
         .scrollable-content { overflow-y: auto; padding: 0 10px; width: 100%; }
         
-        #options-screen .scrollable-content {
+        #options-screen .scrollable-content, #achievements-screen .scrollable-content {
             flex-grow: 1; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
         }
         
-        .option-group { margin-bottom: 25px; text-align: center; width: 100%; }
-        .option-group h3 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-color); font-weight: 400; }
-        .shop-item, .notification-item { margin-bottom: 15px; text-align: left; }
+        .option-group, .achievement-difficulty-group { margin-bottom: 25px; text-align: center; width: 100%; }
+        .option-group h3, .achievement-difficulty-group h3 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-color); font-weight: 400; }
+        .shop-item, .notification-item, .achievement-item { margin-bottom: 15px; text-align: left; }
         
         .credits-text, .tip-text, .notification-text { font-size: 0.9rem; color: var(--text-color); margin-bottom: 10px; }
         
@@ -279,17 +285,30 @@
         #score-list .name { flex-grow: 1; }
         #score-list .score { font-weight: 900; color: var(--food-color); }
         
-        .shop-tabs { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--accent-color); }
-        .shop-tab { padding: 10px 20px; cursor: pointer; opacity: 0.6; }
-        .shop-tab.active { opacity: 1; border-bottom: 3px solid var(--accent-color); }
+        .shop-tabs, .achievements-tabs { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--accent-color); justify-content: center; flex-wrap: wrap; }
+        .shop-tab, .achievement-tab { padding: 10px 20px; cursor: pointer; opacity: 0.6; }
+        .shop-tab.active, .achievement-tab.active { opacity: 1; border-bottom: 3px solid var(--accent-color); }
+        
+        .achievement-tab[data-tab="Fácil"].active { border-color: var(--difficulty-easy); }
+        .achievement-tab[data-tab="Média"].active { border-color: var(--difficulty-medium); }
+        .achievement-tab[data-tab="Difícil"].active { border-color: var(--difficulty-hard); }
+        .achievement-tab[data-tab="Épico"].active { border-color: var(--difficulty-epic); }
+        .achievement-tab[data-tab="Extremo"].active { border-color: var(--difficulty-extreme); }
 
-        .shop-item {
+
+        .shop-item, .achievement-item {
             display: flex; justify-content: space-between; align-items: center;
             background-color: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;
+            width: 100%; /* Ensure full width in scrollable content */
+            margin-bottom: 10px;
         }
-        .shop-item .menu-button { padding: 10px 25px; font-size: 0.9rem; width: auto; }
-        .shop-item-details { display: flex; align-items: center; gap: 15px; }
-        .color-preview { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--text-color); }
+        .shop-item .menu-button, .achievement-item .menu-button { padding: 10px 25px; font-size: 0.9rem; width: auto; }
+        .shop-item-details, .achievement-item-details { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; flex-grow: 1; text-align: left; }
+        .shop-item-details h3, .achievement-item-details h3 { margin: 0; font-size: 1rem; }
+        .achievement-item-details p { font-size: 0.8rem; margin: 0; opacity: 0.8; }
+        .color-preview { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--text-color); flex-shrink: 0; }
+        .achievement-progress { font-size: 0.8em; opacity: 0.7; }
+        .achievement-item.completed { opacity: 0.7; }
 
         #username-input {
             font-family: var(--font-family);
@@ -358,12 +377,13 @@
             </div>
             <button id="start-button" class="menu-button">Iniciar Jogo</button>
             <button id="shop-button" class="menu-button">Loja</button>
+            <button id="achievements-button" class="menu-button">Conquistas</button> <!-- NEW ACHIEVEMENT BUTTON -->
             <button id="leaderboard-button" class="menu-button">Placar</button>
             <button id="options-button" class="menu-button">Opções</button>
             <button id="tips-button" class="menu-button">Dicas</button>
             <button id="login-button" class="menu-button">
                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23.5L48 14l-48 23z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48H0V37l48-23z"/></svg>
-                <span>Login com Google</span>
+                 <span>Login com Google</span>
             </button>
             <button id="logout-button" class="menu-button hidden">Sair</button>
         </div>
@@ -439,6 +459,21 @@
              <button id="leaderboard-back-button" class="menu-button">Voltar</button>
         </div>
         
+        <div id="achievements-screen" class="screen hidden">
+            <div class="scrollable-content" style="flex-grow: 1; display: flex; flex-direction: column; width: 100%;">
+                <h2>Conquistas</h2>
+                <div class="achievements-tabs">
+                    <div class="achievement-tab active" data-tab="Fácil">Fácil</div>
+                    <div class="achievement-tab" data-tab="Média">Média</div>
+                    <div class="achievement-tab" data-tab="Difícil">Difícil</div>
+                    <div class="achievement-tab" data-tab="Épico">Épico</div>
+                    <div class="achievement-tab" data-tab="Extremo">Extremo</div>
+                </div>
+                <div id="achievements-list-container" style="flex-grow: 1; overflow-y: auto;"></div>
+            </div>
+            <button id="achievements-back-button" class="menu-button" style="flex-shrink: 0;">Voltar</button>
+        </div>
+
         <div id="game-screen" class="screen hidden">
             <div id="top-bar" class="hidden">
                 <div id="stats-container">
@@ -498,9 +533,43 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // --- Elementos do DOM (permanecem os mesmos) ---
-        const screens = { start: document.getElementById('start-screen'), options: document.getElementById('options-screen'), shop: document.getElementById('shop-screen'), game: document.getElementById('game-screen'), gameOver: document.getElementById('game-over-screen'), leaderboard: document.getElementById('leaderboard-screen'), tips: document.getElementById('tips-screen'), notifications: document.getElementById('notification-screen'), username: document.getElementById('username-screen') };
-        const buttons = { start: document.getElementById('start-button'), shop: document.getElementById('shop-button'), shopBack: document.getElementById('shop-back-button'), options: document.getElementById('options-button'), back: document.getElementById('back-button'), restart: document.getElementById('restart-button'), home: document.getElementById('home-button'), login: document.getElementById('login-button'), logout: document.getElementById('logout-button'), leaderboard: document.getElementById('leaderboard-button'), leaderboardBack: document.getElementById('leaderboard-back-button'), tips: document.getElementById('tips-button'), tipsBack: document.getElementById('tips-back-button'), notificationBell: document.getElementById('notification-bell'), notificationBack: document.getElementById('notification-back-button'), pause: document.getElementById('pause-button'), resume: document.getElementById('resume-button'), pauseOptions: document.getElementById('pause-options-button'), pauseHome: document.getElementById('pause-home-button'), submitUsername: document.getElementById('submit-username-button') };
+        // --- Elementos do DOM ---
+        const screens = { 
+            start: document.getElementById('start-screen'), 
+            options: document.getElementById('options-screen'), 
+            shop: document.getElementById('shop-screen'), 
+            game: document.getElementById('game-screen'), 
+            gameOver: document.getElementById('game-over-screen'), 
+            leaderboard: document.getElementById('leaderboard-screen'), 
+            tips: document.getElementById('tips-screen'), 
+            notifications: document.getElementById('notification-screen'), 
+            username: document.getElementById('username-screen'),
+            achievements: document.getElementById('achievements-screen') 
+        };
+        const buttons = { 
+            start: document.getElementById('start-button'), 
+            shop: document.getElementById('shop-button'), 
+            shopBack: document.getElementById('shop-back-button'), 
+            options: document.getElementById('options-button'), 
+            back: document.getElementById('back-button'), 
+            restart: document.getElementById('restart-button'), 
+            home: document.getElementById('home-button'), 
+            login: document.getElementById('login-button'), 
+            logout: document.getElementById('logout-button'), 
+            leaderboard: document.getElementById('leaderboard-button'), 
+            leaderboardBack: document.getElementById('leaderboard-back-button'), 
+            tips: document.getElementById('tips-button'), 
+            tipsBack: document.getElementById('tips-back-button'), 
+            notificationBell: document.getElementById('notification-bell'), 
+            notificationBack: document.getElementById('notification-back-button'), 
+            pause: document.getElementById('pause-button'), 
+            resume: document.getElementById('resume-button'), 
+            pauseOptions: document.getElementById('pause-options-button'), 
+            pauseHome: document.getElementById('pause-home-button'), 
+            submitUsername: document.getElementById('submit-username-button'),
+            achievements: document.getElementById('achievements-button'), 
+            achievementsBack: document.getElementById('achievements-back-button') 
+        };
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
         const userName = document.getElementById('user-name');
@@ -521,8 +590,10 @@
         const shopTabs = document.querySelector('.shop-tabs');
         const usernameInput = document.getElementById('username-input');
         const usernameError = document.getElementById('username-error');
-        
-        // --- Configurações do Jogo e Dados (com novos itens) ---
+        const achievementsTabs = document.querySelector('.achievements-tabs'); 
+        const achievementsListContainer = document.getElementById('achievements-list-container'); 
+
+        // --- Configurações do Jogo e Dados (com novos itens e dados de conquistas) ---
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
         let gameSettings = { controlMode: isMobile ? 'touch' : 'keyboard', aspectRatio: isMobile ? 'mobile' : 'notebook' };
         let gridSize = 15;
@@ -534,28 +605,227 @@
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
         let bonusApples = [];
         let powerUps = { wrap: { active: false, endTime: 0, duration: 30000 }, immortal: { active: false, endTime: 0, duration: 30000 }, magnet: { active: false, endTime: 0, duration: 45000 } };
-        const snakeColors = { default: { name: 'Magenta Padrão', color: '#ff00ff' }, blue: { name: 'Azul Neon', color: '#3498db' }, green: { name: 'Verde Cyber', color: '#00ff00' }, orange: { name: 'Laranja Elétrico', color: '#ff8c00' }, gold: { name: 'Dourado', color: '#ffd700'}, white: { name: 'Branco Espectral', color: '#ffffff' }, toxic: { name: 'Verde Tóxico', color: '#7fff00' }, hotpink: { name: 'Rosa Choque', color: '#FF69B4' }, cosmic: { name: 'Violeta Cósmico', color: '#8A2BE2' }, magma: { name: 'Vermelho Magma', color: '#FF4500' }, sky: { name: 'Azul Celeste', color: '#00BFFF' }, lime: { name: 'Lima-Limão', color: '#ADFF2F' } };
-        const shopItems = {
-            backgrounds: [ { id: 'sunset', name: 'Pôr do Sol', price: 50 }, { id: 'matrix', name: 'Chuva Digital', price: 750 }, { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 }, { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 }, { id: 'hexagons', name: 'Colmeia Digital', price: 2500 }, { id: 'stars', name: 'Espaço Sideral', price: 3000 }, { id: 'aurora', name: 'Aurora Boreal', price: 4000 }, { id: 'tunnel', name: 'Túnel Hipnótico', price: 4500 }, { id: 'circuit', name: 'Circuito Digital', price: 5000 }, { id: 'forcefield', name: 'Campo de Força', price: 5500 }, { id: 'liquid', name: 'Lava Lamp', price: 6000 } ],
-            snakeColors: [ { id: 'blue', name: 'Azul Neon', price: 100 }, { id: 'green', name: 'Verde Cyber', price: 800 }, { id: 'orange', name: 'Laranja Elétrico', price: 1500 }, { id: 'gold', name: 'Cobra de Ouro', price: 5000 }, { id: 'white', name: 'Cobra Fantasma', price: 7500 }, { id: 'toxic', name: 'Cobra Tóxica', price: 10000 }, { id: 'hotpink', name: 'Rosa Choque', price: 12000 }, { id: 'cosmic', name: 'Violeta Cósmico', price: 15000 }, { id: 'magma', name: 'Vermelho Magma', price: 18000 }, { id: 'sky', name: 'Azul Celeste', price: 20000 }, { id: 'lime', name: 'Lima-Limão', price: 25000 } ]
+        
+        // Game-specific stats for current game session, NOT user data
+        let currentScoreWithoutImmortality = 0;
+        let currentMaxSnakeLengthInGame = 1;
+        let immortalityActivatedThisGame = false;
+
+
+        const snakeColors = { 
+            default: { name: 'Magenta Padrão', color: '#ff00ff' }, 
+            blue: { name: 'Azul Neon', color: '#3498db' }, 
+            green: { name: 'Verde Cyber', color: '#00ff00' }, 
+            orange: { name: 'Laranja Elétrico', color: '#ff8c00' }, 
+            gold: { name: 'Dourado', color: '#ffd700'}, 
+            white: { name: 'Branco Espectral', color: '#ffffff' }, 
+            toxic: { name: 'Verde Tóxico', color: '#7fff00' }, 
+            hotpink: { name: 'Rosa Choque', color: '#FF69B4' }, 
+            cosmic: { name: 'Violeta Cósmico', color: '#8A2BE2' }, 
+            magma: { name: 'Vermelho Magma', color: '#FF4500' }, 
+            sky: { name: 'Azul Celeste', color: '#00BFFF' }, 
+            lime: { name: 'Lima-Limão', color: '#ADFF2F' } 
         };
-        let userData = { name: '', highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default', purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [], usernameIsSet: false };
+        const shopItems = {
+            backgrounds: [ 
+                { id: 'sunset', name: 'Pôr do Sol', price: 50 }, 
+                { id: 'matrix', name: 'Chuva Digital', price: 750 }, 
+                { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 }, 
+                { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 }, 
+                { id: 'hexagons', name: 'Colmeia Digital', price: 2500 }, 
+                { id: 'stars', name: 'Espaço Sideral', price: 3000 }, 
+                { id: 'aurora', name: 'Aurora Boreal', price: 4000 }, 
+                { id: 'tunnel', name: 'Túnel Hipnótico', price: 4500 }, 
+                { id: 'circuit', name: 'Circuito Digital', price: 5000 }, 
+                { id: 'forcefield', name: 'Campo de Força', price: 5500 }, 
+                { id: 'liquid', name: 'Lava Lamp', price: 6000 } 
+            ],
+            snakeColors: [ 
+                { id: 'blue', name: 'Azul Neon', price: 100 }, 
+                { id: 'green', name: 'Verde Cyber', price: 800 }, 
+                { id: 'orange', name: 'Laranja Elétrico', price: 1500 }, 
+                { id: 'gold', name: 'Cobra de Ouro', price: 5000 }, 
+                { id: 'white', name: 'Cobra Fantasma', price: 7500 }, 
+                { id: 'toxic', name: 'Cobra Tóxica', price: 10000 }, 
+                { id: 'hotpink', name: 'Rosa Choque', price: 12000 }, 
+                { id: 'cosmic', name: 'Violeta Cósmico', price: 15000 }, 
+                { id: 'magma', name: 'Vermelho Magma', price: 18000 }, 
+                { id: 'sky', name: 'Azul Celeste', price: 20000 }, 
+                { id: 'lime', name: 'Lima-Limão', price: 25000 } 
+            ]
+        };
+        let userData = { 
+            name: '', 
+            highScore: 0, 
+            totalCoins: 0, 
+            purchasedBgs: ['default'], 
+            selectedBg: 'default', 
+            purchasedSnakeColors: ['default'], 
+            selectedSnakeColor: 'default', 
+            collectedRewards: [], 
+            usernameIsSet: false,
+            achievements: {}, 
+            gameStats: { 
+                applesEaten: 0,
+                goldenApples: 0,
+                greenApples: 0,
+                blueApples: 0,
+                purpleApples: 0,
+                gamesPlayed: 0,
+                maxScoreNoSelfCollision: 0,
+                maxSnakeLength: 0
+            }
+        };
+
+        // NEW: Achievement Data
+        const achievementsData = [
+            // --- Fácil (12 conquistas) ---
+            { id: 'ach_easy_score_10', name: 'Primeiros Passos', desc: 'Alcance 10 pontos.', difficulty: 'Fácil', type: 'score', target: 10, reward: { coins: 20 } },
+            { id: 'ach_easy_apples_5', name: 'Pequeno Lanche', desc: 'Coma 5 maçãs.', difficulty: 'Fácil', type: 'applesEaten', target: 5, reward: { coins: 20 } },
+            { id: 'ach_easy_games_1', name: 'Início da Jornada', desc: 'Jogue 1 partida.', difficulty: 'Fácil', type: 'gamesPlayed', target: 1, reward: { coins: 10 } },
+            { id: 'ach_easy_score_25', name: 'Pegando o Jeito', desc: 'Alcance 25 pontos.', difficulty: 'Fácil', type: 'score', target: 25, reward: { coins: 30 } },
+            { id: 'ach_easy_apples_15', name: 'Bom Apetite', desc: 'Coma 15 maçãs.', difficulty: 'Fácil', type: 'applesEaten', target: 15, reward: { coins: 30 } },
+            { id: 'ach_easy_games_3', name: 'Quase Lá', desc: 'Jogue 3 partidas.', difficulty: 'Fácil', type: 'gamesPlayed', target: 3, reward: { coins: 15 } },
+            { id: 'ach_easy_score_50', name: 'Mestre Iniciante', desc: 'Alcance 50 pontos.', difficulty: 'Fácil', type: 'score', target: 50, reward: { coins: 50, item: { type: 'backgrounds', id: 'pulse' } } },
+            { id: 'ach_easy_apples_30', name: 'Comedor Nato', desc: 'Coma 30 maçãs.', difficulty: 'Fácil', type: 'applesEaten', target: 30, reward: { coins: 40 } },
+            { id: 'ach_easy_golden_1', name: 'Toque de Midas (Fácil)', desc: 'Coma 1 maçã dourada.', difficulty: 'Fácil', type: 'goldenApples', target: 1, reward: { coins: 25 } },
+            { id: 'ach_easy_green_1', name: 'Defensor Verde (Fácil)', desc: 'Coma 1 maçã verde.', difficulty: 'Fácil', type: 'greenApples', target: 1, reward: { coins: 25 } },
+            { id: 'ach_easy_blue_1', name: 'Ímã Azul (Fácil)', desc: 'Coma 1 maçã azul.', difficulty: 'Fácil', type: 'blueApples', target: 1, reward: { coins: 25 } },
+            { id: 'ach_easy_purple_1', name: 'Sorte Roxa (Fácil)', desc: 'Coma 1 maçã roxa.', difficulty: 'Fácil', type: 'purpleApples', target: 1, reward: { coins: 25 } },
+
+            // --- Média (12 conquistas) ---
+            { id: 'ach_medium_score_100', name: 'Crescendo', desc: 'Alcance 100 pontos.', difficulty: 'Média', type: 'score', target: 100, reward: { coins: 100 } },
+            { id: 'ach_medium_apples_50', name: 'O Banquete Continua', desc: 'Coma 50 maçãs.', difficulty: 'Média', type: 'applesEaten', target: 50, reward: { coins: 75 } },
+            { id: 'ach_medium_games_5', name: 'Viciado em Snake', desc: 'Jogue 5 partidas.', difficulty: 'Média', type: 'gamesPlayed', target: 5, reward: { coins: 50 } },
+            { id: 'ach_medium_score_200', name: 'Dominando o Quadrado', desc: 'Alcance 200 pontos.', difficulty: 'Média', type: 'score', target: 200, reward: { coins: 150 } },
+            { id: 'ach_medium_apples_100', name: 'Colecionador de Maçãs', desc: 'Coma 100 maçãs.', difficulty: 'Média', type: 'applesEaten', target: 100, reward: { coins: 120 } },
+            { id: 'ach_medium_games_10', name: 'A Cobra é Vida', desc: 'Jogue 10 partidas.', difficulty: 'Média', type: 'gamesPlayed', target: 10, reward: { coins: 80 } },
+            { id: 'ach_medium_golden_5', name: 'Tocado pelo Ouro', desc: 'Coma 5 maçãs douradas.', difficulty: 'Média', type: 'goldenApples', target: 5, reward: { coins: 75 } },
+            { id: 'ach_medium_green_5', name: 'Imortalidade em Série', desc: 'Coma 5 maçãs verdes.', difficulty: 'Média', type: 'greenApples', target: 5, reward: { coins: 75 } },
+            { id: 'ach_medium_blue_5', name: 'Mestre do Ímã', desc: 'Coma 5 maçãs azuis.', difficulty: 'Média', type: 'blueApples', target: 5, reward: { coins: 75 } },
+            { id: 'ach_medium_purple_5', name: 'Chuva de Moedas', desc: 'Coma 5 maçãs roxas.', difficulty: 'Média', type: 'purpleApples', target: 5, reward: { coins: 75 } },
+            { id: 'ach_medium_no_collide_200', name: 'Mãos Limpas (Média)', desc: 'Alcance 200 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Média', type: 'noSelfCollisionScore', target: 200, reward: { coins: 100 } },
+            { id: 'ach_medium_coins_500', name: 'Bolsos Cheios (Média)', desc: 'Acumule 500 moedas totais.', difficulty: 'Média', type: 'totalCoins', target: 500, reward: { coins: 100, item: { type: 'snakeColors', id: 'blue' } } },
+
+            // --- Difícil (12 conquistas) ---
+            { id: 'ach_hard_score_500', name: 'Desafio Notável', desc: 'Alcance 500 pontos.', difficulty: 'Difícil', type: 'score', target: 500, reward: { coins: 300 } },
+            { id: 'ach_hard_apples_250', name: 'Fome Insaciável', desc: 'Coma 250 maçãs.', difficulty: 'Difícil', type: 'applesEaten', target: 250, reward: { coins: 250 } },
+            { id: 'ach_hard_games_20', name: 'O Vício é Real', desc: 'Jogue 20 partidas.', difficulty: 'Difícil', type: 'gamesPlayed', target: 20, reward: { coins: 150 } },
+            { id: 'ach_hard_score_750', name: 'Lenda Ascendente', desc: 'Alcance 750 pontos.', difficulty: 'Difícil', type: 'score', target: 750, reward: { coins: 400 } },
+            { id: 'ach_hard_apples_400', name: 'O Grande Lanche', desc: 'Coma 400 maçãs.', difficulty: 'Difícil', type: 'applesEaten', target: 400, reward: { coins: 350 } },
+            { id: 'ach_hard_games_30', name: 'Jornada Épica', desc: 'Jogue 30 partidas.', difficulty: 'Difícil', type: 'gamesPlayed', target: 30, reward: { coins: 200 } },
+            { id: 'ach_hard_golden_10', name: 'Caminho Dourado', desc: 'Coma 10 maçãs douradas.', difficulty: 'Difícil', type: 'goldenApples', target: 10, reward: { coins: 200 } },
+            { id: 'ach_hard_green_10', name: 'Inviolável', desc: 'Coma 10 maçãs verdes.', difficulty: 'Difícil', type: 'greenApples', target: 10, reward: { coins: 200 } },
+            { id: 'ach_hard_blue_10', name: 'Poder Magnético', desc: 'Coma 10 maçãs azuis.', difficulty: 'Difícil', type: 'blueApples', target: 10, reward: { coins: 200 } },
+            { id: 'ach_hard_purple_10', name: 'Riqueza Roxa', desc: 'Coma 10 maçãs roxas.', difficulty: 'Difícil', type: 'purpleApples', target: 10, reward: { coins: 200 } },
+            { id: 'ach_hard_no_collide_500', name: 'Intocável', desc: 'Alcance 500 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Difícil', type: 'noSelfCollisionScore', target: 500, reward: { coins: 300, item: { type: 'backgrounds', id: 'matrix' } } },
+            { id: 'ach_hard_coins_1500', name: 'Fortuna da Cobra', desc: 'Acumule 1500 moedas totais.', difficulty: 'Difícil', type: 'totalCoins', target: 1500, reward: { coins: 250, item: { type: 'snakeColors', id: 'green' } } },
+
+            // --- Épico (12 conquistas) ---
+            { id: 'ach_epic_score_1000', name: 'Lenda Viva', desc: 'Alcance 1000 pontos.', difficulty: 'Épico', type: 'score', target: 1000, reward: { coins: 750 } },
+            { id: 'ach_epic_apples_500', name: 'Devorador Supremo', desc: 'Coma 500 maçãs.', difficulty: 'Épico', type: 'applesEaten', target: 500, reward: { coins: 600 } },
+            { id: 'ach_epic_games_50', name: 'Maratonista', desc: 'Jogue 50 partidas.', difficulty: 'Épico', type: 'gamesPlayed', target: 50, reward: { coins: 400 } },
+            { id: 'ach_epic_score_1500', name: 'A Grande Serpente', desc: 'Alcance 1500 pontos.', difficulty: 'Épico', type: 'score', target: 1500, reward: { coins: 1000 } },
+            { id: 'ach_epic_apples_750', name: 'O Inimigo da Maçã', desc: 'Coma 750 maçãs.', difficulty: 'Épico', type: 'applesEaten', target: 750, reward: { coins: 800 } },
+            { id: 'ach_epic_games_75', name: 'Dedicação Total', desc: 'Jogue 75 partidas.', difficulty: 'Épico', type: 'gamesPlayed', target: 75, reward: { coins: 500 } },
+            { id: 'ach_epic_golden_15', name: 'Portal Frequente', desc: 'Coma 15 maçãs douradas.', difficulty: 'Épico', type: 'goldenApples', target: 15, reward: { coins: 500 } },
+            { id: 'ach_epic_green_15', name: 'Escudo Perpétuo', desc: 'Coma 15 maçãs verdes.', difficulty: 'Épico', type: 'greenApples', target: 15, reward: { coins: 500 } },
+            { id: 'ach_epic_blue_15', name: 'Super Ímã', desc: 'Coma 15 maçãs azuis.', difficulty: 'Épico', type: 'blueApples', target: 15, reward: { coins: 500 } },
+            { id: 'ach_epic_purple_15', name: 'Tesouro Roxo', desc: 'Coma 15 maçãs roxas.', difficulty: 'Épico', type: 'purpleApples', target: 15, reward: { coins: 500 } },
+            { id: 'ach_epic_coins_5000', name: 'Milionário da Cobra', desc: 'Acumule 5000 moedas totais.', difficulty: 'Épico', type: 'totalCoins', target: 5000, reward: { coins: 1000, item: { type: 'snakeColors', id: 'gold' } } },
+            { id: 'ach_epic_longest_snake_50', name: 'Cobra Gigante', desc: 'Alcance 50 de comprimento na cobra.', difficulty: 'Épico', type: 'snakeLength', target: 50, reward: { coins: 750 } },
+
+            // --- Extremo (12 conquistas) ---
+            { id: 'ach_extreme_score_2000', name: 'Deus da Cobra', desc: 'Alcance 2000 pontos.', difficulty: 'Extremo', type: 'score', target: 2000, reward: { coins: 1500 } },
+            { id: 'ach_extreme_apples_1000', name: 'Aniquilador de Maçãs', desc: 'Coma 1000 maçãs.', difficulty: 'Extremo', type: 'applesEaten', target: 1000, reward: { coins: 1200 } },
+            { id: 'ach_extreme_games_100', name: 'Viciado Eterno', desc: 'Jogue 100 partidas.', difficulty: 'Extremo', type: 'gamesPlayed', target: 100, reward: { coins: 800 } },
+            { id: 'ach_extreme_score_3000', name: 'Mito da Serpente', desc: 'Alcance 3000 pontos.', difficulty: 'Extremo', type: 'score', target: 3000, reward: { coins: 2500 } },
+            { id: 'ach_extreme_apples_1500', name: 'Fim das Maçãs', desc: 'Coma 1500 maçãs.', difficulty: 'Extremo', type: 'applesEaten', target: 1500, reward: { coins: 2000 } },
+            { id: 'ach_extreme_games_150', name: 'Legado de Cobra', desc: 'Jogue 150 partidas.', difficulty: 'Extremo', type: 'gamesPlayed', target: 150, reward: { coins: 1200 } },
+            { id: 'ach_extreme_golden_20', name: 'Mestre Dimensional', desc: 'Coma 20 maçãs douradas.', difficulty: 'Extremo', type: 'goldenApples', target: 20, reward: { coins: 1000 } },
+            { id: 'ach_extreme_green_20', name: 'Fortaleza Inexpugnável', desc: 'Coma 20 maçãs verdes.', difficulty: 'Extremo', type: 'greenApples', target: 20, reward: { coins: 1000 } },
+            { id: 'ach_extreme_blue_20', name: 'Buraco Negro Magnético', desc: 'Coma 20 maçãs azuis.', difficulty: 'Extremo', type: 'blueApples', target: 20, reward: { coins: 1000 } },
+            { id: 'ach_extreme_purple_20', name: 'Ouro Roxo', desc: 'Coma 20 maçãs roxas.', difficulty: 'Extremo', type: 'purpleApples', target: 20, reward: { coins: 1000 } },
+            { id: 'ach_extreme_no_collide_1000', name: 'Fantom', desc: 'Alcance 1000 pontos sem colidir com seu corpo (imortalidade desativada).', difficulty: 'Extremo', type: 'noSelfCollisionScore', target: 1000, reward: { coins: 1500, item: { type: 'backgrounds', id: 'aurora' } } },
+            { id: 'ach_extreme_coins_10000', name: 'Imperador da Riqueza', desc: 'Acumule 10000 moedas totais.', difficulty: 'Extremo', type: 'totalCoins', target: 10000, reward: { coins: 2000, item: { type: 'snakeColors', id: 'white' } } }
+        ];
+
+        // Helper to group achievements by difficulty for rendering
+        const achievementsByDifficulty = achievementsData.reduce((acc, ach) => {
+            (acc[ach.difficulty] = acc[ach.difficulty] || []).push(ach);
+            return acc;
+        }, {});
         
         // --- Declaração de Funções ---
-        async function checkNotifications(user) { if (!user) return; buttons.notificationBell.classList.remove('hidden'); const q = query(collection(db, "notifications"), orderBy("timestamp", "desc")); const querySnapshot = await getDocs(q); const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id)); if (unreadNotifs.length > 0) { notificationDot.classList.remove('hidden'); } else { notificationDot.classList.add('hidden'); } }
+        async function checkNotifications(user) { 
+            if (!user) {
+                buttons.notificationBell.classList.add('hidden');
+                notificationDot.classList.add('hidden');
+                return;
+            }
+            buttons.notificationBell.classList.remove('hidden'); 
+            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc")); 
+            const querySnapshot = await getDocs(q); 
+            const unreadNotifs = querySnapshot.docs.filter(doc => !(userData.collectedRewards || []).includes(doc.id)); 
+            
+            // Check for uncollected achievements
+            const uncollectedAchievements = achievementsData.filter(ach => 
+                (userData.achievements[ach.id]?.completed && !userData.achievements[ach.id]?.collected)
+            );
+
+            if (unreadNotifs.length > 0 || uncollectedAchievements.length > 0) { 
+                notificationDot.classList.remove('hidden'); 
+            } else { 
+                notificationDot.classList.add('hidden'); 
+            } 
+        }
+
         async function renderNotifications() {
             notificationList.innerHTML = '<h2>Notificações</h2>';
             const user = auth.currentUser;
             if(!user) { notificationList.innerHTML += '<p class="notification-text">Faça login para ver as suas notificações.</p>'; return; }
             const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
             const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) { notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>'; } 
-            else {
+
+            // Display collected achievements pending reward collection
+            const uncollectedAchievements = achievementsData.filter(ach => 
+                (userData.achievements[ach.id]?.completed && !userData.achievements[ach.id]?.collected)
+            );
+
+            if (querySnapshot.empty && uncollectedAchievements.length === 0) { 
+                notificationList.innerHTML += '<p class="notification-text">Nenhuma novidade por aqui.</p>'; 
+            } else {
+                // Add uncollected achievement notifications first
+                uncollectedAchievements.forEach(ach => {
+                    const notifEl = document.createElement('div'); 
+                    notifEl.className = 'option-group notification-item';
+                    let rewardText = '';
+                    if (ach.reward.coins) rewardText += `S$ ${ach.reward.coins}`;
+                    if (ach.reward.item) {
+                        const itemName = shopItems[ach.reward.item.type].find(item => item.id === ach.reward.item.id)?.name || 'Item Desconhecido';
+                        if (rewardText) rewardText += ' + ';
+                        rewardText += `${itemName}`;
+                    }
+                    notifEl.innerHTML = `
+                        <h3>Conquista Desbloqueada: ${ach.name}</h3>
+                        <div class="notification-text">${ach.desc}</div>
+                        <button class="menu-button" data-achievement-id="${ach.id}" data-reward-id="${ach.id}" ${userData.achievements[ach.id]?.collected ? 'disabled' : ''}>
+                            ${userData.achievements[ach.id]?.collected ? 'Coletado' : `Coletar Recompensa (${rewardText})`}
+                        </button>
+                    `;
+                    notificationList.appendChild(notifEl);
+                });
+
+                // Add regular notifications
                 querySnapshot.forEach(docSnap => {
-                    const data = docSnap.data(); const notifEl = document.createElement('div'); notifEl.className = 'option-group notification-item';
-                    let buttonHtml = ''; const isCollected = userData.collectedRewards.includes(docSnap.id);
-                    if (data.reward && data.reward > 0) { buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar S$ ${data.reward}`}</button>`; }
-                    else if (data.rewardItem) {
+                    const data = docSnap.data(); 
+                    const notifEl = document.createElement('div'); 
+                    notifEl.className = 'option-group notification-item';
+                    let buttonHtml = ''; 
+                    const isCollected = userData.collectedRewards.includes(docSnap.id);
+                    if (data.reward && data.reward > 0) { 
+                        buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar S$ ${data.reward}`}</button>`; 
+                    } else if (data.rewardItem) {
                         const itemType = data.rewardItem.type === 'snakeColors' ? 'Cor' : 'Fundo';
                         buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-item='${JSON.stringify(data.rewardItem)}' ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar ${itemType}`}</button>`;
                     }
@@ -564,9 +834,42 @@
                 });
             }
         }
+
         async function collectReward(target) {
-            const user = auth.currentUser; if (!user || target.disabled) return;
+            const user = auth.currentUser; 
+            if (!user || target.disabled) return;
             const rewardId = target.dataset.rewardId;
+            
+            // Check if it's an achievement reward
+            const achievementId = target.dataset.achievementId;
+            if (achievementId) {
+                if (userData.achievements[achievementId]?.collected) return;
+                const ach = achievementsData.find(a => a.id === achievementId);
+                if (ach) {
+                    if (ach.reward.coins) {
+                        userData.totalCoins += ach.reward.coins;
+                        coins = userData.totalCoins; 
+                        if(coinCountSpan) coinCountSpan.textContent = coins;
+                    }
+                    if (ach.reward.item) {
+                        const { type, id } = ach.reward.item;
+                        if (type === 'snakeColors' && !userData.purchasedSnakeColors.includes(id)) {
+                            userData.purchasedSnakeColors.push(id);
+                        } else if (type === 'backgrounds' && !userData.purchasedBgs.includes(id)) {
+                            userData.purchasedBgs.push(id);
+                        }
+                    }
+                    userData.achievements[achievementId].collected = true;
+                    target.disabled = true; 
+                    target.textContent = "Coletado!";
+                    await saveUserData(); 
+                    await checkNotifications(user);
+                    renderAchievements(ach.difficulty); // Re-render achievements to update status
+                }
+                return;
+            }
+
+            // Regular notification reward
             if (userData.collectedRewards.includes(rewardId)) return;
             
             const rewardAmount = parseInt(target.dataset.rewardAmount);
@@ -585,11 +888,23 @@
                 }
             }
             
-            target.disabled = true; target.textContent = "Coletado!";
+            target.disabled = true; 
+            target.textContent = "Coletado!";
             userData.collectedRewards.push(rewardId);
-            await saveUserData(); await checkNotifications(user);
+            await saveUserData(); 
+            await checkNotifications(user);
         }
-        window.sendNotification = async function(notificationData) { try { const notificationsCol = collection(db, 'notifications'); await addDoc(notificationsCol, { ...notificationData, timestamp: serverTimestamp() }); console.log("Notificação enviada com sucesso:", notificationData); } catch (error) { console.error("Erro ao enviar notificação:", error); } }
+
+        window.sendNotification = async function(notificationData) { 
+            try { 
+                const notificationsCol = collection(db, 'notifications'); 
+                await addDoc(notificationsCol, { ...notificationData, timestamp: serverTimestamp() }); 
+                console.log("Notificação enviada com sucesso:", notificationData); 
+            } catch (error) { 
+                console.error("Erro ao enviar notificação:", error); 
+            } 
+        }
+
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
@@ -606,6 +921,7 @@
                 });
             } catch (error) { console.error("Erro ao buscar placar:", error); scoreList.innerHTML = '<li>Erro ao carregar o placar.</li>'; }
         }
+
         function drawAppleShape(appleX, appleY, type) {
             let colorLight, colorDark, glow;
             switch(type) {
@@ -638,26 +954,54 @@
             ctx.quadraticCurveTo(appleX + appleRadius * 0.7, appleY - appleRadius * 1.3, appleX + 3, appleY - appleRadius * 0.8); ctx.fill();
             ctx.restore();
         }
-        function drawApple() { const appleX = food.x * gridSize + gridSize / 2; const appleY = food.y * gridSize + gridSize / 2; drawAppleShape(appleX, appleY, 'red'); }
-        function drawBonusApple(apple) { const appleX = apple.x * gridSize + gridSize / 2; const appleY = apple.y * gridSize + gridSize / 2; drawAppleShape(appleX, appleY, apple.type); }
+
+        function drawApple() { 
+            const appleX = food.x * gridSize + gridSize / 2; 
+            const appleY = food.y * gridSize + gridSize / 2; 
+            drawAppleShape(appleX, appleY, 'red'); 
+        }
+
+        function drawBonusApple(apple) { 
+            const appleX = apple.x * gridSize + gridSize / 2; 
+            const appleY = apple.y * gridSize + gridSize / 2; 
+            drawAppleShape(appleX, appleY, apple.type); 
+        }
+
         function drawSnake() {
             const snakeColor = snakeColors[userData.selectedSnakeColor].color;
-            ctx.save(); ctx.shadowColor = snakeColor; ctx.shadowBlur = 10;
+            ctx.save(); 
+            ctx.shadowColor = snakeColor; 
+            ctx.shadowBlur = 10;
             if (snake.length > 1) {
-                 ctx.strokeStyle = snakeColor; ctx.lineWidth = gridSize * 0.9; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                 ctx.beginPath(); ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
+                 ctx.strokeStyle = snakeColor; 
+                 ctx.lineWidth = gridSize * 0.9; 
+                 ctx.lineCap = 'round'; 
+                 ctx.lineJoin = 'round';
+                 ctx.beginPath(); 
+                 ctx.moveTo(snake[0].x * gridSize + gridSize / 2, snake[0].y * gridSize + gridSize / 2);
                  for (let i = 1; i < snake.length; i++) {
-                     const segment = snake[i]; const prevSegment = snake[i-1];
+                     const segment = snake[i]; 
+                     const prevSegment = snake[i-1];
                      if(Math.abs(segment.x - prevSegment.x) > 1 || Math.abs(segment.y - prevSegment.y) > 1) {
-                         ctx.stroke(); ctx.beginPath(); ctx.moveTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
+                         // This is for wrap-around, or if snake teleports.
+                         // For normal movement, this should not happen.
+                         ctx.stroke(); 
+                         ctx.beginPath(); 
+                         ctx.moveTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2);
                      } else { ctx.lineTo(segment.x * gridSize + gridSize / 2, segment.y * gridSize + gridSize / 2); }
                  }
                  ctx.stroke();
             }
-            const head = snake[0]; const headX = head.x * gridSize + gridSize / 2; const headY = head.y * gridSize + gridSize / 2;
+            // Draw head
+            const head = snake[0]; 
+            const headX = head.x * gridSize + gridSize / 2; 
+            const headY = head.y * gridSize + gridSize / 2;
             ctx.beginPath(); ctx.arc(headX, headY, (gridSize / 2) * 0.9, 0, Math.PI * 2); ctx.fillStyle = snakeColor; ctx.fill();
             ctx.shadowBlur = 0;
-            const eyeRadius = gridSize * 0.15; const pupilRadius = gridSize * 0.08;
+
+            // Draw eyes
+            const eyeRadius = gridSize * 0.15; 
+            const pupilRadius = gridSize * 0.08;
             let eye1X, eye1Y, eye2X, eye2Y, pupilOffsetX = 0, pupilOffsetY = 0;
             const eyeDist = gridSize * 0.25;
             if (direction.y === -1) { eye1X = headX - eyeDist; eye1Y = headY - eyeDist * 0.5; eye2X = headX + eyeDist; eye2Y = headY - eyeDist * 0.5; pupilOffsetY = -gridSize * 0.04;
@@ -670,6 +1014,8 @@
             ctx.fillStyle = '#1a0c2e';
             ctx.beginPath(); ctx.arc(eye1X + pupilOffsetX, eye1Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(eye2X + pupilOffsetX, eye2Y + pupilOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
+            
+            // Draw tongue
             if (tongueState.counter < tongueState.flickerDuration && (direction.x !== 0 || direction.y !== 0)) {
                 ctx.strokeStyle = '#ff3366'; ctx.lineWidth = 2; ctx.lineCap = 'round';
                 const tongueLength = gridSize * 0.8; const tongueEndX = headX + direction.x * tongueLength; const tongueEndY = headY + direction.y * tongueLength;
@@ -686,47 +1032,89 @@
             }
             ctx.restore();
         }
+
         function placeFood() {
-            const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
+            const dpr = window.devicePixelRatio || 1; 
+            const gridWidth = canvas.width / dpr / gridSize; 
+            const gridHeight = canvas.height / dpr / gridSize;
             do { food = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
             } while (snake.some(segment => segment.x === food.x && segment.y === food.y));
         }
+
         function spawnBonusApple() {
             if (Math.random() > 0.5) { 
-                const rand = Math.random(); let type;
+                const rand = Math.random(); 
+                let type;
                 if (rand < 0.25) type = 'purple';
                 else if (rand < 0.50) type = 'blue';
                 else if (rand < 0.75) type = 'golden';
                 else type = 'green';
-                const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
+                const dpr = window.devicePixelRatio || 1; 
+                const gridWidth = canvas.width / dpr / gridSize; 
+                const gridHeight = canvas.height / dpr / gridSize;
                 let bonusX, bonusY;
                 do { bonusX = Math.floor(Math.random() * gridWidth); bonusY = Math.floor(Math.random() * gridHeight);
                 } while (snake.some(s => s.x === bonusX && s.y === bonusY) || (food.x === bonusX && food.y === bonusY) || bonusApples.some(a => a.x === bonusX && a.y === bonusY));
-                const newApple = { x: bonusX, y: bonusY, type }; bonusApples.push(newApple);
-                setTimeout(() => { const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y); if (index !== -1) bonusApples.splice(index, 1); }, 7000);
+                const newApple = { x: bonusX, y: bonusY, type }; 
+                bonusApples.push(newApple);
+                setTimeout(() => { 
+                    const index = bonusApples.findIndex(a => a.x === newApple.x && a.y === newApple.y); 
+                    if (index !== -1) bonusApples.splice(index, 1); 
+                }, 7000);
             }
         }
+
         function activateBonus(type) {
             const now = Date.now();
-            if (type === 'golden') { powerUps.wrap.active = true; powerUps.wrap.endTime = now + powerUps.wrap.duration; } 
-            else if (type === 'green') { powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; } 
-            else if (type === 'blue') { powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; }
-            else if (type === 'purple') { const extraCoins = Math.floor(Math.random() * 11) + 10; coins += extraCoins; coinCountSpan.textContent = coins; }
+            if (type === 'golden') { 
+                powerUps.wrap.active = true; powerUps.wrap.endTime = now + powerUps.wrap.duration; 
+                userData.gameStats.goldenApples++; 
+            } else if (type === 'green') { 
+                powerUps.immortal.active = true; powerUps.immortal.endTime = now + powerUps.immortal.duration; 
+                immortalityActivatedThisGame = true; // Mark that immortality was used in this game
+                userData.gameStats.greenApples++; 
+            } else if (type === 'blue') { 
+                powerUps.magnet.active = true; powerUps.magnet.endTime = now + powerUps.magnet.duration; 
+                userData.gameStats.blueApples++; 
+            } else if (type === 'purple') { 
+                const extraCoins = Math.floor(Math.random() * 11) + 10; 
+                coins += extraCoins; 
+                coinCountSpan.textContent = coins; 
+                userData.gameStats.purpleApples++; 
+            }
+            checkAchievements(); 
         }
+
         function checkPowerupEnd() {
             const now = Date.now();
             if (powerUps.wrap.active && now > powerUps.wrap.endTime) powerUps.wrap.active = false;
             if (powerUps.immortal.active && now > powerUps.immortal.endTime) powerUps.immortal.active = false;
             if (powerUps.magnet.active && now > powerUps.magnet.endTime) powerUps.magnet.active = false;
         }
+
         function updatePowerupTimers() {
-            let activeTimers = []; const now = Date.now();
-            if (powerUps.wrap.active) { const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Portal: ${remaining}s`); }
-            if (powerUps.immortal.active) { const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`); }
-            if (powerUps.magnet.active) { const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000); if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`); }
-            if (activeTimers.length > 0) { powerupTimerDisplay.innerHTML = activeTimers.map(t => `<div class="timer-item">${t}</div>`).join(''); powerupTimerDisplay.classList.remove('hidden');
-            } else { powerupTimerDisplay.classList.add('hidden'); }
+            let activeTimers = []; 
+            const now = Date.now();
+            if (powerUps.wrap.active) { 
+                const remaining = Math.ceil((powerUps.wrap.endTime - now) / 1000); 
+                if (remaining > 0) activeTimers.push(`Portal: ${remaining}s`); 
+            }
+            if (powerUps.immortal.active) { 
+                const remaining = Math.ceil((powerUps.immortal.endTime - now) / 1000); 
+                if (remaining > 0) activeTimers.push(`Escudo: ${remaining}s`); 
+            }
+            if (powerUps.magnet.active) { 
+                const remaining = Math.ceil((powerUps.magnet.endTime - now) / 1000); 
+                if (remaining > 0) activeTimers.push(`Íman: ${remaining}s`); 
+            }
+            if (activeTimers.length > 0) { 
+                powerupTimerDisplay.innerHTML = activeTimers.map(t => `<div class="timer-item">${t}</div>`).join(''); 
+                powerupTimerDisplay.classList.remove('hidden');
+            } else { 
+                powerupTimerDisplay.classList.add('hidden'); 
+            }
         }
+
         function setDirection(newDirection) {
             if (isPaused) return;
             const goingUp = direction.y === -1, goingDown = direction.y === 1, goingRight = direction.x === 1, goingLeft = direction.x === -1;
@@ -735,36 +1123,57 @@
             if (newDirection === 'right' && !goingLeft) direction = { x: 1, y: 0 };
             if (newDirection === 'down' && !goingUp) direction = { x: 0, y: 1 };
         }
+
         function handleKeyInput(event) {
-            const keyPressed = event.key.toLowerCase(); if (keyPressed === 'p') { togglePause(); return; }
+            const keyPressed = event.key.toLowerCase(); 
+            if (keyPressed === 'p') { togglePause(); return; }
             if (gameSettings.controlMode !== 'keyboard' || isPaused) return;
             if (['arrowleft', 'a'].includes(keyPressed)) setDirection('left');
             if (['arrowup', 'w'].includes(keyPressed)) setDirection('up');
             if (['arrowright', 'd'].includes(keyPressed)) setDirection('right');
             if (['arrowdown', 's'].includes(keyPressed)) setDirection('down');
         }
+
         function handleTouchStart(event) {
             if (gameSettings.controlMode !== 'touch' || isPaused || buttons.pause.contains(event.target)) return;
-            event.preventDefault(); touchStartX = event.touches[0].clientX; touchStartY = event.touches[0].clientY;
+            event.preventDefault(); 
+            touchStartX = event.touches[0].clientX; 
+            touchStartY = event.touches[0].clientY;
         }
+
         function handleTouchEnd(event) {
             if (gameSettings.controlMode !== 'touch' || touchStartX === 0 || isPaused || buttons.pause.contains(event.target)) return;
             const touchEndX = event.changedTouches[0].clientX, touchEndY = event.changedTouches[0].clientY;
             const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
-            if (Math.abs(diffX) > Math.abs(diffY)) { if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
-            } else { if (Math.abs(diffY) > 30) setDirection(diffY > 0 ? 'down' : 'up'); }
-            touchStartX = 0; touchStartY = 0;
+            if (Math.abs(diffX) > Math.abs(diffY)) { 
+                if (Math.abs(diffX) > 30) setDirection(diffX > 0 ? 'right' : 'left');
+            } else { 
+                if (Math.abs(diffY) > 30) setDirection(diffY > 0 ? 'down' : 'up'); 
+            }
+            touchStartX = 0; 
+            touchStartY = 0;
         }
+
         function checkCollision() {
-            const head = snake[0]; const dpr = window.devicePixelRatio || 1;
-            const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
+            const head = snake[0]; 
+            const dpr = window.devicePixelRatio || 1;
+            const gridWidth = canvas.width / dpr / gridSize; 
+            const gridHeight = canvas.height / dpr / gridSize;
             if (!powerUps.wrap.active && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) return true;
-            if (!powerUps.immortal.active) { for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; } }
+            
+            // Only check self-collision if immortality is NOT active
+            if (!powerUps.immortal.active) { 
+                for (let i = 1; i < snake.length; i++) { 
+                    if (head.x === snake[i].x && head.y === snake[i].y) return true; 
+                } 
+            }
             return false;
         }
+
         function togglePause() {
             if (isPaused) {
                 const now = Date.now();
+                // Resume durations by adding elapsed time back
                 if(powerUps.wrap.active) powerUps.wrap.endTime = now + powerUps.wrap.duration;
                 if(powerUps.immortal.active) powerUps.immortal.endTime = now + powerUps.immortal.duration;
                 if(powerUps.magnet.active) powerUps.magnet.endTime = now + powerUps.magnet.duration;
@@ -772,17 +1181,23 @@
             } else {
                 clearInterval(gameInterval);
                 const now = Date.now();
+                // Store remaining durations
                 if(powerUps.wrap.active) powerUps.wrap.duration = powerUps.wrap.endTime - now;
                 if(powerUps.immortal.active) powerUps.immortal.duration = powerUps.immortal.endTime - now;
                 if(powerUps.magnet.active) powerUps.magnet.duration = powerUps.magnet.endTime - now;
             }
             isPaused = !isPaused;
-            pauseOverlay.classList.toggle('hidden'); pauseIcon.classList.toggle('hidden'); playIcon.classList.toggle('hidden');
+            pauseOverlay.classList.toggle('hidden'); 
+            pauseIcon.classList.toggle('hidden'); 
+            playIcon.classList.toggle('hidden');
         }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                userProfile.classList.remove('hidden'); userPhoto.src = user.photoURL;
-                buttons.login.classList.add('hidden'); buttons.logout.classList.remove('hidden');
+                userProfile.classList.remove('hidden'); 
+                userPhoto.src = user.photoURL;
+                buttons.login.classList.add('hidden'); 
+                buttons.logout.classList.remove('hidden');
                 await loadUserData(user);
                 if (!userData.usernameIsSet) {
                     showScreen(screens.username);
@@ -790,25 +1205,50 @@
                     userName.textContent = userData.name;
                 }
             } else {
-                userProfile.classList.add('hidden'); buttons.login.classList.remove('hidden'); buttons.logout.classList.add('hidden'); buttons.notificationBell.classList.add('hidden');
+                userProfile.classList.add('hidden'); 
+                buttons.login.classList.remove('hidden'); 
+                buttons.logout.classList.add('hidden'); 
+                buttons.notificationBell.classList.add('hidden');
                 loadLocalData();
             }
             applyAllCustomizations();
+            checkNotifications(user); 
         });
+
         async function loadUserData(user) {
             const localCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
             const localBgs = JSON.parse(localStorage.getItem('ssnake_bgs')) || [];
             const localColors = JSON.parse(localStorage.getItem('ssnake_colors')) || [];
             const localHighScore = parseInt(localStorage.getItem('ssnake_highscore')) || 0;
+            const localAchievements = JSON.parse(localStorage.getItem('ssnake_achievements')) || {}; 
+            const localGameStats = JSON.parse(localStorage.getItem('ssnake_gameStats')) || {}; 
+            const localCollectedRewards = JSON.parse(localStorage.getItem('ssnake_collectedRewards')) || []; 
 
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
 
             const defaultData = {
-                name: user.displayName, photoURL: user.photoURL, highScore: 0, totalCoins: 0,
-                purchasedBgs: ['default'], selectedBg: 'default',
-                purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [],
+                name: user.displayName, 
+                photoURL: user.photoURL, 
+                highScore: 0, 
+                totalCoins: 0,
+                purchasedBgs: ['default'], 
+                selectedBg: 'default',
+                purchasedSnakeColors: ['default'], 
+                selectedSnakeColor: 'default', 
+                collectedRewards: [], 
                 usernameIsSet: false,
+                achievements: {}, 
+                gameStats: { 
+                    applesEaten: 0,
+                    goldenApples: 0,
+                    greenApples: 0,
+                    blueApples: 0,
+                    purpleApples: 0,
+                    gamesPlayed: 0,
+                    maxScoreNoSelfCollision: 0,
+                    maxSnakeLength: 0
+                }
             };
 
             let cloudData;
@@ -817,22 +1257,68 @@
             } else {
                 cloudData = defaultData;
             }
-            cloudData.totalCoins += localCoins;
+            
+            // Merge local data with cloud data
+            cloudData.totalCoins = Math.max(cloudData.totalCoins, localCoins); 
             cloudData.purchasedBgs = [...new Set([...cloudData.purchasedBgs, ...localBgs])];
             cloudData.purchasedSnakeColors = [...new Set([...cloudData.purchasedSnakeColors, ...localColors])];
             if (localHighScore > (cloudData.highScore || 0)) {
                 cloudData.highScore = localHighScore;
             }
+
+            // Merge game stats (sum up where appropriate, take max for others)
+            for (const key in localGameStats) {
+                if (['applesEaten', 'goldenApples', 'greenApples', 'blueApples', 'purpleApples', 'gamesPlayed'].includes(key)) {
+                    cloudData.gameStats[key] = (cloudData.gameStats[key] || 0) + (localGameStats[key] || 0);
+                } else if (['maxScoreNoSelfCollision', 'maxSnakeLength'].includes(key)) {
+                    cloudData.gameStats[key] = Math.max((cloudData.gameStats[key] || 0), (localGameStats[key] || 0));
+                } else {
+                    cloudData.gameStats[key] = cloudData.gameStats[key] || localGameStats[key]; 
+                }
+            }
+
+            // Merge achievements: cloud takes precedence for 'collected' status if already true
+            for (const achId in localAchievements) {
+                if (!cloudData.achievements[achId]) {
+                    cloudData.achievements[achId] = { ...localAchievements[achId] };
+                } else {
+                    // Merge progress (take max) and collected status (if true in either, keep true)
+                    cloudData.achievements[achId].progress = Math.max(
+                        cloudData.achievements[achId].progress || 0,
+                        localAchievements[achId].progress || 0
+                    );
+                    cloudData.achievements[achId].completed = (cloudData.achievements[achId].completed || false) || (localAchievements[achId].completed || false);
+                    cloudData.achievements[achId].collected = (cloudData.achievements[achId].collected || false) || (localAchievements[achId].collected || false);
+                }
+            }
+            
+            // Merge collectedRewards: unique union
+            cloudData.collectedRewards = [...new Set([...(cloudData.collectedRewards || []), ...(localCollectedRewards || [])])];
+
+
+            // Initialize achievement states if they don't exist in cloudData
+            achievementsData.forEach(ach => {
+                if (!cloudData.achievements[ach.id]) {
+                    cloudData.achievements[ach.id] = { progress: 0, completed: false, collected: false };
+                }
+            });
+
             userData = cloudData;
             await setDoc(userRef, userData, { merge: true });
 
+            // Clear local storage after merging
             localStorage.removeItem('ssnake_coins');
             localStorage.removeItem('ssnake_bgs');
             localStorage.removeItem('ssnake_colors');
             localStorage.removeItem('ssnake_highscore');
-            
+            localStorage.removeItem('ssnake_achievements'); 
+            localStorage.removeItem('ssnake_gameStats'); 
+            localStorage.removeItem('ssnake_collectedRewards'); 
+
+            console.log("User data loaded and merged:", userData);
             await checkNotifications(user);
         }
+
         function loadLocalData() {
             userData.totalCoins = parseInt(localStorage.getItem('ssnake_coins')) || 0;
             userData.highScore = parseInt(localStorage.getItem('ssnake_highscore')) || 0;
@@ -840,17 +1326,49 @@
             userData.purchasedBgs = JSON.parse(localStorage.getItem('ssnake_bgs')) || ['default'];
             userData.selectedSnakeColor = localStorage.getItem('ssnake_selected_color') || 'default';
             userData.purchasedSnakeColors = JSON.parse(localStorage.getItem('ssnake_colors')) || ['default'];
+            userData.achievements = JSON.parse(localStorage.getItem('ssnake_achievements')) || {}; 
+            userData.gameStats = JSON.parse(localStorage.getItem('ssnake_gameStats')) || {}; 
+            userData.collectedRewards = JSON.parse(localStorage.getItem('ssnake_collectedRewards')) || []; 
+
+            // Ensure gameStats has all properties, initializing if missing
+            const defaultGameStats = {
+                applesEaten: 0, goldenApples: 0, greenApples: 0, blueApples: 0, purpleApples: 0,
+                gamesPlayed: 0, maxScoreNoSelfCollision: 0, maxSnakeLength: 0
+            };
+            userData.gameStats = { ...defaultGameStats, ...userData.gameStats };
+
+            // Initialize achievement states if they don't exist in localData
+            achievementsData.forEach(ach => {
+                if (!userData.achievements[ach.id]) {
+                    userData.achievements[ach.id] = { progress: 0, completed: false, collected: false };
+                }
+            });
+
+            console.log("Local user data loaded:", userData);
         }
+
         async function saveUserData() {
             const user = auth.currentUser;
             const dataToSave = {
-                highScore: userData.highScore, totalCoins: userData.totalCoins,
-                purchasedBgs: userData.purchasedBgs, selectedBg: userData.selectedBg,
-                purchasedSnakeColors: userData.purchasedSnakeColors, selectedSnakeColor: userData.selectedSnakeColor,
-                collectedRewards: userData.collectedRewards, name: userData.name, usernameIsSet: userData.usernameIsSet,
+                highScore: userData.highScore, 
+                totalCoins: userData.totalCoins,
+                purchasedBgs: userData.purchasedBgs, 
+                selectedBg: userData.selectedBg,
+                purchasedSnakeColors: userData.purchasedSnakeColors, 
+                selectedSnakeColor: userData.selectedSnakeColor,
+                collectedRewards: userData.collectedRewards, 
+                name: userData.name, 
+                usernameIsSet: userData.usernameIsSet,
+                achievements: userData.achievements, 
+                gameStats: userData.gameStats 
             };
             if (user) {
-                try { await setDoc(doc(db, "users", user.uid), dataToSave, { merge: true }); } catch(e) { console.error("Error saving user data:", e); }
+                try { 
+                    await setDoc(doc(db, "users", user.uid), dataToSave, { merge: true }); 
+                    console.log("User data saved to Firebase.");
+                } catch(e) { 
+                    console.error("Error saving user data to Firebase:", e); 
+                }
             } else {
                 localStorage.setItem('ssnake_coins', dataToSave.totalCoins);
                 localStorage.setItem('ssnake_bgs', JSON.stringify(dataToSave.purchasedBgs));
@@ -858,46 +1376,151 @@
                 localStorage.setItem('ssnake_colors', JSON.stringify(dataToSave.purchasedSnakeColors));
                 localStorage.setItem('ssnake_selected_color', dataToSave.selectedSnakeColor);
                 localStorage.setItem('ssnake_highscore', dataToSave.highScore);
+                localStorage.setItem('ssnake_achievements', JSON.stringify(dataToSave.achievements)); 
+                localStorage.setItem('ssnake_gameStats', JSON.stringify(dataToSave.gameStats)); 
+                localStorage.setItem('ssnake_collectedRewards', JSON.stringify(dataToSave.collectedRewards)); 
+                console.log("User data saved to Local Storage.");
             }
         }
-        function addSafeListener(element, handler) { if (element) { element.addEventListener('click', handler); element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false }); } }
-        function showScreen(screen) { document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); screen.classList.remove('hidden'); }
+
+        // NEW: Function to check and unlock achievements
+        async function checkAchievements() {
+            let achievementsUpdated = false;
+            for (const ach of achievementsData) {
+                if (userData.achievements[ach.id] && !userData.achievements[ach.id].completed) {
+                    let currentProgress = 0;
+                    switch (ach.type) {
+                        case 'score':
+                            currentProgress = score; // Score from current game
+                            break;
+                        case 'applesEaten':
+                            currentProgress = userData.gameStats.applesEaten; // Total apples eaten
+                            break;
+                        case 'goldenApples':
+                            currentProgress = userData.gameStats.goldenApples;
+                            break;
+                        case 'greenApples':
+                            currentProgress = userData.gameStats.greenApples;
+                            break;
+                        case 'blueApples':
+                            currentProgress = userData.gameStats.blueApples;
+                            break;
+                        case 'purpleApples':
+                            currentProgress = userData.gameStats.purpleApples;
+                            break;
+                        case 'gamesPlayed':
+                            currentProgress = userData.gameStats.gamesPlayed;
+                            break;
+                        case 'noSelfCollisionScore':
+                            // This depends on the specific game session logic
+                            currentProgress = userData.gameStats.maxScoreNoSelfCollision; 
+                            break;
+                        case 'snakeLength':
+                            // This depends on the specific game session logic
+                            currentProgress = userData.gameStats.maxSnakeLength; 
+                            break;
+                        case 'totalCoins':
+                            currentProgress = userData.totalCoins; // Total coins accumulated
+                            break;
+                    }
+                    
+                    userData.achievements[ach.id].progress = Math.min(currentProgress, ach.target); 
+                    
+                    if (currentProgress >= ach.target) {
+                        userData.achievements[ach.id].completed = true;
+                        achievementsUpdated = true;
+                        console.log(`Conquista Desbloqueada: ${ach.name}`);
+                        if (!userData.achievements[ach.id].collected) {
+                            checkNotifications(auth.currentUser); 
+                        }
+                    }
+                }
+            }
+            if (achievementsUpdated) {
+                await saveUserData();
+            }
+        }
+
+        function addSafeListener(element, handler) { 
+            if (element) { 
+                element.addEventListener('click', handler); 
+                element.addEventListener('touchstart', (e) => { e.preventDefault(); handler(e); }, { passive: false }); 
+            } 
+        }
+
+        function showScreen(screen) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); 
+            screen.classList.remove('hidden'); 
+        }
+
         function updateOptionButtons() {
             document.querySelectorAll('[data-control]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-control="${gameSettings.controlMode}"]`).classList.add('active');
             document.querySelectorAll('[data-ratio]').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-ratio="${gameSettings.aspectRatio}"]`).classList.add('active');
         }
-        function applyAllCustomizations() { applyBackground(); }
+
+        function applyAllCustomizations() { 
+            applyBackground(); 
+        }
+
         const showOptionsHandler = () => { previousScreen = screens.start; updateOptionButtons(); showScreen(screens.options); };
         const showTipsHandler = () => { previousScreen = screens.start; showScreen(screens.tips); };
         const showShopHandler = () => { previousScreen = screens.start; renderShop('backgrounds'); showScreen(screens.shop); };
         const showNotificationHandler = () => { previousScreen = screens.start; renderNotifications(); showScreen(screens.notifications); };
+        const showAchievementsHandler = () => { previousScreen = screens.start; renderAchievements('Fácil'); showScreen(screens.achievements); }; 
         const handlePauseOptions = () => { pauseOverlay.classList.add('hidden'); previousScreen = screens.game; updateOptionButtons(); showScreen(screens.options); };
         const pauseHomeHandler = () => { endGame(false); showScreen(screens.start); };
+
         function setupCanvas() {
-            const dpr = window.devicePixelRatio || 1; const topBarHeight = topBar.offsetHeight || 60;
-            const containerWidth = screens.game.clientWidth; const containerHeight = screens.game.clientHeight - topBarHeight;
+            const dpr = window.devicePixelRatio || 1; 
+            const topBarHeight = topBar.offsetHeight || 60;
+            const containerWidth = screens.game.clientWidth; 
+            const containerHeight = screens.game.clientHeight - topBarHeight;
             let canvasWidth, canvasHeight;
-            if (gameSettings.aspectRatio === 'notebook') { const canvasSize = Math.min(containerWidth, containerHeight); canvasWidth = Math.floor(canvasSize / gridSize) * gridSize; canvasHeight = canvasWidth;
-            } else { const baseSize = Math.min(containerWidth, containerHeight); canvasWidth = Math.floor(baseSize / gridSize) * gridSize; canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize; }
-            canvas.width = canvasWidth * dpr; canvas.height = canvasHeight * dpr;
-            canvas.style.width = `${canvasWidth}px`; canvas.style.height = `${canvasHeight}px`;
-            ctx.scale(dpr, dpr); topBar.style.width = `${canvasWidth}px`;
+            if (gameSettings.aspectRatio === 'notebook') { 
+                const canvasSize = Math.min(containerWidth, containerHeight); 
+                canvasWidth = Math.floor(canvasSize / gridSize) * gridSize; 
+                canvasHeight = canvasWidth;
+            } else { 
+                const baseSize = Math.min(containerWidth, containerHeight); 
+                canvasWidth = Math.floor(baseSize / gridSize) * gridSize; 
+                canvasHeight = Math.floor((canvasWidth * 14 / 9) / gridSize) * gridSize; 
+            }
+            canvas.width = canvasWidth * dpr; 
+            canvas.height = canvasHeight * dpr;
+            canvas.style.width = `${canvasWidth}px`; 
+            canvas.style.height = `${canvasHeight}px`;
+            ctx.scale(dpr, dpr); 
+            topBar.style.width = `${canvasWidth}px`;
         }
+
         function startGame() {
-            showScreen(screens.game); isPaused = false;
-            topBar.classList.remove('hidden'); pauseOverlay.classList.add('hidden');
-            pauseIcon.classList.remove('hidden'); playIcon.classList.add('hidden');
+            showScreen(screens.game); 
+            isPaused = false;
+            topBar.classList.remove('hidden'); 
+            pauseOverlay.classList.add('hidden');
+            pauseIcon.classList.remove('hidden'); 
+            playIcon.classList.add('hidden');
             setupCanvas();
             const dpr = window.devicePixelRatio || 1;
             snake = [{ x: Math.floor((canvas.width / dpr / gridSize) / 2), y: Math.floor((canvas.height / dpr / gridSize) / 2) }];
-            score = 0; coins = userData.totalCoins; direction = { x: 0, y: 0 };
-            scoreDisplay.textContent = 'Score: 0'; coinCountSpan.textContent = coins;
+            score = 0; 
+            coins = userData.totalCoins; 
+            direction = { x: 1, y: 0 }; // Cobra começa se movendo para a direita
+
+            // Reset game-specific temporary stats
+            currentScoreWithoutImmortality = 0;
+            currentMaxSnakeLengthInGame = 1;
+            immortalityActivatedThisGame = false;
+
+            scoreDisplay.textContent = 'Score: 0'; 
+            coinCountSpan.textContent = coins;
             placeFood();
             bonusApples = [];
             Object.keys(powerUps).forEach(key => { powerUps[key].active = false; powerUps[key].endTime = 0; });
             powerupTimerDisplay.classList.add('hidden');
+
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(gameLoop, 140);
             document.addEventListener('keydown', handleKeyInput);
@@ -905,15 +1528,25 @@
             screens.game.addEventListener('touchmove', preventDefaultHandler, { passive: false });
             screens.game.addEventListener('touchend', handleTouchEnd);
         }
-        function gameLoop() { if(isPaused) return; update(); draw(); }
-        function update() {
-            if (direction.x === 0 && direction.y === 0) return;
-            const dpr = window.devicePixelRatio || 1; const gridWidth = canvas.width / dpr / gridSize; const gridHeight = canvas.height / dpr / gridSize;
+
+        function gameLoop() { 
+            if(isPaused) return; 
+            update(); 
+            draw(); 
+        }
+
+        function update() { 
+            if (direction.x === 0 && direction.y === 0) return; // This will now only return if direction is explicitly (0,0)
+            const dpr = window.devicePixelRatio || 1; 
+            const gridWidth = canvas.width / dpr / gridSize; 
+            const gridHeight = canvas.height / dpr / gridSize;
             let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
             
             if (powerUps.wrap.active) {
-                if (head.x < 0) head.x = gridWidth - 1; else if (head.x >= gridWidth) head.x = 0;
-                if (head.y < 0) head.y = gridHeight - 1; else if (head.y >= gridHeight) head.y = 0;
+                if (head.x < 0) head.x = gridWidth - 1; 
+                else if (head.x >= gridWidth) head.x = 0;
+                if (head.y < 0) head.y = gridHeight - 1; 
+                else if (head.y >= gridHeight) head.y = 0;
             }
 
             if (powerUps.magnet.active) {
@@ -928,7 +1561,8 @@
                         if (!isOccupied) { apple.x = nextX; apple.y = nextY; }
                     }
                 };
-                moveApple(food); bonusApples.forEach(moveApple);
+                moveApple(food); 
+                bonusApples.forEach(moveApple);
             }
             
             let ateSomething = false;
@@ -950,6 +1584,7 @@
                 coins++;
                 scoreDisplay.textContent = `Score: ${score}`;
                 coinCountSpan.textContent = coins;
+                userData.gameStats.applesEaten++; 
                 placeFood();
                 spawnBonusApple();
             }
@@ -961,34 +1596,66 @@
                 snake.pop();
             }
 
+            // Update current game's max snake length
+            currentMaxSnakeLengthInGame = Math.max(currentMaxSnakeLengthInGame, snake.length);
+
+            // Update current game's score if immortality was not active
+            if (!immortalityActivatedThisGame) { 
+                currentScoreWithoutImmortality = Math.max(currentScoreWithoutImmortality, score);
+            }
+
             if (checkCollision()) { 
                 endGame(); 
             }
             checkPowerupEnd();
+            checkAchievements(); 
         }
+
         function draw() {
             const dpr = window.devicePixelRatio || 1;
             ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-            drawApple(); bonusApples.forEach(drawBonusApple); drawSnake(); updatePowerupTimers();
+            drawApple(); 
+            bonusApples.forEach(drawBonusApple); 
+            drawSnake(); 
+            updatePowerupTimers();
         }
+
         async function endGame(showGameOverScreen = true) {
-            clearInterval(gameInterval); gameInterval = null;
+            clearInterval(gameInterval); 
+            gameInterval = null;
             document.removeEventListener('keydown', handleKeyInput);
             screens.game.removeEventListener('touchstart', handleTouchStart);
             screens.game.removeEventListener('touchmove', preventDefaultHandler);
             screens.game.removeEventListener('touchend', handleTouchEnd);
             
             userData.totalCoins = coins;
-            if(score > userData.highScore) { userData.highScore = score; }
+            if(score > userData.highScore) { 
+                userData.highScore = score; 
+            }
+            userData.gameStats.gamesPlayed++; 
+
+            // Update global gameStats with current game's highest values
+            userData.gameStats.maxSnakeLength = Math.max(userData.gameStats.maxSnakeLength, currentMaxSnakeLengthInGame);
+            
+            // Only update maxScoreNoSelfCollision if immortality was NOT used in this game
+            if (!immortalityActivatedThisGame) { 
+                userData.gameStats.maxScoreNoSelfCollision = Math.max(userData.gameStats.maxScoreNoSelfCollision, score);
+            }
+            
             await saveUserData();
+            await checkNotifications(auth.currentUser); 
             if (showGameOverScreen) {
                 topBar.classList.add('hidden');
                 finalScoreDisplay.textContent = `Seu Score: ${score}`;
                 showScreen(screens.gameOver);
             }
         }
-        function applyBackground() { document.body.className = `background-${userData.selectedBg}`; }
+
+        function applyBackground() { 
+            document.body.className = `background-${userData.selectedBg}`; 
+        }
+
         function renderShop(activeTab) {
             shopItemsContainer.innerHTML = '';
             document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
@@ -999,8 +1666,10 @@
             const defaultId = 'default';
             const defaultItem = activeTab === 'backgrounds' ? { id: defaultId, name: 'Padrão' } : { id: defaultId, name: 'Magenta Padrão' };
             const allDisplayItems = [defaultItem, ...items];
+
             allDisplayItems.filter(item => item.id === 'default' || purchasedItems.includes(item.id)).forEach(item => {
-                const itemEl = document.createElement('div'); itemEl.className = 'shop-item';
+                const itemEl = document.createElement('div'); 
+                itemEl.className = 'shop-item';
                 const isSelected = item.id === selectedItem;
                 let previewHtml = '';
                 if(activeTab === 'snakeColors') { previewHtml = `<div class="color-preview" style="background-color: ${snakeColors[item.id].color};"></div>`; }
@@ -1010,21 +1679,29 @@
                 itemEl.innerHTML = `<div class="shop-item-details">${previewHtml}<h3>${item.name}</h3></div> ${buttonHtml}`;
                 shopItemsContainer.appendChild(itemEl);
             });
+
             items.filter(item => !purchasedItems.includes(item.id)).forEach(item => {
-                const itemEl = document.createElement('div'); itemEl.className = 'shop-item';
+                const itemEl = document.createElement('div'); 
+                itemEl.className = 'shop-item';
                 const canAfford = userData.totalCoins >= item.price;
                 let previewHtml = '';
                 if(activeTab === 'snakeColors') { previewHtml = `<div class="color-preview" style="background-color: ${snakeColors[item.id].color};"></div>`; }
                 const buttonHtml = `<button class="menu-button" data-item-id="${item.id}" data-price="${item.price}" data-type="${activeTab}" ${canAfford ? '' : 'disabled'}>S$ ${item.price}</button>`;
                 itemEl.innerHTML = `<div class="shop-item-details">${previewHtml}<h3>${item.name}</h3></div> ${buttonHtml}`;
                 shopItemsContainer.appendChild(itemEl);
-             });
+            });
         }
+
         async function selectItem(itemId, type) {
-             if (type === 'backgrounds') { userData.selectedBg = itemId; applyBackground(); } 
-             else if (type === 'snakeColors') { userData.selectedSnakeColor = itemId; }
-            await saveUserData(); renderShop(type);
+            if (type === 'backgrounds') { 
+                userData.selectedBg = itemId; applyBackground(); 
+            } else if (type === 'snakeColors') { 
+                userData.selectedSnakeColor = itemId; 
+            }
+            await saveUserData(); 
+            renderShop(type);
         }
+
         async function buyItem(itemId, price, type) {
             if (userData.totalCoins >= price) {
                 userData.totalCoins -= price;
@@ -1038,6 +1715,68 @@
                 if(button) { button.classList.add('shake'); setTimeout(() => button.classList.remove('shake'), 300); }
             }
         }
+
+        // NEW: Function to render achievements
+        function renderAchievements(activeTab) {
+            achievementsListContainer.innerHTML = '';
+            document.querySelectorAll('.achievement-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.achievement-tab[data-tab="${activeTab}"]`).classList.add('active');
+
+            const achievementsForDifficulty = achievementsByDifficulty[activeTab];
+
+            if (!achievementsForDifficulty || achievementsForDifficulty.length === 0) {
+                achievementsListContainer.innerHTML = `<p class="tip-text">Nenhuma conquista nesta categoria.</p>`;
+                return;
+            }
+
+            achievementsForDifficulty.forEach(ach => {
+                const achStatus = userData.achievements[ach.id] || { progress: 0, completed: false, collected: false };
+                const itemEl = document.createElement('div');
+                itemEl.className = `achievement-item ${achStatus.completed ? 'completed' : ''}`;
+
+                let progressText = '';
+                if (ach.type === 'score' || ach.type === 'noSelfCollisionScore') {
+                    progressText = `Progresso: ${achStatus.progress}/${ach.target} pontos`;
+                } else if (ach.type === 'applesEaten' || ach.type.endsWith('Apples')) {
+                    progressText = `Progresso: ${achStatus.progress}/${ach.target} maçãs`;
+                } else if (ach.type === 'gamesPlayed') {
+                    progressText = `Progresso: ${achStatus.progress}/${ach.target} partidas`;
+                } else if (ach.type === 'snakeLength') {
+                    progressText = `Progresso: ${achStatus.progress}/${ach.target} de comprimento`;
+                } else if (ach.type === 'totalCoins') {
+                    progressText = `Progresso: ${achStatus.progress}/${ach.target} moedas`;
+                }
+
+
+                let rewardText = '';
+                if (ach.reward.coins) rewardText += `S$ ${ach.reward.coins}`;
+                if (ach.reward.item) {
+                    const itemName = shopItems[ach.reward.item.type].find(item => item.id === ach.reward.item.id)?.name || 'Item Desconhecido';
+                    if (rewardText) rewardText += ' + ';
+                    rewardText += `${itemName}`;
+                }
+
+                let buttonHtml = '';
+                if (achStatus.collected) {
+                    buttonHtml = `<button class="menu-button active" disabled>Coletado</button>`;
+                } else if (achStatus.completed) {
+                    buttonHtml = `<button class="menu-button" data-achievement-id="${ach.id}">Coletar Recompensa (${rewardText})</button>`;
+                } else {
+                    buttonHtml = `<button class="menu-button" disabled>Não Completado</button>`;
+                }
+
+                itemEl.innerHTML = `
+                    <div class="achievement-item-details">
+                        <h3>${ach.name}</h3>
+                        <p>${ach.desc}</p>
+                        <p class="achievement-progress">${progressText}</p>
+                    </div>
+                    ${buttonHtml}
+                `;
+                achievementsListContainer.appendChild(itemEl);
+            });
+        }
+
         async function handleUsernameSubmit() {
             const newUsername = usernameInput.value.trim();
             usernameError.textContent = '';
@@ -1066,6 +1805,7 @@
                 }
             }
         }
+
         document.addEventListener('DOMContentLoaded', () => {
             addSafeListener(buttons.login, () => {
                 signInWithPopup(auth, provider).catch(error => { console.error("Erro detalhado no login:", error); });
@@ -1073,6 +1813,7 @@
             addSafeListener(buttons.logout, () => { signOut(auth).catch(error => console.error("Erro no logout:", error)); });
             addSafeListener(buttons.start, startGame);
             addSafeListener(buttons.shop, showShopHandler);
+            addSafeListener(buttons.achievements, showAchievementsHandler); 
             addSafeListener(buttons.leaderboard, () => { getLeaderboard(); showScreen(screens.leaderboard); });
             addSafeListener(buttons.options, showOptionsHandler);
             addSafeListener(buttons.tips, showTipsHandler);
@@ -1088,6 +1829,7 @@
             addSafeListener(buttons.leaderboardBack, () => showScreen(screens.start));
             addSafeListener(buttons.tipsBack, () => showScreen(screens.start));
             addSafeListener(buttons.notificationBack, () => showScreen(screens.start));
+            addSafeListener(buttons.achievementsBack, () => showScreen(screens.start)); 
             addSafeListener(buttons.submitUsername, handleUsernameSubmit);
             
             screens.options.addEventListener('click', (e) => {
@@ -1110,12 +1852,29 @@
                 if (buyButton && !buyButton.disabled) { const { itemId, price, type } = buyButton.dataset; buyItem(itemId, parseInt(price), type); } 
                 else if (selectButton) { const { selectId, type } = selectButton.dataset; selectItem(selectId, type); }
             });
-             notificationList.addEventListener('click', async (e) => {
+
+            notificationList.addEventListener('click', async (e) => {
                 const rewardButton = e.target.closest('[data-reward-id]');
-                if (rewardButton) {
-                    await collectReward(rewardButton);
+                const achievementRewardButton = e.target.closest('[data-achievement-id]');
+                if (rewardButton || achievementRewardButton) { 
+                    await collectReward(e.target);
                 }
             });
+
+            // NEW: Event listener for achievement tabs
+            achievementsTabs.addEventListener('click', (e) => {
+                const tab = e.target.closest('.achievement-tab');
+                if (tab) renderAchievements(tab.dataset.tab);
+            });
+
+            // NEW: Event listener for collecting achievement rewards
+            achievementsListContainer.addEventListener('click', async (e) => {
+                const collectButton = e.target.closest('[data-achievement-id]');
+                if (collectButton && !collectButton.disabled) {
+                    await collectReward(collectButton); 
+                }
+            });
+
             loadLocalData();
             applyAllCustomizations();
             updateOptionButtons();
