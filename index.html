@@ -428,48 +428,15 @@
         const provider = new GoogleAuthProvider();
 
         // --- Elementos do DOM (permanecem os mesmos) ---
-        const screens = {
-            start: document.getElementById('start-screen'),
-            options: document.getElementById('options-screen'),
-            shop: document.getElementById('shop-screen'),
-            game: document.getElementById('game-screen'),
-            gameOver: document.getElementById('game-over-screen'),
-            leaderboard: document.getElementById('leaderboard-screen'),
-            tips: document.getElementById('tips-screen'),
-            notifications: document.getElementById('notification-screen'),
-        };
-
-        const buttons = {
-            start: document.getElementById('start-button'),
-            shop: document.getElementById('shop-button'),
-            shopBack: document.getElementById('shop-back-button'),
-            options: document.getElementById('options-button'),
-            back: document.getElementById('back-button'),
-            restart: document.getElementById('restart-button'),
-            home: document.getElementById('home-button'),
-            login: document.getElementById('login-button'),
-            logout: document.getElementById('logout-button'),
-            leaderboard: document.getElementById('leaderboard-button'),
-            leaderboardBack: document.getElementById('leaderboard-back-button'),
-            tips: document.getElementById('tips-button'),
-            tipsBack: document.getElementById('tips-back-button'),
-            notificationBell: document.getElementById('notification-bell'),
-            notificationBack: document.getElementById('notification-back-button'),
-            pause: document.getElementById('pause-button'),
-            resume: document.getElementById('resume-button'),
-            pauseOptions: document.getElementById('pause-options-button'),
-            pauseHome: document.getElementById('pause-home-button')
-        };
-        
+        const screens = { start: document.getElementById('start-screen'), options: document.getElementById('options-screen'), shop: document.getElementById('shop-screen'), game: document.getElementById('game-screen'), gameOver: document.getElementById('game-over-screen'), leaderboard: document.getElementById('leaderboard-screen'), tips: document.getElementById('tips-screen'), notifications: document.getElementById('notification-screen'), };
+        const buttons = { start: document.getElementById('start-button'), shop: document.getElementById('shop-button'), shopBack: document.getElementById('shop-back-button'), options: document.getElementById('options-button'), back: document.getElementById('back-button'), restart: document.getElementById('restart-button'), home: document.getElementById('home-button'), login: document.getElementById('login-button'), logout: document.getElementById('logout-button'), leaderboard: document.getElementById('leaderboard-button'), leaderboardBack: document.getElementById('leaderboard-back-button'), tips: document.getElementById('tips-button'), tipsBack: document.getElementById('tips-back-button'), notificationBell: document.getElementById('notification-bell'), notificationBack: document.getElementById('notification-back-button'), pause: document.getElementById('pause-button'), resume: document.getElementById('resume-button'), pauseOptions: document.getElementById('pause-options-button'), pauseHome: document.getElementById('pause-home-button') };
         const userProfile = document.getElementById('user-profile');
         const userPhoto = document.getElementById('user-photo');
         const userName = document.getElementById('user-name');
-        
         const topBar = document.getElementById('top-bar');
         const pauseIcon = document.getElementById('pause-icon');
         const playIcon = document.getElementById('play-icon');
         const pauseOverlay = document.getElementById('pause-overlay');
-        
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisplay = document.getElementById('score-display');
@@ -493,49 +460,15 @@
         const preventDefaultHandler = (e) => e.preventDefault();
         let tongueState = { counter: 0, flickerDuration: 15, flickerInterval: 80 };
         let bonusApples = [];
-        let powerUps = {
-            wrap: { active: false, endTime: 0, duration: 30000 },
-            immortal: { active: false, endTime: 0, duration: 30000 },
-            magnet: { active: false, endTime: 0, duration: 45000 }
-        };
-
-        const snakeColors = {
-            default: { name: 'Magenta Padrão', color: '#ff00ff' },
-            blue: { name: 'Azul Neon', color: '#3498db' },
-            green: { name: 'Verde Cyber', color: '#00ff00' },
-            orange: { name: 'Laranja Elétrico', color: '#ff8c00' },
-            gold: { name: 'Dourado', color: '#ffd700'},
-            white: { name: 'Branco Espectral', color: '#ffffff' },
-            toxic: { name: 'Verde Tóxico', color: '#7fff00' }
-        };
-
+        let powerUps = { wrap: { active: false, endTime: 0, duration: 30000 }, immortal: { active: false, endTime: 0, duration: 30000 }, magnet: { active: false, endTime: 0, duration: 45000 } };
+        const snakeColors = { default: { name: 'Magenta Padrão', color: '#ff00ff' }, blue: { name: 'Azul Neon', color: '#3498db' }, green: { name: 'Verde Cyber', color: '#00ff00' }, orange: { name: 'Laranja Elétrico', color: '#ff8c00' }, gold: { name: 'Dourado', color: '#ffd700'}, white: { name: 'Branco Espectral', color: '#ffffff' }, toxic: { name: 'Verde Tóxico', color: '#7fff00' } };
         const shopItems = {
-            backgrounds: [
-                { id: 'sunset', name: 'Pôr do Sol', price: 50 },
-                { id: 'matrix', name: 'Chuva Digital', price: 750 },
-                { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 },
-                { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 },
-                { id: 'hexagons', name: 'Colmeia Digital', price: 2500 },
-                { id: 'stars', name: 'Espaço Sideral', price: 3000 }
-            ],
-            snakeColors: [
-                { id: 'blue', name: 'Azul Neon', price: 100 },
-                { id: 'green', name: 'Verde Cyber', price: 800 },
-                { id: 'orange', name: 'Laranja Elétrico', price: 1500 },
-                { id: 'gold', name: 'Cobra de Ouro', price: 5000 },
-                { id: 'white', name: 'Cobra Fantasma', price: 7500 },
-                { id: 'toxic', name: 'Cobra Tóxica', price: 10000 }
-            ]
+            backgrounds: [ { id: 'sunset', name: 'Pôr do Sol', price: 50 }, { id: 'matrix', name: 'Chuva Digital', price: 750 }, { id: 'nebula', name: 'Nebulosa Giratória', price: 1200 }, { id: 'wavy', name: 'Ondas Psicadélicas', price: 2000 }, { id: 'hexagons', name: 'Colmeia Digital', price: 2500 }, { id: 'stars', name: 'Espaço Sideral', price: 3000 } ],
+            snakeColors: [ { id: 'blue', name: 'Azul Neon', price: 100 }, { id: 'green', name: 'Verde Cyber', price: 800 }, { id: 'orange', name: 'Laranja Elétrico', price: 1500 }, { id: 'gold', name: 'Cobra de Ouro', price: 5000 }, { id: 'white', name: 'Cobra Fantasma', price: 7500 }, { id: 'toxic', name: 'Cobra Tóxica', price: 10000 } ]
         };
-
-        let userData = {
-            highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default',
-            purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: []
-        };
+        let userData = { highScore: 0, totalCoins: 0, purchasedBgs: ['default'], selectedBg: 'default', purchasedSnakeColors: ['default'], selectedSnakeColor: 'default', collectedRewards: [] };
         
         // --- Declaração de Funções ---
-        
-        // --- Funções de Notificação ---
         async function checkNotifications(user) {
             if (!user) return;
             buttons.notificationBell.classList.remove('hidden');
@@ -548,9 +481,14 @@
                 notificationDot.classList.add('hidden');
             }
         }
-
         async function renderNotifications() {
             notificationList.innerHTML = '<h2>Notificações</h2>';
+            const user = auth.currentUser;
+            if(!user) {
+                notificationList.innerHTML += '<p class="notification-text">Faça login para ver as suas notificações.</p>';
+                return;
+            }
+
             const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
             const querySnapshot = await getDocs(q);
             
@@ -560,34 +498,53 @@
                 querySnapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const notifEl = document.createElement('div');
-                    notifEl.className = 'option-group';
-                    notifEl.innerHTML = `<h3>${data.title}</h3><p class="notification-text">${data.message}</p>`;
+                    notifEl.className = 'option-group notification-item';
+                    let buttonHtml = '';
+                    const isCollected = userData.collectedRewards.includes(docSnap.id);
+
+                    if (data.reward && data.reward > 0) {
+                        buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar S$ ${data.reward}`}</button>`;
+                    }
+
+                    notifEl.innerHTML = `<h3>${data.title}</h3><p class="notification-text">${data.message}</p>${buttonHtml}`;
                     notificationList.appendChild(notifEl);
                 });
             }
         }
+        async function collectReward(target) {
+            const user = auth.currentUser;
+            if (!user || target.disabled) return;
 
-        /**
-         * Adiciona uma nova notificação à base de dados para todos os jogadores.
-         * Esta é uma função administrativa e deve ser chamada manualmente quando necessário.
-         * Para usar: Abra a consola do navegador (F12) e escreva sendUpdateNotification()
-         */
+            const rewardId = target.dataset.rewardId;
+            const rewardAmount = parseInt(target.dataset.rewardAmount);
+
+            if (userData.collectedRewards.includes(rewardId)) return;
+            
+            target.disabled = true;
+            target.textContent = "Coletado!";
+            
+            userData.totalCoins += rewardAmount;
+            userData.collectedRewards.push(rewardId);
+            coins = userData.totalCoins;
+            if(coinCountSpan) coinCountSpan.textContent = coins;
+
+            await saveUserData();
+            checkNotifications(user);
+        }
         window.sendUpdateNotification = async function() {
             try {
                 const notificationsCol = collection(db, 'notifications');
                 await addDoc(notificationsCol, {
-                    title: "🐍 Grande Atualização no Ssnake!! 🐍",
-                    message: "Olá, jogadores! Preparamos uma atualização recheada de novidades e melhorias para tornar a vossa experiência ainda mais incrível. Confiram o que mudou: <br><br>✨ **Novidades na Loja!**<br>Apresentamos a nova Loja! Agora, podem usar os S$ que ganham nas partidas para desbloquear itens cosméticos exclusivos. Adicionámos **8 novos planos de fundo** animados e **6 novas cores** vibrantes para a cobra. Deixem o vosso Ssnake com um estilo único! <br><br>🍎 **Nova Maçã Azul Magnética!**<br>Uma nova maçã misteriosa apareceu no jogo! A **Maçã Azul** ativa um poder de íman por 45 segundos, puxando todas as outras maçãs no ecrã diretamente para si. Usem-na para criar combos e pontuações épicas! <br><br>⚙️ **Melhorias e Correções:**<br><ul><li>**Login com Google Corrigido:** A sincronização com a sua conta Google está mais robusta do que nunca. O vosso progresso está seguro!</li><li>**Correções de Bugs:** Resolvemos o problema que impedia a cobra de comer a maçã em algumas situações e o bug da Maçã Dourada que não permitia atravessar as paredes.</li><li>**Botões a Funcionar:** Os botões de sair da conta e o menu de pausa foram totalmente corrigidos.</li><li>**Interface Melhorada:** A seleção de itens agora é feita diretamente na loja para uma navegação mais simples e intuitiva.</li></ul><br>Corram para o jogo para descobrir todas as novidades, juntar moedas e personalizar a vossa cobra!<br><br>Bom jogo!",
+                    title: "🐍 Recompensa de Boas-vindas! 🐍",
+                    message: "Obrigado por jogar! Aqui está uma pequena recompensa (S$ 200) para o ajudar a começar na nossa loja de itens.",
+                    reward: 200, 
                     timestamp: serverTimestamp()
                 });
-                console.log("Notificação enviada com sucesso!");
+                console.log("Notificação com recompensa enviada com sucesso!");
             } catch (error) {
                 console.error("Erro ao enviar notificação:", error);
             }
         }
-
-
-        // --- Função do Placar ---
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
@@ -1036,6 +993,12 @@
                 const selectButton = e.target.closest('[data-select-id]');
                 if (buyButton && !buyButton.disabled) { const { itemId, price, type } = buyButton.dataset; buyItem(itemId, parseInt(price), type); } 
                 else if (selectButton) { const { selectId, type } = selectButton.dataset; selectItem(selectId, type); }
+            });
+             notificationList.addEventListener('click', async (e) => {
+                const rewardButton = e.target.closest('[data-reward-id]');
+                if (rewardButton) {
+                    await collectReward(rewardButton);
+                }
             });
             loadLocalData();
             applyAllCustomizations();
