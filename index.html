@@ -48,7 +48,7 @@
             transition: all 0.5s ease;
         }
 
-        /* Fundos */
+        /* Fundos Padrão e Novos */
         .background-default::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -528,6 +528,10 @@
                     const data = docSnap.data(); const notifEl = document.createElement('div'); notifEl.className = 'option-group notification-item';
                     let buttonHtml = ''; const isCollected = userData.collectedRewards.includes(docSnap.id);
                     if (data.reward && data.reward > 0) { buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-amount="${data.reward}" ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar S$ ${data.reward}`}</button>`; }
+                    else if (data.rewardItem) {
+                        const itemType = data.rewardItem.type === 'snakeColors' ? 'Cor' : 'Fundo';
+                        buttonHtml = `<button class="menu-button" data-reward-id="${docSnap.id}" data-reward-item='${JSON.stringify(data.rewardItem)}' ${isCollected ? 'disabled' : ''}>${isCollected ? 'Coletado' : `Coletar ${itemType}`}</button>`;
+                    }
                     notifEl.innerHTML = `<h3>${data.title}</h3><div class="notification-text">${data.message}</div>${buttonHtml}`;
                     notificationList.appendChild(notifEl);
                 });
@@ -535,14 +539,30 @@
         }
         async function collectReward(target) {
             const user = auth.currentUser; if (!user || target.disabled) return;
-            const rewardId = target.dataset.rewardId; const rewardAmount = parseInt(target.dataset.rewardAmount);
+            const rewardId = target.dataset.rewardId;
             if (userData.collectedRewards.includes(rewardId)) return;
+            
+            const rewardAmount = parseInt(target.dataset.rewardAmount);
+            const rewardItem = target.dataset.rewardItem ? JSON.parse(target.dataset.rewardItem) : null;
+
+            if(rewardAmount > 0) {
+                userData.totalCoins += rewardAmount;
+                coins = userData.totalCoins; 
+                if(coinCountSpan) coinCountSpan.textContent = coins;
+            }
+            if(rewardItem) {
+                if(rewardItem.type === 'snakeColors' && !userData.purchasedSnakeColors.includes(rewardItem.id)) {
+                    userData.purchasedSnakeColors.push(rewardItem.id);
+                } else if (rewardItem.type === 'backgrounds' && !userData.purchasedBgs.includes(rewardItem.id)) {
+                    userData.purchasedBgs.push(rewardItem.id);
+                }
+            }
+            
             target.disabled = true; target.textContent = "Coletado!";
-            userData.totalCoins += rewardAmount; userData.collectedRewards.push(rewardId);
-            coins = userData.totalCoins; if(coinCountSpan) coinCountSpan.textContent = coins;
+            userData.collectedRewards.push(rewardId);
             await saveUserData(); await checkNotifications(user);
         }
-        window.sendUpdateNotification = async function() { try { const notificationsCol = collection(db, 'notifications'); await addDoc(notificationsCol, { title: "🐍 Recompensa de Boas-vindas! 🐍", message: "Obrigado por jogar! Aqui está uma pequena recompensa (S$ 200) para o ajudar a começar na nossa loja de itens.", reward: 200, timestamp: serverTimestamp() }); console.log("Notificação com recompensa enviada com sucesso!"); } catch (error) { console.error("Erro ao enviar notificação:", error); } }
+        window.sendNotification = async function(notificationData) { try { const notificationsCol = collection(db, 'notifications'); await addDoc(notificationsCol, { ...notificationData, timestamp: serverTimestamp() }); console.log("Notificação enviada com sucesso:", notificationData); } catch (error) { console.error("Erro ao enviar notificação:", error); } }
         async function getLeaderboard() {
             scoreList.innerHTML = '<li>Carregando...</li>';
             try {
